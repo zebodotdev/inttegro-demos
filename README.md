@@ -1,7 +1,8 @@
 # Inttegro + Spring Boot demo
 
-A Spring MVC application that creates a finalized order through the official
-Inttegro Java SDK and redirects to hosted checkout.
+**Ledgerline** is a responsive B2B invoice portal built with Spring MVC.
+Customers review the service lines for INV-2048 before the Java SDK creates a
+server-side service order and redirects to hosted checkout.
 
 ```bash
 cd ../../sdks/java && mvn install -DskipTests && cd ../../demos/spring-boot

@@ -37,8 +37,8 @@ public class CheckoutService {
                 .finalizeOrder(true)
                 .checkoutSettings(CheckoutSettings.builder().redirectUrl(origin + "/complete").cancelUrl(origin + "/cancel").build())
                 .lineItem(OrderLineItemParams.product(product -> product
-                        .type(ProductType.DIGITAL)
-                        .name("Inttegro integration workshop")
+                        .type(ProductType.SERVICE)
+                        .name("Invoice INV-2048")
                         .quantity(1)
                         .price(PriceParams.of(Currency.GHS, 5000))))
                 .build();
