@@ -5,11 +5,10 @@ category and finish selection, fulfillment context, and a persistent checkout
 bar. It asks a backend for a finalized checkout order, initializes
 `inttegro_flutter`, and presents the native Inttegro payment sheet.
 
-## Current release gate
-
-The Dart integration and tests are complete. Device execution remains gated by
-the unpublished Inttegro Flutter plugin registration and native Checkout
-transport.
+The app uses the native Checkout transport and keeps a privacy-safe telemetry
+subscription for the lifetime of the product screen. The repository keeps the
+generated platform shells out of source control, so create them locally before
+the first device run.
 
 ## Create platform shells, install, and check
 

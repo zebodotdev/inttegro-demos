@@ -57,13 +57,14 @@ valid email address, and reject attempt IDs outside `[A-Za-z0-9_-]`.
 ## Mobile contract
 
 Mobile applications never receive `INTTEGRO_API_KEY`. Their demo backend creates
-and finalizes an immutable checkout order. The application passes only its
-`orderId` and presentation configuration to the Inttegro SDK. A client callback
-is not proof of payment; fulfillment uses authoritative server-side payment
-state.
+and finalizes an immutable, mobile-money-only checkout order from a
+client-generated attempt ID. The application passes only its `orderId` and
+presentation configuration to the Inttegro SDK. A client callback is not proof
+of payment; fulfillment uses authoritative server-side payment state.
 
-The native Checkout transport and cross-platform registrations remain release
-gates; preview adapters must make that boundary explicit.
+Each mobile host consumes the SDK's privacy-safe telemetry stream for the
+payment-sheet lifecycle. Card, Apple Pay, and Google Pay must not be advertised
+until those payment methods are implemented end to end.
 
 ## Verification
 
@@ -77,5 +78,5 @@ Every server-backed demo must provide:
 - an `.env.example` containing placeholders only.
 
 Mobile demos instead test configuration validation and the demo-backend request
-boundary. Preview transports must be documented and must not claim that a
-preview result is a live Inttegro API response. See [MOBILE.md](./MOBILE.md).
+boundary, then follow the native device and accessibility matrix in
+[MOBILE.md](./MOBILE.md).

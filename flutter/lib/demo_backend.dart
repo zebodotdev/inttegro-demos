@@ -23,7 +23,7 @@ final class DemoBackend {
 
   final Uri baseUri;
 
-  Future<CheckoutOrderResponse> createCheckoutOrder() async {
+  Future<CheckoutOrderResponse> createCheckoutOrder(String attemptId) async {
     if (!baseUri.isAbsolute) {
       throw StateError('Set INTTEGRO_DEMO_BACKEND_URL to an absolute URL.');
     }
@@ -37,13 +37,7 @@ final class DemoBackend {
       request.add(
         utf8.encode(
           jsonEncode({
-            'item': {
-              'name': 'Dawn Brew Set',
-              'type': 'physical',
-              'quantity': 1,
-              'currency': 'GHS',
-              'value': 5000,
-            },
+            'attemptId': attemptId,
           }),
         ),
       );

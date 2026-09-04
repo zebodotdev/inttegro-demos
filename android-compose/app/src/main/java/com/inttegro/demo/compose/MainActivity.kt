@@ -1,6 +1,7 @@
 package com.inttegro.demo.compose
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.core.animateColorAsState
@@ -35,6 +36,7 @@ import androidx.compose.material.icons.outlined.LocalShipping
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -53,7 +55,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -68,11 +72,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.inttegro.payments.InttegroPaymentSheet
-import com.inttegro.payments.PaymentSheetAdapter
 import com.inttegro.payments.PaymentSheetConfiguration
 import com.inttegro.payments.PaymentSheetResult
-import com.inttegro.payments.PaymentSheetSession
-import java.time.Instant
+import com.inttegro.payments.PaymentSheetTelemetry
+import com.inttegro.payments.PaymentSheetTelemetryListener
+import java.util.UUID
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,8 +102,29 @@ private fun KoraMarketScreen() {
     var showMenu by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf("New in") }
     var selectedFinish by remember { mutableStateOf(finishes.first()) }
-    var showPaymentSheet by remember { mutableStateOf(false) }
-    var outcome by remember { mutableStateOf<String?>(null) }
+    var checkoutOrderId by rememberSaveable { mutableStateOf<String?>(null) }
+    var checkoutFlowId by rememberSaveable { mutableStateOf<String?>(null) }
+    var isCreatingOrder by remember { mutableStateOf(false) }
+    var outcome by rememberSaveable { mutableStateOf<String?>(null) }
+    val scope = rememberCoroutineScope()
+    val beginCheckout: () -> Unit = {
+        if (!isCreatingOrder) {
+            isCreatingOrder = true
+            outcome = null
+            scope.launch {
+                try {
+                    val attemptId = UUID.randomUUID().toString()
+                    checkoutOrderId = DemoBackend(BuildConfig.INTTEGRO_DEMO_BACKEND_URL)
+                        .createCheckoutOrder(attemptId)
+                    checkoutFlowId = attemptId
+                } catch (error: Exception) {
+                    outcome = error.message ?: "Payment is temporarily unavailable."
+                } finally {
+                    isCreatingOrder = false
+                }
+            }
+        }
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLowest,
@@ -122,7 +148,7 @@ private fun KoraMarketScreen() {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { showPaymentSheet = true }) {
+                    IconButton(onClick = beginCheckout, enabled = !isCreatingOrder) {
                         Icon(Icons.Default.ShoppingBag, "Shopping bag, one item")
                     }
                 },
@@ -140,8 +166,22 @@ private fun KoraMarketScreen() {
                         Text("Total", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         Text("GHS 50.00", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                     }
-                    Button(onClick = { showPaymentSheet = true }, modifier = Modifier.weight(1f).height(52.dp)) {
-                        Text("Pay with Inttegro", fontWeight = FontWeight.SemiBold)
+                    Button(
+                        onClick = beginCheckout,
+                        enabled = !isCreatingOrder,
+                        modifier = Modifier.weight(1f).height(52.dp),
+                    ) {
+                        if (isCreatingOrder) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(20.dp),
+                                strokeWidth = 2.dp,
+                            )
+                            Spacer(Modifier.size(10.dp))
+                        }
+                        Text(
+                            if (isCreatingOrder) "Preparing checkout" else "Pay with Inttegro",
+                            fontWeight = FontWeight.SemiBold,
+                        )
                     }
                 }
             }
@@ -227,16 +267,37 @@ private fun KoraMarketScreen() {
         }
     }
 
-    if (showPaymentSheet) {
+    val activeOrderId = checkoutOrderId
+    val activeFlowId = checkoutFlowId
+    if (activeOrderId != null && activeFlowId != null) {
+        val telemetry = remember(activeOrderId, activeFlowId) {
+            PaymentSheetTelemetry(
+                listener = PaymentSheetTelemetryListener { event ->
+                    Log.i(
+                        "InttegroPaymentSheet",
+                        "flow=${event.flowId} event=${event.name.wireValue} " +
+                            "sequence=${event.sequence} operation=${event.operation ?: "none"} " +
+                            "status=${event.httpStatusCode ?: 0} " +
+                            "request=${event.requestId ?: "none"} " +
+                            "error=${event.errorType ?: "none"}",
+                    )
+                },
+                flowId = activeFlowId,
+            )
+        }
         InttegroPaymentSheet(
             configuration = PaymentSheetConfiguration(
-                orderId = "or_demo_compose",
+                orderId = activeOrderId,
                 returnUrl = "inttegro-demo://payment-return",
             ),
-            adapter = DemoPreviewAdapter,
-            onDismissRequest = { showPaymentSheet = false },
+            telemetry = telemetry,
+            onDismissRequest = {
+                checkoutOrderId = null
+                checkoutFlowId = null
+            },
             onResult = { result ->
-                showPaymentSheet = false
+                checkoutOrderId = null
+                checkoutFlowId = null
                 outcome = when (result) {
                     is PaymentSheetResult.Completed -> "Payment submitted. We’ll verify it before fulfillment."
                     PaymentSheetResult.Canceled -> "Checkout paused. Your Dawn Brew Set is still in the bag."
@@ -245,21 +306,6 @@ private fun KoraMarketScreen() {
             },
         )
     }
-}
-
-private object DemoPreviewAdapter : PaymentSheetAdapter {
-    override suspend fun retrieve(configuration: PaymentSheetConfiguration) = PaymentSheetSession(
-        id = "ps_demo_compose",
-        merchant = PaymentSheetSession.Merchant("Kora Market", "Secure checkout powered by Inttegro"),
-        amount = PaymentSheetSession.Money(5_000, "GHS"),
-        paymentMethods = listOf(
-            PaymentSheetSession.PaymentMethod("mobile-money", PaymentSheetSession.PaymentMethod.Kind.MOBILE_MONEY, "Mobile money", "Choose a provider after continuing"),
-            PaymentSheetSession.PaymentMethod("card", PaymentSheetSession.PaymentMethod.Kind.CARD, "Card", "Visa, Mastercard, or Amex"),
-        ),
-        expiresAt = Instant.now().plusSeconds(15 * 60),
-    )
-
-    override suspend fun confirm(configuration: PaymentSheetConfiguration, session: PaymentSheetSession, paymentMethod: PaymentSheetSession.PaymentMethod) = PaymentSheetResult.Completed("pay_demo")
 }
 
 @Preview(showBackground = true)

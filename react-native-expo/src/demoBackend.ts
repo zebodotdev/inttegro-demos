@@ -15,7 +15,9 @@ export function decodeCheckoutOrder(value: unknown): CheckoutOrderResponse {
   return { orderId: value.orderId.trim() };
 }
 
-export async function createCheckoutOrder(): Promise<CheckoutOrderResponse> {
+export async function createCheckoutOrder(
+  attemptId: string
+): Promise<CheckoutOrderResponse> {
   const backendURL = process.env.EXPO_PUBLIC_INTTEGRO_DEMO_BACKEND_URL?.trim();
   if (!backendURL) {
     throw new Error('Set EXPO_PUBLIC_INTTEGRO_DEMO_BACKEND_URL.');
@@ -24,15 +26,7 @@ export async function createCheckoutOrder(): Promise<CheckoutOrderResponse> {
   const response = await fetch(new URL('/mobile/orders', backendURL), {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
-      item: {
-        name: 'Dawn Brew Set',
-        type: 'physical',
-        quantity: 1,
-        currency: 'GHS',
-        value: 5000,
-      },
-    }),
+    body: JSON.stringify({ attemptId }),
   });
   if (!response.ok) {
     throw new Error('The demo backend could not create the checkout order.');

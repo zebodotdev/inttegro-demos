@@ -3,6 +3,13 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+val demoBackendUrl = providers.gradleProperty("inttegroDemoBackendUrl")
+    .orElse(providers.environmentVariable("INTTEGRO_DEMO_BACKEND_URL"))
+    .orElse("")
+    .get()
+    .replace("\\", "\\\\")
+    .replace("\"", "\\\"")
+
 android {
     namespace = "com.inttegro.demo.compose"
     compileSdk = 37
@@ -13,9 +20,13 @@ android {
         targetSdk = 37
         versionCode = 1
         versionName = "0.1.0"
+        buildConfigField("String", "INTTEGRO_DEMO_BACKEND_URL", "\"$demoBackendUrl\"")
     }
 
-    buildFeatures { compose = true }
+    buildFeatures {
+        buildConfig = true
+        compose = true
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:inttegro_flutter/inttegro_flutter.dart';
 
@@ -56,13 +58,38 @@ class _KoraProductScreenState extends State<KoraProductScreen> {
   String _category = 'New in';
   String _finish = _finishes.first.$1;
   String? _status;
+  late final StreamSubscription<PaymentSheetTelemetryEvent> _telemetrySubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _telemetrySubscription = Inttegro.instance.paymentSheetEvents.listen(
+      (event) => debugPrint(
+        'Inttegro payment sheet: flow=${event.flowId} '
+        'event=${event.name} sequence=${event.sequence} '
+        'operation=${event.operation ?? 'none'} '
+        'status=${event.httpStatusCode ?? 0} '
+        'request=${event.requestId ?? 'none'} '
+        'error=${event.errorType ?? 'none'}',
+      ),
+      onError: (Object _) => debugPrint('Inttegro telemetry unavailable.'),
+    );
+  }
+
+  @override
+  void dispose() {
+    unawaited(_telemetrySubscription.cancel());
+    super.dispose();
+  }
 
   Future<void> _checkout() async {
     if (_busy) return;
     setState(() => _busy = true);
     try {
       if (_backendUrl.isEmpty) throw StateError('Set INTTEGRO_DEMO_BACKEND_URL.');
-      final order = await DemoBackend(_backendUrl).createCheckoutOrder();
+      final order = await DemoBackend(_backendUrl).createCheckoutOrder(
+        'flutter_${DateTime.now().microsecondsSinceEpoch.toRadixString(36)}',
+      );
       await Inttegro.instance.initializePaymentSheet(
         PaymentSheetConfiguration(
           orderId: order.orderId,

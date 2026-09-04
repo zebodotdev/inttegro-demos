@@ -13,6 +13,14 @@ export type CheckoutInput = {
   attemptId: string;
 };
 
+export type MobileCheckoutInput = {
+  attemptId: string;
+};
+
+type MobileCreateOrderRequest = CreateOrderRequest & {
+  payment_method_types: ['mobile_money'];
+};
+
 export class DemoError extends Error {
   readonly code: 'configuration_error' | 'validation_error' | 'api_error';
 
@@ -43,6 +51,25 @@ export function parseCheckoutInput(form: FormData): CheckoutInput {
     throw new DemoError('validation_error', 'Start a fresh checkout and try again.');
   }
   return input;
+}
+
+export function parseMobileCheckoutInput(value: unknown): MobileCheckoutInput {
+  if (
+    typeof value !== 'object'
+    || value === null
+    || Array.isArray(value)
+    || Object.keys(value).some((key) => key !== 'attemptId')
+    || !('attemptId' in value)
+    || typeof value.attemptId !== 'string'
+  ) {
+    throw new DemoError('validation_error', 'Send a valid mobile checkout attempt ID.');
+  }
+
+  const attemptId = value.attemptId.trim();
+  if (!attemptPattern.test(attemptId)) {
+    throw new DemoError('validation_error', 'Start a fresh mobile checkout and try again.');
+  }
+  return { attemptId };
 }
 
 function configuredOrigin(requestOrigin: string): string {
@@ -81,6 +108,29 @@ export function buildOrderRequest(input: CheckoutInput, origin: string): CreateO
   };
 }
 
+export function buildMobileOrderRequest(
+  input: MobileCheckoutInput,
+  customerId: string,
+): MobileCreateOrderRequest {
+  return {
+    request_meta: { idempotency_key: `mobile-demo-${input.attemptId}` },
+    customer_id: customerId,
+    finalize: true,
+    payment_method_types: ['mobile_money'],
+    line_items: [
+      {
+        type: 'product',
+        product: {
+          type: ProductTypes.Physical,
+          name: 'Dawn Brew Set',
+          quantity: 1,
+          price: { currency: Currencies.GHS, value: 5000 },
+        },
+      },
+    ],
+  };
+}
+
 export async function createHostedCheckout(input: CheckoutInput, requestOrigin: string) {
   const apiKey = process.env.INTTEGRO_API_KEY?.trim();
   if (!apiKey) {
@@ -104,5 +154,31 @@ export async function createHostedCheckout(input: CheckoutInput, requestOrigin: 
       throw new DemoError('api_error', 'Inttegro rejected the checkout request.');
     }
     throw new DemoError('api_error', 'Checkout is temporarily unavailable.');
+  }
+}
+
+export async function createMobileCheckout(input: MobileCheckoutInput) {
+  const apiKey = process.env.INTTEGRO_API_KEY?.trim();
+  const customerId = process.env.INTTEGRO_DEMO_CUSTOMER_ID?.trim();
+  if (!apiKey || !customerId) {
+    throw new DemoError(
+      'configuration_error',
+      'Set INTTEGRO_API_KEY and INTTEGRO_DEMO_CUSTOMER_ID on the server.',
+    );
+  }
+
+  const inttegro = new InttegroClient({ apiKey });
+  try {
+    const order = await inttegro.orders.create(buildMobileOrderRequest(input, customerId));
+    if (!order.id?.trim()) {
+      throw new DemoError('api_error', 'Inttegro did not return a checkout order ID.');
+    }
+    return { orderId: order.id.trim() };
+  } catch (error) {
+    if (error instanceof DemoError) throw error;
+    if (error instanceof InttegroAPIError) {
+      throw new DemoError('api_error', 'Inttegro rejected the mobile checkout request.');
+    }
+    throw new DemoError('api_error', 'Mobile checkout is temporarily unavailable.');
   }
 }

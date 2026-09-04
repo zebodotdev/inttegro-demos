@@ -26,22 +26,14 @@ test('requests the Kora Market Dawn Brew Set from the demo backend', async (t) =
   t.mock.method(globalThis, 'fetch', async (input, init) => {
     assert.equal(input.href, 'https://demo.example/mobile/orders');
     assert.equal(init.method, 'POST');
-    assert.deepEqual(JSON.parse(init.body), {
-      item: {
-        name: 'Dawn Brew Set',
-        type: 'physical',
-        quantity: 1,
-        currency: 'GHS',
-        value: 5000,
-      },
-    });
+    assert.deepEqual(JSON.parse(init.body), { attemptId: 'rn_attempt_123' });
     return new Response(
       JSON.stringify({ orderId: 'or_from_backend' }),
       { status: 200 },
     );
   });
 
-  assert.deepEqual(await createCheckoutOrder(), {
+  assert.deepEqual(await createCheckoutOrder('rn_attempt_123'), {
     orderId: 'or_from_backend',
   });
 });

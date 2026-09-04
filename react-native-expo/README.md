@@ -5,12 +5,9 @@ product imagery, finish selection, maker context, and a persistent checkout
 bar. It asks a backend for a finalized checkout order, initializes
 `@inttegro/react-native`, and presents the native Inttegro payment sheet.
 
-## Current release gate
-
-The TypeScript integration and app shell are complete. A device build remains
-gated by the unpublished Inttegro native module and native Checkout transport.
-Expo Go cannot load custom native modules; use an Expo development build once
-the native adapters ship.
+The app uses the native Checkout transport and subscribes to privacy-safe SDK
+telemetry for the lifetime of the React component. Expo Go cannot load custom
+native modules, so run it as an Expo development build.
 
 ## Install and check
 

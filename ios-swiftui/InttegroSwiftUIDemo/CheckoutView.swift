@@ -1,10 +1,17 @@
 import Inttegro
+import OSLog
 import SwiftUI
+
+private let paymentSheetLogger = Logger(
+    subsystem: "com.inttegro.demo.swiftui",
+    category: "PaymentSheet"
+)
 
 struct CheckoutView: View {
     private let finishes = ["Sunrise", "Night earth", "River sand"]
 
     @State private var configuration: PaymentSheetConfiguration?
+    @State private var isCreatingOrder = false
     @State private var isFavorite = false
     @State private var isPaymentSheetPresented = false
     @State private var outcome: String?
@@ -169,13 +176,17 @@ struct CheckoutView: View {
                 Text("GHS 50.00").font(.headline)
             }
             Button(action: beginCheckout) {
-                Text("Pay with Inttegro")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 52)
+                HStack(spacing: 10) {
+                    if isCreatingOrder { ProgressView().tint(.white) }
+                    Text(isCreatingOrder ? "Preparing checkout" : "Pay with Inttegro")
+                        .font(.headline)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 52)
             }
             .buttonStyle(.borderedProminent)
             .buttonBorderShape(.capsule)
+            .disabled(isCreatingOrder)
             .accessibilityHint("Opens the secure Inttegro payment sheet")
         }
         .padding(.horizontal, 20)
@@ -199,17 +210,20 @@ struct CheckoutView: View {
         ToolbarItem(placement: .navigationBarTrailing) {
             Button(action: beginCheckout) { Image(systemName: "bag").symbolVariant(.fill) }
                 .accessibilityLabel("Shopping bag, one item")
+                .disabled(isCreatingOrder)
         }
     }
 
     @ViewBuilder
     private var paymentSheet: some View {
         if let configuration {
-            #if DEBUG
-            InttegroPaymentSheet(configuration: configuration, adapter: PreviewPaymentSheetAdapter(), onCompletion: handle)
-            #else
-            InttegroPaymentSheet(configuration: configuration, onCompletion: handle)
-            #endif
+            InttegroPaymentSheet(
+                configuration: configuration,
+                telemetryEventHandler: logPaymentSheetEvent,
+                onCompletion: handle
+            )
+            .presentationDetents([.medium, .large])
+            .presentationDragIndicator(.visible)
         }
     }
 
@@ -222,11 +236,23 @@ struct CheckoutView: View {
     }
 
     private func beginCheckout() {
-        configuration = try? PaymentSheetConfiguration(
-            orderID: "or_demo_swiftui",
-            returnURL: URL(string: "inttegro-demo://payment-return")
-        )
-        isPaymentSheetPresented = configuration != nil
+        guard !isCreatingOrder else { return }
+        isCreatingOrder = true
+        outcome = nil
+        Task { @MainActor in
+            defer { isCreatingOrder = false }
+            do {
+                let orderID = try await DemoBackend.configured().createCheckoutOrder()
+                configuration = try PaymentSheetConfiguration(
+                    orderID: orderID,
+                    returnURL: URL(string: "inttegro-demo://payment-return")
+                )
+                isPaymentSheetPresented = true
+            } catch {
+                outcome = (error as? LocalizedError)?.errorDescription
+                    ?? "Payment is temporarily unavailable."
+            }
+        }
     }
 
     private func handle(_ result: PaymentSheetResult) {
@@ -237,6 +263,12 @@ struct CheckoutView: View {
         case let .failed(failure): outcome = "Payment unavailable (\(failure.code))."
         }
     }
+}
+
+private func logPaymentSheetEvent(_ event: PaymentSheetTelemetryEvent) {
+    paymentSheetLogger.info(
+        "flow=\(event.flowID, privacy: .public) event=\(event.name.rawValue, privacy: .public) sequence=\(event.sequence) operation=\(event.operation ?? "none", privacy: .public) status=\(event.httpStatusCode ?? 0) request=\(event.requestID ?? "none", privacy: .public) error=\(event.errorType ?? "none", privacy: .public)"
+    )
 }
 
 private extension Color {

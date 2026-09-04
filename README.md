@@ -40,10 +40,10 @@ hosts or runtime font services.
 | Rails + Ruby | Ruby | Implemented and verified |
 | Laravel + PHP | PHP | Implemented and verified |
 | Spring Boot + Java | Java | Implemented; SDK publication gated |
-| iOS + SwiftUI | Inttegro SDK | Implemented with preview transport |
-| Android + Jetpack Compose | Inttegro SDK | Implemented with preview transport |
-| Flutter | Inttegro Flutter | App integration ready; native plugin gated |
-| React Native + Expo | Inttegro React Native | App integration ready; native module gated |
+| iOS + SwiftUI | Inttegro SDK | Implemented with native Checkout transport |
+| Android + Jetpack Compose | Inttegro SDK | Implemented with native Checkout transport |
+| Flutter | Inttegro Flutter | Implemented; generated platform shells stay local |
+| React Native + Expo | Inttegro React Native | Implemented as an Expo development build |
 
 ### V2
 
@@ -65,7 +65,7 @@ Each V1 demo:
    credentials or raw internal errors.
 
 See [CONTRACT.md](./CONTRACT.md) for the normative acceptance contract.
-See [MOBILE.md](./MOBILE.md) for the mobile backend boundary and release gates.
+See [MOBILE.md](./MOBILE.md) for the mobile backend boundary and device checks.
 
 ## Configuration
 
@@ -73,10 +73,13 @@ Server demos use these environment variables:
 
 ```dotenv
 INTTEGRO_API_KEY=sk_test_replace_me
+INTTEGRO_DEMO_CUSTOMER_ID=cus_replace_me
 INTTEGRO_DEMO_PUBLIC_URL=http://localhost:3000
 ```
 
 `INTTEGRO_API_KEY` must never be exposed to browser or mobile code.
+`INTTEGRO_DEMO_CUSTOMER_ID` is used only by the Next.js mobile-order route and
+must also remain server-side.
 `INTTEGRO_DEMO_PUBLIC_URL` is the externally reachable origin used for checkout
 completion and cancellation URLs. Each demo documents its own default port.
 

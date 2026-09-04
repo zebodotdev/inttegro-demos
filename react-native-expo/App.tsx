@@ -1,10 +1,11 @@
 import {
+  addPaymentSheetEventListener,
   initializePaymentSheet,
   presentPaymentSheet,
   type PaymentSheetResult,
 } from '@inttegro/react-native';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -30,11 +31,26 @@ export default function App() {
   const [finish, setFinish] = useState(finishes[0]!.name);
   const [status, setStatus] = useState<string | null>(null);
 
+  useEffect(() => {
+    const subscription = addPaymentSheetEventListener((event) => {
+      console.info('Inttegro payment sheet', {
+        flowId: event.flowId,
+        name: event.name,
+        sequence: event.sequence,
+        operation: event.operation,
+        httpStatusCode: event.httpStatusCode,
+        requestId: event.requestId,
+        errorType: event.errorType,
+      });
+    });
+    return () => subscription.remove();
+  }, []);
+
   async function checkout() {
     if (busy) return;
     setBusy(true);
     try {
-      const order = await createCheckoutOrder();
+      const order = await createCheckoutOrder(newAttemptId());
       await initializePaymentSheet({
         orderId: order.orderId,
         returnURL: 'inttegro-demo://payment-return',
@@ -96,6 +112,10 @@ export default function App() {
       </View>
     </SafeAreaView>
   );
+}
+
+function newAttemptId(): string {
+  return `rn_${Date.now().toString(36)}_${Math.random().toString(36).slice(2)}`;
 }
 
 function describe(result: PaymentSheetResult): string {
