@@ -39,8 +39,8 @@ class CheckoutService
         line_items: [{
           type: "product",
           product: {
-            type: Inttegro::ProductType::DIGITAL,
-            name: "Inttegro integration workshop",
+            type: Inttegro::ProductType::PHYSICAL,
+            name: "Dawn Brew Set",
             quantity: 1,
             price: Inttegro::PriceParams.new(currency: Inttegro::Money::Currency::GHS, value: 5000)
           }

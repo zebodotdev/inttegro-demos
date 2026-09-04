@@ -14,6 +14,8 @@ class CheckoutServiceTest < ActiveSupport::TestCase
     assert_equal "demo-attempt_123", request.dig(:request_meta, :idempotency_key)
     assert_equal true, request[:finalize]
     assert_equal "https://demo.example/complete", request.dig(:checkout_settings, :redirect_url)
+    assert_equal "Dawn Brew Set", request.dig(:line_items, 0, :product, :name)
+    assert_equal Inttegro::ProductType::PHYSICAL, request.dig(:line_items, 0, :product, :type)
     assert_equal 5000, request.dig(:line_items, 0, :product, :price).value
   end
 end
