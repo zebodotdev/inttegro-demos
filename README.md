@@ -1,7 +1,8 @@
 # Inttegro + Go demo
 
-An idiomatic `net/http` application that creates a finalized Inttegro order and
-redirects to hosted checkout.
+**Ledgerline** is a polished client invoice portal built on idiomatic
+`net/http`. Customers review service lines and settle INV-2048 through an
+Inttegro-hosted checkout created entirely on the server.
 
 ```bash
 cp .env.example .env
