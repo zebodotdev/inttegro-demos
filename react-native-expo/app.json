@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Inttegro Demo",
+    "slug": "inttegro-react-native-demo",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "inttegro-demo",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.inttegro.demo.reactnative"
+    },
+    "android": {
+      "package": "com.inttegro.demo.reactnative"
+    }
+  }
+}

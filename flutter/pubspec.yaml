@@ -1,0 +1,22 @@
+name: inttegro_demo_flutter
+description: Demonstrates the Inttegro SDK in a Flutter application.
+publish_to: none
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+  flutter: ">=3.22.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  inttegro_flutter:
+    path: ../../sdks/flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

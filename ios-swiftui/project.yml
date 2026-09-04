@@ -1,0 +1,35 @@
+name: InttegroSwiftUIDemo
+options:
+  minimumXcodeGenVersion: 2.44.0
+  deploymentTarget:
+    iOS: "16.0"
+packages:
+  Inttegro:
+    path: ../../sdks/mobile/ios
+targets:
+  InttegroSwiftUIDemo:
+    type: application
+    platform: iOS
+    sources:
+      - InttegroSwiftUIDemo
+    dependencies:
+      - package: Inttegro
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.inttegro.demo.swiftui
+        PRODUCT_NAME: Inttegro SwiftUI Demo
+        SWIFT_VERSION: "6.0"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Inttegro Demo
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.business
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        TARGETED_DEVICE_FAMILY: "1,2"
+schemes:
+  InttegroSwiftUIDemo:
+    build:
+      targets:
+        InttegroSwiftUIDemo: all
+    run:
+      config: Debug
