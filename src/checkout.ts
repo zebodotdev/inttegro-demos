@@ -55,7 +55,7 @@ export function buildOrderRequest(input: CheckoutInput, publicOrigin: string): C
       type: 'product',
       product: {
         type: ProductTypes.Digital,
-        name: 'Inttegro integration workshop',
+        name: 'Afterglow Sessions - Courtyard admission',
         quantity: 1,
         price: { currency: Currencies.GHS, value: 5000 },
       },
