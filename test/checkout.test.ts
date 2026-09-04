@@ -13,6 +13,8 @@ describe('Nuxt checkout', () => {
     const lineItem = request.line_items[0];
     expect(lineItem?.type).toBe('product');
     if (!lineItem || lineItem.type !== 'product') throw new Error('expected a product line item');
+    expect(lineItem.product.name).toBe('Dawn Brew Set');
+    expect(lineItem.product.type).toBe('physical');
     expect(lineItem.product.price.value).toBe(5000);
   });
 });
