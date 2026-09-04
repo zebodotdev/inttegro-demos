@@ -71,8 +71,8 @@ export function buildOrderRequest(input: CheckoutInput, origin: string): CreateO
       {
         type: 'product',
         product: {
-          type: ProductTypes.Digital,
-          name: 'Inttegro integration workshop',
+          type: ProductTypes.Physical,
+          name: 'Dawn Brew Set',
           quantity: 1,
           price: { currency: Currencies.GHS, value: 5000 },
         },

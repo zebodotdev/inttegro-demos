@@ -1,13 +1,5 @@
 import Link from 'next/link';
 
 export default function Complete() {
-  return (
-    <main className="result">
-      <span className="resultMark">✓</span>
-      <p className="eyebrow">BROWSER RETURNED</p>
-      <h1>Thanks. Payment is being verified.</h1>
-      <p>The redirect is a customer-experience signal, not proof of payment. Fulfillment must use authoritative server-side status.</p>
-      <Link href="/">Run the demo again</Link>
-    </main>
-  );
+  return <main className="story-kora result-page"><section className="result-card"><span className="result-mark">✓</span><p className="eyebrow">Order received</p><h1>We’re confirming your payment.</h1><p>Your Dawn Brew Set is reserved. Kora Market will fulfill it only after the server verifies the authoritative payment status.</p><Link className="primary-action" href="/">Back to Kora Market</Link></section></main>;
 }

@@ -13,7 +13,7 @@ test('rejects invalid customer input', () => {
   assert.throws(() => parseCheckoutInput(form), /valid email/);
 });
 
-test('builds the shared finalized workshop order', () => {
+test('builds the Kora Market Dawn Brew Set order', () => {
   const request = buildOrderRequest(
     {
       name: 'Akua',
@@ -27,5 +27,7 @@ test('builds the shared finalized workshop order', () => {
   assert.equal(request.request_meta?.idempotency_key, 'demo-attempt_123');
   assert.equal(request.finalize, true);
   assert.equal(request.checkout_settings?.redirect_url, 'https://demo.example/complete');
+  assert.equal(request.line_items?.[0]?.product?.name, 'Dawn Brew Set');
+  assert.equal(request.line_items?.[0]?.product?.type, 'physical');
   assert.equal(request.line_items?.[0]?.product?.price.value, 5000);
 });

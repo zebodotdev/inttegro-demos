@@ -1,7 +1,8 @@
 # Inttegro + Next.js demo
 
-A minimal App Router application that creates an Inttegro order on the server
-and redirects the customer to hosted checkout.
+**Kora Market** is a responsive App Router storefront for the Dawn Brew Set. It
+combines product discovery, finish selection, an accessible bag dialog, and a
+server-only Inttegro order handoff to hosted checkout.
 
 ```bash
 cp .env.example .env.local
