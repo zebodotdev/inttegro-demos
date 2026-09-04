@@ -3,65 +3,80 @@ import 'package:inttegro_flutter/inttegro_flutter.dart';
 
 import 'demo_backend.dart';
 
-void main() => runApp(const InttegroDemoApp());
+void main() => runApp(const KoraMarketApp());
 
-class InttegroDemoApp extends StatelessWidget {
-  const InttegroDemoApp({super.key});
+class KoraMarketApp extends StatelessWidget {
+  const KoraMarketApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const forest = Color(0xff183c32);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Inttegro Demo',
+      title: 'Kora Market',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff3956d8)),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: forest,
+          primary: forest,
+          secondary: const Color(0xffb84831),
+          surface: const Color(0xfffffbf3),
+        ),
+        scaffoldBackgroundColor: const Color(0xfff8f3e9),
         useMaterial3: true,
       ),
-      home: const CheckoutScreen(),
+      darkTheme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: forest,
+          brightness: Brightness.dark,
+        ),
+        useMaterial3: true,
+      ),
+      home: const KoraProductScreen(),
     );
   }
 }
 
-class CheckoutScreen extends StatefulWidget {
-  const CheckoutScreen({super.key});
+class KoraProductScreen extends StatefulWidget {
+  const KoraProductScreen({super.key});
 
   @override
-  State<CheckoutScreen> createState() => _CheckoutScreenState();
+  State<KoraProductScreen> createState() => _KoraProductScreenState();
 }
 
-class _CheckoutScreenState extends State<CheckoutScreen> {
-  static const _backendUrl = String.fromEnvironment(
-    'INTTEGRO_DEMO_BACKEND_URL',
-  );
+class _KoraProductScreenState extends State<KoraProductScreen> {
+  static const _backendUrl = String.fromEnvironment('INTTEGRO_DEMO_BACKEND_URL');
+  static const _finishes = <(String, Color)>[
+    ('Sunrise clay', Color(0xffb84831)),
+    ('Night earth', Color(0xff302a28)),
+    ('River sand', Color(0xffc2a77d)),
+  ];
 
   bool _busy = false;
-  String _status = 'Ready for payment';
+  bool _favorite = false;
+  String _category = 'New in';
+  String _finish = _finishes.first.$1;
+  String? _status;
 
   Future<void> _checkout() async {
     if (_busy) return;
     setState(() => _busy = true);
     try {
-      if (_backendUrl.isEmpty) {
-        throw StateError('Set INTTEGRO_DEMO_BACKEND_URL.');
-      }
-      final session = await DemoBackend(_backendUrl).createPaymentSession();
+      if (_backendUrl.isEmpty) throw StateError('Set INTTEGRO_DEMO_BACKEND_URL.');
+      final order = await DemoBackend(_backendUrl).createCheckoutOrder();
       await Inttegro.instance.initializePaymentSheet(
         PaymentSheetConfiguration(
-          paymentSessionSecret: session.paymentSessionSecret,
+          orderId: order.orderId,
           returnUrl: Uri.parse('inttegro-demo://payment-return'),
         ),
       );
       final result = await Inttegro.instance.presentPaymentSheet();
       _status = switch (result) {
-        PaymentSheetCompleted() =>
-          'Client flow completed; verify payment on the server.',
-        PaymentSheetCanceled() => 'Payment canceled.',
+        PaymentSheetCompleted() => 'Payment submitted. We’ll verify it before fulfillment.',
+        PaymentSheetCanceled() => 'Checkout paused. Your Dawn Brew Set is still in the bag.',
         PaymentSheetFailed(:final code) => 'Payment unavailable ($code).',
       };
     } on Object catch (error) {
-      _status = error is StateError
-          ? error.message.toString()
-          : 'Payment is temporarily unavailable.';
+      _status = error is StateError ? error.message.toString() : 'Payment is temporarily unavailable.';
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -69,73 +84,166 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('Inttegro checkout')),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 520),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    'INTTEGRO SDK · FLUTTER',
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Integration workshop',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 20),
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Row(
-                        children: [
-                          const Expanded(child: Text('Total')),
-                          Text(
-                            'GHS 50.00',
-                            style: Theme.of(context).textTheme.titleLarge,
-                          ),
-                        ],
-                      ),
+      drawer: NavigationDrawer(
+        selectedIndex: ['New in', 'Table', 'Textiles', 'Objects'].indexOf(_category),
+        onDestinationSelected: (index) {
+          setState(() => _category = ['New in', 'Table', 'Textiles', 'Objects'][index]);
+          Navigator.pop(context);
+        },
+        children: const [
+          SafeArea(bottom: false, child: Padding(padding: EdgeInsets.fromLTRB(28, 24, 28, 18), child: Text('Kora Market', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800)))),
+          NavigationDrawerDestination(icon: Icon(Icons.auto_awesome), label: Text('New in')),
+          NavigationDrawerDestination(icon: Icon(Icons.coffee_rounded), label: Text('Table')),
+          NavigationDrawerDestination(icon: Icon(Icons.grid_view_rounded), label: Text('Textiles')),
+          NavigationDrawerDestination(icon: Icon(Icons.inventory_2_outlined), label: Text('Objects')),
+        ],
+      ),
+      bottomNavigationBar: Material(
+        elevation: 16,
+        color: colors.surface.withOpacity(.96),
+        child: SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
+            child: Row(
+              children: [
+                const Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [Text('Total', style: TextStyle(fontSize: 12)), Text('GHS 50.00', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800))],
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: FilledButton(
+                    onPressed: _busy ? null : _checkout,
+                    style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(54)),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 180),
+                      child: _busy
+                          ? const SizedBox.square(key: ValueKey('busy'), dimension: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                          : const Text('Pay with Inttegro', key: ValueKey('ready'), style: TextStyle(fontWeight: FontWeight.w700)),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Your backend creates a short-lived payment session. '
-                    'The app never receives INTTEGRO_API_KEY.',
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            pinned: true,
+            expandedHeight: 470,
+            backgroundColor: colors.surface,
+            surfaceTintColor: colors.surface,
+            title: const Text('Kora Market', style: TextStyle(fontWeight: FontWeight.w800)),
+            leading: Builder(
+              builder: (context) => IconButton(icon: const Icon(Icons.menu_rounded), tooltip: 'Open menu', onPressed: Scaffold.of(context).openDrawer),
+            ),
+            actions: [
+              IconButton(icon: const Badge(label: Text('1'), child: Icon(Icons.shopping_bag_rounded)), tooltip: 'Shopping bag', onPressed: _busy ? null : _checkout),
+              const SizedBox(width: 8),
+            ],
+            flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.parallax,
+              background: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Image.asset('assets/kora-dawn-brew.jpg', fit: BoxFit.cover, semanticLabel: 'Terracotta Dawn Brew Set with a pour-over and cup'),
+                  Positioned(
+                    left: 18,
+                    bottom: 22,
+                    child: Chip(
+                      avatar: const Icon(Icons.handshake_outlined, size: 17),
+                      label: const Text('Small batch'),
+                      backgroundColor: colors.surface.withOpacity(.88),
+                      side: BorderSide.none,
+                    ),
                   ),
-                  const SizedBox(height: 20),
-                  FilledButton(
-                    onPressed: _busy ? null : _checkout,
-                    child: _busy
-                        ? const SizedBox.square(
-                            dimension: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text('Pay with Inttegro'),
-                  ),
-                  const SizedBox(height: 24),
-                  Semantics(
-                    liveRegion: true,
-                    label: 'Latest payment result: $_status',
-                    child: Card(
-                      color: Theme.of(context).colorScheme.surfaceContainerHigh,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(_status),
-                      ),
+                  Positioned(
+                    right: 14,
+                    bottom: 14,
+                    child: IconButton.filledTonal(
+                      tooltip: _favorite ? 'Remove from favorites' : 'Add to favorites',
+                      onPressed: () => setState(() => _favorite = !_favorite),
+                      icon: Icon(_favorite ? Icons.favorite_rounded : Icons.favorite_border_rounded, color: _favorite ? colors.secondary : null),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-        ),
+          SliverToBoxAdapter(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.fromLTRB(20, 14, 20, 4),
+              child: Row(
+                children: ['New in', 'Table', 'Textiles', 'Objects'].map((category) => Padding(
+                  padding: const EdgeInsets.only(right: 9),
+                  child: FilterChip(label: Text(category), selected: _category == category, onSelected: (_) => setState(() => _category = category)),
+                )).toList(),
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(20, 18, 20, 36),
+            sliver: SliverList.list(children: [
+              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                const Expanded(child: Text('Dawn Brew Set', style: TextStyle(fontSize: 32, height: 1, fontWeight: FontWeight.w800, letterSpacing: -1.2))),
+                const SizedBox(width: 16),
+                Text('GHS 50', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+              ]),
+              const SizedBox(height: 12),
+              Row(children: [const Text('★ 4.9', style: TextStyle(color: Color(0xffa65d16), fontWeight: FontWeight.w700)), const SizedBox(width: 9), Text('240 reviews', style: TextStyle(color: colors.onSurfaceVariant)), const Spacer(), const Icon(Icons.check_circle, size: 18, color: Color(0xff26855b)), const SizedBox(width: 5), const Text('Ready to ship', style: TextStyle(color: Color(0xff26855b), fontWeight: FontWeight.w600))]),
+              const SizedBox(height: 24),
+              Text('A sculptural pour-over and cup, shaped by hand in Ho for slower mornings and more considered rituals.', style: Theme.of(context).textTheme.bodyLarge?.copyWith(height: 1.55, color: colors.onSurfaceVariant)),
+              const SizedBox(height: 28),
+              Row(children: [const Text('Finish', style: TextStyle(fontWeight: FontWeight.w800)), const Spacer(), Text(_finish, style: TextStyle(color: colors.onSurfaceVariant))]),
+              const SizedBox(height: 12),
+              Row(children: _finishes.map((finish) => Semantics(
+                label: finish.$1,
+                selected: _finish == finish.$1,
+                button: true,
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () => setState(() => _finish = finish.$1),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    width: 44,
+                    height: 44,
+                    margin: const EdgeInsets.only(right: 12),
+                    decoration: BoxDecoration(color: finish.$2, shape: BoxShape.circle, border: Border.all(color: _finish == finish.$1 ? colors.onSurface : Colors.transparent, width: 3)),
+                  ),
+                ),
+              )).toList()),
+              const SizedBox(height: 30),
+              Card(
+                elevation: 0,
+                color: colors.surfaceContainer,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    const Text('Made by Ama Ofori', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
+                    const SizedBox(height: 10),
+                    Text('Every piece keeps the subtle marks of its making. Local clay is fired to a food-safe finish and packed without plastic.', style: TextStyle(height: 1.45, color: colors.onSurfaceVariant)),
+                    const Divider(height: 30),
+                    const Row(children: [Icon(Icons.local_shipping_outlined), SizedBox(width: 10), Text('Delivery across Ghana in 2–4 days', style: TextStyle(fontWeight: FontWeight.w600))]),
+                  ]),
+                ),
+              ),
+              if (_status != null) ...[
+                const SizedBox(height: 18),
+                Semantics(
+                  liveRegion: true,
+                  child: Card(color: colors.secondaryContainer, elevation: 0, child: Padding(padding: const EdgeInsets.all(16), child: Text(_status!))),
+                ),
+              ],
+            ]),
+          ),
+        ],
       ),
     );
   }

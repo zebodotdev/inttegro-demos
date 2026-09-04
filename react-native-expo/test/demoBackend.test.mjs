@@ -2,18 +2,18 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
-  createPaymentSession,
-  decodePaymentSession,
+  createCheckoutOrder,
+  decodeCheckoutOrder,
 } from '../src/demoBackend.ts';
 
-test('rejects a response without a payment-session secret', () => {
+test('rejects a response without a checkout order ID', () => {
   assert.throws(
-    () => decodePaymentSession({ paymentSessionSecret: '  ' }),
-    /invalid payment session/,
+    () => decodeCheckoutOrder({ orderId: '  ' }),
+    /invalid checkout order/,
   );
 });
 
-test('requests the shared workshop order from the demo backend', async (t) => {
+test('requests the Kora Market Dawn Brew Set from the demo backend', async (t) => {
   const previousBackendURL = process.env.EXPO_PUBLIC_INTTEGRO_DEMO_BACKEND_URL;
   process.env.EXPO_PUBLIC_INTTEGRO_DEMO_BACKEND_URL = 'https://demo.example';
   t.after(() => {
@@ -24,24 +24,24 @@ test('requests the shared workshop order from the demo backend', async (t) => {
     }
   });
   t.mock.method(globalThis, 'fetch', async (input, init) => {
-    assert.equal(input.href, 'https://demo.example/mobile/payment-sessions');
+    assert.equal(input.href, 'https://demo.example/mobile/orders');
     assert.equal(init.method, 'POST');
     assert.deepEqual(JSON.parse(init.body), {
       item: {
-        name: 'Inttegro integration workshop',
-        type: 'digital',
+        name: 'Dawn Brew Set',
+        type: 'physical',
         quantity: 1,
         currency: 'GHS',
         value: 5000,
       },
     });
     return new Response(
-      JSON.stringify({ paymentSessionSecret: 'ps_from_backend' }),
+      JSON.stringify({ orderId: 'or_from_backend' }),
       { status: 200 },
     );
   });
 
-  assert.deepEqual(await createPaymentSession(), {
-    paymentSessionSecret: 'ps_from_backend',
+  assert.deepEqual(await createCheckoutOrder(), {
+    orderId: 'or_from_backend',
   });
 });

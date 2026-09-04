@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36FBB6FCB67892BB65540D9E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 66CE367CE29A688836059E89 /* Assets.xcassets */; };
 		6B13BED2163A015C91976E27 /* Inttegro in Frameworks */ = {isa = PBXBuildFile; productRef = 4767B3A7BA06BFF23E1415FA /* Inttegro */; };
 		B6B5765F1447A1C22BFD4CF7 /* CheckoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8915F957DC792C77622CEE47 /* CheckoutView.swift */; };
 		FC21EC322F89DE4A2BFF8124 /* InttegroSwiftUIDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9FB09F975DDDB913F21E970 /* InttegroSwiftUIDemoApp.swift */; };
@@ -14,6 +15,7 @@
 
 /* Begin PBXFileReference section */
 		4901DC95CC3D2FCB55C78AA2 /* ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ios; path = ../../sdks/mobile/ios; sourceTree = SOURCE_ROOT; };
+		66CE367CE29A688836059E89 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7E519E76DBFA47B77411E17C /* InttegroSwiftUIDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = InttegroSwiftUIDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8915F957DC792C77622CEE47 /* CheckoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckoutView.swift; sourceTree = "<group>"; };
 		A9FB09F975DDDB913F21E970 /* InttegroSwiftUIDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InttegroSwiftUIDemoApp.swift; sourceTree = "<group>"; };
@@ -43,6 +45,7 @@
 		47FC878932ED897DF93CCF47 /* InttegroSwiftUIDemo */ = {
 			isa = PBXGroup;
 			children = (
+				66CE367CE29A688836059E89 /* Assets.xcassets */,
 				8915F957DC792C77622CEE47 /* CheckoutView.swift */,
 				A9FB09F975DDDB913F21E970 /* InttegroSwiftUIDemoApp.swift */,
 			);
@@ -73,6 +76,7 @@
 			buildConfigurationList = 1EEDA23E3808A8A28C71C6C5 /* Build configuration list for PBXNativeTarget "InttegroSwiftUIDemo" */;
 			buildPhases = (
 				8B699016B445376AC1A38845 /* Sources */,
+				48EB5FA97B40DB8655A060F0 /* Resources */,
 				447F5BB146B521CE7CABBD7B /* Frameworks */,
 			);
 			buildRules = (
@@ -118,6 +122,17 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		48EB5FA97B40DB8655A060F0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36FBB6FCB67892BB65540D9E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		8B699016B445376AC1A38845 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -137,8 +152,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Inttegro Demo";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
+				INFOPLIST_KEY_CFBundleDisplayName = "Kora Market";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -147,7 +162,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.inttegro.demo.swiftui;
-				PRODUCT_NAME = "Inttegro SwiftUI Demo";
+				PRODUCT_NAME = "Kora Market";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -160,8 +175,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = "Inttegro Demo";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
+				INFOPLIST_KEY_CFBundleDisplayName = "Kora Market";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -170,7 +185,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.inttegro.demo.swiftui;
-				PRODUCT_NAME = "Inttegro SwiftUI Demo";
+				PRODUCT_NAME = "Kora Market";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

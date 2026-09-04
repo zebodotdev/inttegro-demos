@@ -1,14 +1,14 @@
 # Inttegro SwiftUI demo
 
-An iPhone-first example that imports the native **Inttegro SDK** through Swift
-Package Manager and presents its SwiftUI payment sheet. It never embeds a
-merchant API key.
+**Kora Market** is an iPhone-first product experience with category browsing,
+product imagery, finish selection, fulfillment context, and a persistent native
+checkout bar. It imports **Inttegro SDK** through Swift Package Manager and
+presents the SDK's SwiftUI payment sheet without embedding a merchant API key.
 
-The app intentionally uses the SDK's debug preview adapter. The public mobile
-payment-session API and native transport are not available yet, so this demo
-does not pretend to process a live payment. Replace the preview adapter with the
-SDK's default transport when that contract ships; the presentation code stays
-the same.
+The app intentionally uses the SDK's debug preview adapter because the native
+Checkout transport is not available yet, so this demo does not pretend to
+process a live payment. Replace the preview adapter with the SDK's default
+transport when it ships; the presentation code stays the same.
 
 ## Run
 
@@ -32,5 +32,5 @@ xcodebuild build \
   CODE_SIGNING_ALLOWED=NO
 ```
 
-The app receives only a future short-lived `paymentSessionSecret` from a
-merchant backend. Payment completion must still be verified on the server.
+A production app receives only a finalized `orderID` from its merchant backend.
+Payment completion must still be verified on the server.

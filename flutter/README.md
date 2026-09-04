@@ -1,14 +1,15 @@
 # Inttegro Flutter demo
 
-A Flutter app that asks a merchant backend for a short-lived payment session,
-initializes `inttegro_flutter`, and presents the native Inttegro payment sheet.
-The merchant API key never enters Dart code.
+**Kora Market** is a Material 3 storefront with a collapsing product hero,
+category and finish selection, fulfillment context, and a persistent checkout
+bar. It asks a backend for a finalized checkout order, initializes
+`inttegro_flutter`, and presents the native Inttegro payment sheet.
 
 ## Current release gate
 
 The Dart integration and tests are complete. Device execution remains gated by
-the unpublished Inttegro Flutter plugin registration and public mobile
-payment-session API.
+the unpublished Inttegro Flutter plugin registration and native Checkout
+transport.
 
 ## Create platform shells, install, and check
 
@@ -29,7 +30,7 @@ flutter run \
   --dart-define=INTTEGRO_DEMO_BACKEND_URL=http://localhost:3000
 ```
 
-The backend must expose `POST /mobile/payment-sessions` and return
-`{ "paymentSessionSecret": "..." }`. It owns `INTTEGRO_API_KEY` and builds the
-fixed GHS 50.00 workshop order. A completed client result still requires
+The backend must expose `POST /mobile/orders` and return
+`{ "orderId": "or_..." }`. It owns `INTTEGRO_API_KEY` and builds the
+fixed GHS 50.00 Dawn Brew Set order. A completed client result still requires
 authoritative server-side verification.

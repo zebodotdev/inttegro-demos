@@ -12,16 +12,16 @@ published package coordinates as each SDK becomes available.
 ## Merchant backend contract
 
 Mobile code never calls the merchant API with `INTTEGRO_API_KEY`. It asks its
-own backend to create a narrowly scoped session:
+own backend to create and finalize an immutable checkout order:
 
 ```http
-POST /mobile/payment-sessions
+POST /mobile/orders
 Content-Type: application/json
 
 {
   "item": {
-    "name": "Inttegro integration workshop",
-    "type": "digital",
+    "name": "Dawn Brew Set",
+    "type": "physical",
     "quantity": 1,
     "currency": "GHS",
     "value": 5000
@@ -29,29 +29,28 @@ Content-Type: application/json
 }
 ```
 
-The successful response contains only an opaque, short-lived client secret:
+The successful response contains only the finalized order ID:
 
 ```json
-{ "paymentSessionSecret": "ps_client_..." }
+{ "orderId": "or_..." }
 ```
 
-The backend determines the authoritative account, amount, currency, eligible
-payment methods, and expiry. It verifies final payment state server-side before
-fulfillment.
+The backend determines the authoritative account, customer, amount, currency,
+and line items. The public checkout capability lets the SDK inspect and attempt
+payment for that immutable order, while fulfillment still waits for
+authoritative server-side verification.
 
 ## Current gate
 
-The public mobile payment-session endpoint has not landed in
-`openapi/commerce.yml`, and the Flutter and React Native native registrations
-are intentionally absent. Consequently:
+The native Checkout transport and Flutter and React Native registrations are
+not published yet. Consequently:
 
 - SwiftUI and Compose use explicit preview adapters and are compiled as native
   apps without claiming to process money.
 - Flutter and React Native show the real client-side integration and backend
   boundary, but device execution waits for native plugin registration.
-- No demo invents a merchant credential, undocumented Inttegro endpoint, or
+- No demo invents a merchant credential, secret-bearing client token, or
   false success response.
 
-When the public session contract ships, the server demos can add the backend
-route and the mobile SDK transports can replace the preview adapters without
+When the native transport ships, the preview adapters can be removed without
 changing the application-level presentation flow.

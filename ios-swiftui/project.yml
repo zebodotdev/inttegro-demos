@@ -17,11 +17,11 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.inttegro.demo.swiftui
-        PRODUCT_NAME: Inttegro SwiftUI Demo
+        PRODUCT_NAME: Kora Market
         SWIFT_VERSION: "6.0"
         GENERATE_INFOPLIST_FILE: YES
-        INFOPLIST_KEY_CFBundleDisplayName: Inttegro Demo
-        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.business
+        INFOPLIST_KEY_CFBundleDisplayName: Kora Market
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.shopping
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
         INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
         INFOPLIST_KEY_UILaunchScreen_Generation: YES

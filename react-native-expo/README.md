@@ -1,14 +1,14 @@
 # Inttegro React Native + Expo demo
 
-An Expo development-build example that asks a merchant backend for a
-short-lived payment session, initializes `@inttegro/react-native`, and presents
-the native Inttegro payment sheet. `INTTEGRO_API_KEY` is never included in the
-app or in an `EXPO_PUBLIC_` variable.
+**Kora Market** is a tactile Expo storefront with category browsing, original
+product imagery, finish selection, maker context, and a persistent checkout
+bar. It asks a backend for a finalized checkout order, initializes
+`@inttegro/react-native`, and presents the native Inttegro payment sheet.
 
 ## Current release gate
 
 The TypeScript integration and app shell are complete. A device build remains
-gated by the unpublished Inttegro native module and public payment-session API.
+gated by the unpublished Inttegro native module and native Checkout transport.
 Expo Go cannot load custom native modules; use an Expo development build once
 the native adapters ship.
 
@@ -28,7 +28,7 @@ npm run ios
 npm run android
 ```
 
-The configured demo backend must expose `POST /mobile/payment-sessions` and
-return `{ "paymentSessionSecret": "..." }`. That backend owns the merchant API
-key and constructs the fixed GHS 50.00 workshop order. A completed client result
+The configured demo backend must expose `POST /mobile/orders` and return
+`{ "orderId": "or_..." }`. That backend owns the merchant API
+key and constructs the fixed GHS 50.00 Dawn Brew Set order. A completed client result
 still requires authoritative server-side payment verification.

@@ -1,33 +1,33 @@
-export interface PaymentSessionResponse {
-  paymentSessionSecret: string;
+export interface CheckoutOrderResponse {
+  orderId: string;
 }
 
-export function decodePaymentSession(value: unknown): PaymentSessionResponse {
+export function decodeCheckoutOrder(value: unknown): CheckoutOrderResponse {
   if (
     typeof value !== 'object' ||
     value === null ||
-    !('paymentSessionSecret' in value) ||
-    typeof value.paymentSessionSecret !== 'string' ||
-    value.paymentSessionSecret.trim() === ''
+    !('orderId' in value) ||
+    typeof value.orderId !== 'string' ||
+    value.orderId.trim() === ''
   ) {
-    throw new Error('The demo backend returned an invalid payment session.');
+    throw new Error('The demo backend returned an invalid checkout order.');
   }
-  return { paymentSessionSecret: value.paymentSessionSecret.trim() };
+  return { orderId: value.orderId.trim() };
 }
 
-export async function createPaymentSession(): Promise<PaymentSessionResponse> {
+export async function createCheckoutOrder(): Promise<CheckoutOrderResponse> {
   const backendURL = process.env.EXPO_PUBLIC_INTTEGRO_DEMO_BACKEND_URL?.trim();
   if (!backendURL) {
     throw new Error('Set EXPO_PUBLIC_INTTEGRO_DEMO_BACKEND_URL.');
   }
 
-  const response = await fetch(new URL('/mobile/payment-sessions', backendURL), {
+  const response = await fetch(new URL('/mobile/orders', backendURL), {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       item: {
-        name: 'Inttegro integration workshop',
-        type: 'digital',
+        name: 'Dawn Brew Set',
+        type: 'physical',
         quantity: 1,
         currency: 'GHS',
         value: 5000,
@@ -35,7 +35,7 @@ export async function createPaymentSession(): Promise<PaymentSessionResponse> {
     }),
   });
   if (!response.ok) {
-    throw new Error('The demo backend could not create a payment session.');
+    throw new Error('The demo backend could not create the checkout order.');
   }
-  return decodePaymentSession(await response.json());
+  return decodeCheckoutOrder(await response.json());
 }
