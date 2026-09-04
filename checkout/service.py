@@ -53,7 +53,7 @@ def build_order_request(checkout: CheckoutInput, origin: str) -> inttegro.orders
             type=LineItemType.PRODUCT,
             product=inttegro.orders.Product(
                 type=ProductType.DIGITAL,
-                name="Inttegro integration workshop",
+                name="Afterglow Sessions - Courtyard admission",
                 quantity=1,
                 price=inttegro.PriceParams(currency=Currency.GHS, value=5000),
             ),
