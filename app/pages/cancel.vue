@@ -1,0 +1,1 @@
+<template><main class="result"><span class="resultMark neutral">×</span><p class="eyebrow">CHECKOUT CANCELED</p><h1>No completion was claimed.</h1><p>The customer can safely begin a fresh checkout attempt.</p><NuxtLink to="/">Return to the demo</NuxtLink></main></template>
