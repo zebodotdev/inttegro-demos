@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "demos": [
+    { "id": "nextjs", "release": "v1", "status": "verified", "technology": "Next.js", "language": "TypeScript" },
+    { "id": "express", "release": "v1", "status": "verified", "technology": "Express", "language": "TypeScript" },
+    { "id": "nuxt", "release": "v1", "status": "verified", "technology": "Vue + Nuxt", "language": "TypeScript" },
+    { "id": "go", "release": "v1", "status": "verified", "technology": "Go", "language": "Go" },
+    { "id": "django", "release": "v1", "status": "verified", "technology": "Django", "language": "Python" },
+    { "id": "fastapi", "release": "v1", "status": "verified", "technology": "FastAPI", "language": "Python" },
+    { "id": "rails", "release": "v1", "status": "verified", "technology": "Rails", "language": "Ruby" },
+    { "id": "laravel", "release": "v1", "status": "verified", "technology": "Laravel", "language": "PHP" },
+    { "id": "spring-boot", "release": "v1", "status": "publication-gated", "technology": "Spring Boot", "language": "Java" },
+    { "id": "ios-swiftui", "release": "v1", "status": "preview", "technology": "SwiftUI", "language": "Swift" },
+    { "id": "android-compose", "release": "v1", "status": "preview", "technology": "Jetpack Compose", "language": "Kotlin" },
+    { "id": "flutter", "release": "v1", "status": "native-gated", "technology": "Flutter", "language": "Dart" },
+    { "id": "react-native-expo", "release": "v1", "status": "native-gated", "technology": "React Native + Expo", "language": "TypeScript" },
+    { "id": "aspnet-core", "release": "v2", "status": "planned", "technology": "ASP.NET Core", "language": "C#" },
+    { "id": "nestjs", "release": "v2", "status": "planned", "technology": "NestJS", "language": "TypeScript" },
+    { "id": "react-vite", "release": "v2", "status": "planned", "technology": "React + Vite", "language": "TypeScript" },
+    { "id": "angular", "release": "v2", "status": "planned", "technology": "Angular", "language": "TypeScript" },
+    { "id": "sveltekit", "release": "v2", "status": "planned", "technology": "SvelteKit", "language": "TypeScript" }
+  ]
+}
