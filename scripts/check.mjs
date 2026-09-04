@@ -16,6 +16,18 @@ assert.equal(v1.length, 13, 'V1 must contain 13 demos');
 assert.equal(v2.length, 5, 'V2 must contain 5 demos');
 assert(v2.every((demo) => demo.status === 'planned'));
 
+const expectedStories = {
+  'kora-market': ['nextjs', 'nuxt', 'rails', 'laravel'],
+  'afterglow-sessions': ['express', 'django', 'fastapi'],
+  ledgerline: ['go', 'spring-boot'],
+  'kora-market-mobile': ['ios-swiftui', 'android-compose', 'flutter', 'react-native-expo'],
+};
+
+for (const [story, expectedIds] of Object.entries(expectedStories)) {
+  const actualIds = v1.filter((demo) => demo.story === story).map((demo) => demo.id).sort();
+  assert.deepEqual(actualIds, expectedIds.toSorted(), `${story} demo mapping must stay intentional`);
+}
+
 for (const demo of v1) {
   const directory = join(demosRoot, demo.id);
   assert(existsSync(directory), `missing V1 directory: ${demo.id}`);
@@ -27,6 +39,39 @@ for (const id of [
   'spring-boot', 'flutter', 'react-native-expo',
 ]) {
   assert(existsSync(join(demosRoot, id, '.env.example')), `missing environment template: ${id}`);
+}
+
+for (const asset of [
+  'assets/kora-dawn-brew.jpg',
+  'assets/accra-afterglow.jpg',
+  'assets/ledgerline-studio.jpg',
+  'assets/favicon.svg',
+]) {
+  assert(existsSync(join(demosRoot, asset)), `missing original demo artwork: ${asset}`);
+}
+
+for (const [asset, directories] of Object.entries({
+  'kora-dawn-brew.jpg': ['nextjs/public', 'nuxt/public', 'rails/public', 'laravel/public'],
+  'accra-afterglow.jpg': ['express/public', 'django/checkout/static/checkout', 'fastapi/app/static'],
+  'ledgerline-studio.jpg': ['go/static', 'spring-boot/src/main/resources/static'],
+  'favicon.svg': [
+    'nextjs/public', 'nuxt/public', 'rails/public', 'laravel/public', 'express/public',
+    'django/checkout/static/checkout', 'fastapi/app/static', 'go/static',
+    'spring-boot/src/main/resources/static',
+  ],
+})) {
+  for (const directory of directories) {
+    assert(existsSync(join(demosRoot, directory, asset)), `missing ${asset} in ${directory}`);
+  }
+}
+
+for (const mobileArtwork of [
+  'android-compose/app/src/main/res/drawable/kora_dawn_brew.jpg',
+  'flutter/assets/kora-dawn-brew.jpg',
+  'ios-swiftui/InttegroSwiftUIDemo/Assets.xcassets/KoraProduct.imageset/kora-dawn-brew.jpg',
+  'react-native-expo/assets/kora-dawn-brew.jpg',
+]) {
+  assert(existsSync(join(demosRoot, mobileArtwork)), `missing mobile product artwork: ${mobileArtwork}`);
 }
 
 const skippedDirectories = new Set([
@@ -50,8 +95,13 @@ function textFiles(directory) {
 }
 
 const staleSDKName = ['Inttegro', 'Payments'].join('');
+const staleStoryName = ['Inttegro integration', 'workshop'].join(' ');
+const staleMobileField = ['payment', 'Session', 'Secret'].join('');
 for (const path of textFiles(demosRoot)) {
-  assert(!readFileSync(path, 'utf8').includes(staleSDKName), `stale SDK name in ${path}`);
+  const source = readFileSync(path, 'utf8');
+  assert(!source.includes(staleSDKName), `stale SDK name in ${path}`);
+  assert(!source.includes(staleStoryName), `stale generic story in ${path}`);
+  assert(!source.includes(staleMobileField), `stale mobile SDK field in ${path}`);
 }
 
-console.log('Demo contract check passed: 13 V1 entries, 5 V2 entries, Inttegro SDK naming is consistent.');
+console.log('Demo contract check passed: 13 V1 entries, four intentional stories, original artwork, and Inttegro SDK naming are consistent.');

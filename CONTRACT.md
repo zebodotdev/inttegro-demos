@@ -9,7 +9,7 @@ Every server-backed demo must expose:
 
 | Route | Behavior |
 | --- | --- |
-| `GET /` | Render the demo checkout form and generate a fresh attempt ID. |
+| `GET /` | Render the complete app story and generate a fresh checkout attempt ID. |
 | `POST /checkout` | Validate the form, create and finalize an Inttegro order, then redirect to hosted checkout. |
 | `GET /complete` | Explain that the browser returned successfully and server-side status remains authoritative. |
 | `GET /cancel` | Explain that checkout was canceled and offer a safe retry. |
@@ -21,25 +21,25 @@ The order request must use:
 - an idempotency key derived from the submitted checkout attempt ID;
 - integer minor units (`5000` means GHS 50.00);
 - `finalize: true`;
-- an inline digital-product line item;
+- an inline line item whose product type and name match the visible app story;
 - explicit redirect and cancellation URLs; and
 - the hosted checkout URL returned by Inttegro rather than a URL constructed by
   the demo.
 
 ## Input contract
 
-The initial form contains `name`, `email`, `phone`, and `attempt_id`. The demo
-product is fixed to keep examples comparable:
+The checkout form contains `name`, `email`, `phone`, and `attempt_id`. Each story
+uses one fixed GHS 50.00 purchase so integrations remain comparable while the
+surrounding application stays realistic:
 
-```json
-{
-  "name": "Inttegro integration workshop",
-  "type": "digital",
-  "quantity": 1,
-  "currency": "GHS",
-  "value": 5000
-}
-```
+| Story | API line item | Product type |
+| --- | --- | --- |
+| Kora Market | `Dawn Brew Set` | `physical` |
+| Afterglow Sessions | `Afterglow Sessions - Courtyard admission` | `digital` |
+| Ledgerline | `Invoice INV-2048` | `service` |
+
+Every line item has quantity `1`, currency `GHS`, and value `5000` minor units.
+Visible product names, totals, fulfillment language, and API requests must agree.
 
 Applications must trim input, reject missing fields, require a syntactically
 valid email address, and reject attempt IDs outside `[A-Za-z0-9_-]`.
@@ -57,13 +57,13 @@ valid email address, and reject attempt IDs outside `[A-Za-z0-9_-]`.
 ## Mobile contract
 
 Mobile applications never receive `INTTEGRO_API_KEY`. Their demo backend creates
-a short-lived, narrowly scoped payment session. The application passes only the
-opaque payment-session secret and presentation configuration to the Inttegro
-SDK. A client callback is not proof of payment; fulfillment uses authoritative
-server-side payment state.
+and finalizes an immutable checkout order. The application passes only its
+`orderId` and presentation configuration to the Inttegro SDK. A client callback
+is not proof of payment; fulfillment uses authoritative server-side payment
+state.
 
-The mobile payment-session transport remains gated until its public API contract
-lands in `openapi/commerce.yml`.
+The native Checkout transport and cross-platform registrations remain release
+gates; preview adapters must make that boundary explicit.
 
 ## Verification
 
@@ -77,5 +77,5 @@ Every server-backed demo must provide:
 - an `.env.example` containing placeholders only.
 
 Mobile demos instead test configuration validation and the demo-backend request
-boundary. Native UI previews must be clearly labeled and must not simulate a
-live Inttegro API response. See [MOBILE.md](./MOBILE.md).
+boundary. Preview transports must be documented and must not claim that a
+preview result is a live Inttegro API response. See [MOBILE.md](./MOBILE.md).

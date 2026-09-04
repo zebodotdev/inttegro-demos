@@ -1,15 +1,29 @@
 # Inttegro demo applications
 
-This directory contains small, production-shaped applications that demonstrate
-how to integrate Inttegro using the conventions of each ecosystem. Server demos
-implement the same hosted-checkout journey. Mobile demos exercise the Inttegro
-SDK boundary without ever receiving a merchant API key.
+This directory contains production-shaped applications that demonstrate how to
+integrate Inttegro inside experiences customers would genuinely use. They share
+one security and checkout contract, but each story has a real product context,
+responsive information architecture, accessible states, and its own visual
+identity.
 
 The repository is designed to live at `demos/` in the Commerce checkout. The
 web and server examples can also be cloned and run independently. Until the
 mobile SDKs and Java SDK 5.0.0 are published, the SwiftUI, Compose, Flutter,
 React Native, and Spring Boot examples resolve those SDKs from the parent
 Commerce checkout.
+
+## V1 product stories
+
+| Story | Demos | Customer journey |
+| --- | --- | --- |
+| **Kora Market** | Next.js, Nuxt, Rails, Laravel | Discover the Dawn Brew Set, choose a finish, review the bag, and continue to hosted checkout. |
+| **Afterglow Sessions** | Express, Django, FastAPI | Explore an intimate live lineup, review venue details, and reserve a courtyard ticket. |
+| **Ledgerline** | Go, Spring Boot | Review a client invoice, inspect its service lines, and settle the balance securely. |
+| **Kora Market mobile** | SwiftUI, Compose, Flutter, React Native | Browse a native product detail experience and present the Inttegro payment sheet. |
+
+Original product and event artwork is generated for this repository and stored
+locally under [`assets/`](./assets); demos do not depend on third-party image
+hosts or runtime font services.
 
 ## Release plan
 
@@ -40,12 +54,14 @@ contract and verification suite are stable.
 
 Each V1 demo:
 
-1. Collects a small customer and cart payload.
-2. Creates and finalizes an order through an official Inttegro SDK.
-3. Supplies explicit completion and cancellation URLs.
-4. Redirects the browser to the hosted checkout URL returned by Inttegro.
-5. Explains that the browser return is not authoritative fulfillment evidence.
-6. Handles configuration, validation, and Inttegro API failures without leaking
+1. Places payment inside a complete storefront, ticketing, invoice, or mobile
+   commerce journey.
+2. Collects only the customer and order data required by that journey.
+3. Creates and finalizes an order through an official Inttegro SDK.
+4. Supplies explicit completion and cancellation URLs.
+5. Redirects the browser to the hosted checkout URL returned by Inttegro.
+6. Explains that the browser return is not authoritative fulfillment evidence.
+7. Handles configuration, validation, and Inttegro API failures without leaking
    credentials or raw internal errors.
 
 See [CONTRACT.md](./CONTRACT.md) for the normative acceptance contract.
