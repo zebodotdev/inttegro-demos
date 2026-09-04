@@ -1,0 +1,1 @@
+<template><main class="result"><span class="resultMark">✓</span><p class="eyebrow">BROWSER RETURNED</p><h1>Payment is being verified.</h1><p>The redirect is not proof of payment. Fulfill only from authoritative server-side status.</p><NuxtLink to="/">Run the demo again</NuxtLink></main></template>
