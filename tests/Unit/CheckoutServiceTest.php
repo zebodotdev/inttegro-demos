@@ -17,7 +17,8 @@ final class CheckoutServiceTest extends TestCase
         self::assertSame('demo-attempt_123', $payload['request_meta']['idempotency_key']);
         self::assertTrue($payload['finalize']);
         self::assertSame('https://demo.example/complete', $payload['checkout_settings']['redirect_url']);
-        self::assertSame(ProductType::Digital, $payload['line_items'][0]['product']['type']);
+        self::assertSame(ProductType::Physical, $payload['line_items'][0]['product']['type']);
+        self::assertSame('Dawn Brew Set', $payload['line_items'][0]['product']['name']);
         self::assertSame(5000, $payload['line_items'][0]['product']['price']->value);
     }
 }

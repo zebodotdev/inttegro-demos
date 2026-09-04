@@ -1,7 +1,8 @@
 # Inttegro + Laravel demo
 
-A conventional Laravel application that uses the Inttegro PHP SDK on the
-server and redirects to hosted checkout.
+**Kora Market** is a product-led Laravel storefront with an interactive finish
+picker and accessible bag dialog. Laravel validates the customer and redirects
+to the exact hosted checkout URL returned by the Inttegro PHP SDK.
 
 ```bash
 composer install
