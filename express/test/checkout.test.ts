@@ -18,5 +18,7 @@ test('builds the canonical hosted checkout request', () => {
   assert.equal(request.checkout_settings?.redirect_url, 'https://demo.example/complete');
   const lineItem = request.line_items[0];
   if (!lineItem || lineItem.type !== 'product') assert.fail('expected a product line item');
+  assert.equal(lineItem.product.name, 'Afterglow Sessions - Courtyard admission');
+  assert.equal(lineItem.product.type, 'digital');
   assert.equal(lineItem.product.price.value, 5000);
 });

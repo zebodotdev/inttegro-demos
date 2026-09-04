@@ -30,8 +30,8 @@ final class CheckoutService
             'line_items' => [[
                 'type' => 'product',
                 'product' => [
-                    'type' => ProductType::Digital,
-                    'name' => 'Inttegro integration workshop',
+                    'type' => ProductType::Physical,
+                    'name' => 'Dawn Brew Set',
                     'quantity' => 1,
                     'price' => new PriceParams(Currency::GHS, 5000),
                 ],

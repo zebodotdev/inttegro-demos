@@ -19,7 +19,7 @@ export function buildOrderRequest(input: CheckoutInput, origin: string): CreateO
     customer_data: { name: input.name, email_address: input.email, phone_number: input.phone },
     finalize: true,
     checkout_settings: { redirect_url: `${origin}/complete`, cancel_url: `${origin}/cancel` },
-    line_items: [{ type: 'product', product: { type: ProductTypes.Digital, name: 'Inttegro integration workshop', quantity: 1, price: { currency: Currencies.GHS, value: 5000 } } }],
+    line_items: [{ type: 'product', product: { type: ProductTypes.Physical, name: 'Dawn Brew Set', quantity: 1, price: { currency: Currencies.GHS, value: 5000 } } }],
   };
 }
 

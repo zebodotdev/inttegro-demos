@@ -1,7 +1,8 @@
 # Inttegro + Express demo
 
-This backend-focused example creates a finalized order with the Inttegro
-TypeScript SDK and redirects to its hosted checkout URL.
+**Afterglow Sessions** is a cinematic event page with lineup, venue, and ticket
+reservation states. Express validates the guest details, creates the finalized
+ticket order, and redirects to the hosted checkout URL returned by Inttegro.
 
 ```bash
 cp .env.example .env

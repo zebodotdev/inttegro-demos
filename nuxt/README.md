@@ -1,8 +1,8 @@
 # Inttegro + Vue/Nuxt demo
 
-This Nuxt application creates an Inttegro order in a Nitro server route and
-redirects to hosted checkout. No secret is exposed through public runtime
-configuration.
+**Kora Market** is a responsive Vue storefront with an interactive product
+finish picker and accessible bag dialog. A Nitro server route creates the
+Inttegro order; no secret is exposed through public runtime configuration.
 
 ```bash
 cp .env.example .env

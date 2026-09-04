@@ -87,7 +87,7 @@ func buildOrderRequest(input checkoutInput, origin string) inttegro.OrderCreateP
 		LineItems: []inttegro.OrderLineItemParams{{
 			Type: inttegro.LineItemTypeProduct,
 			Product: &inttegro.ProductLineItemParams{
-				Type: inttegro.ProductTypeDigital, Name: "Inttegro integration workshop", Quantity: 1,
+				Type: inttegro.ProductTypeService, Name: "Invoice INV-2048", Quantity: 1,
 				Price: inttegro.PriceParams{AmountParams: money.AmountParams{Currency: money.GHS, Value: 5000}},
 			},
 		}},

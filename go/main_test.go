@@ -27,6 +27,12 @@ func TestBuildOrderRequest(t *testing.T) {
 	if request.CheckoutSettings.RedirectURL != "https://demo.example/complete" {
 		t.Fatalf("unexpected redirect URL: %s", request.CheckoutSettings.RedirectURL)
 	}
+	if got := request.LineItems[0].Product.Name; got != "Invoice INV-2048" {
+		t.Fatalf("unexpected product name: %s", got)
+	}
+	if got := request.LineItems[0].Product.Type; got != "service" {
+		t.Fatalf("unexpected product type: %s", got)
+	}
 	if got := request.LineItems[0].Product.Price.Value; got != 5000 {
 		t.Fatalf("unexpected amount: %d", got)
 	}

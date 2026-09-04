@@ -3,14 +3,15 @@ import type { ReactNode } from 'react';
 import './styles.css';
 
 export const metadata: Metadata = {
-  title: 'Inttegro checkout demo',
-  description: 'A hosted-checkout integration built with Next.js.',
+  title: 'Kora Market — Inttegro + Next.js',
+  description: 'A production-shaped storefront and hosted-checkout integration built with Next.js.',
+  icons: { icon: '/favicon.svg' },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>{children}<script src="/demo-ui.js" defer /></body>
     </html>
   );
 }

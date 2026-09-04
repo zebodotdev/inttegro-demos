@@ -1,6 +1,8 @@
 # Inttegro + FastAPI demo
 
-An API-first Python application using FastAPI and the official Inttegro SDK.
+**Afterglow Sessions** pairs an editorial event page with an API-first FastAPI
+backend. The visible courtyard ticket and the server-side Inttegro order share
+the same product, price, and fulfillment story.
 
 ```bash
 python3 -m venv .venv

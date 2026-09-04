@@ -1,7 +1,8 @@
 # Inttegro + Django demo
 
-This Django application creates a finalized order with the Inttegro Python SDK
-and redirects to hosted checkout.
+**Afterglow Sessions** is an event-discovery and ticket-reservation experience.
+Django validates the guest details, creates a finalized digital ticket order
+with the Inttegro Python SDK, and redirects to hosted checkout.
 
 ```bash
 python3 -m venv .venv
