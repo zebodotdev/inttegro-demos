@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: inttegro-demo-go
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: false
+    envVars:
+      - key: INTTEGRO_API_KEY
+        sync: false
+      - key: INTTEGRO_DEMO_PUBLIC_URL
+        sync: false
