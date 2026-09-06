@@ -20,12 +20,12 @@ Open <http://localhost:3003>. Run `go test ./...` for the focused checks.
 Render builds a small distroless image from the released multi-stage
 Dockerfile. Railway uses the same image and checked-in health policy; its button
 follows after the public template is registered and smoke-tested. See
-[`DEPLOYING.md`](../DEPLOYING.md).
+[`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.1.1/DEPLOYING.md).
 
 ## Understand the integration
 
 [`main.go`](./main.go) keeps the complete integration deliberately visible:
 input validation, Order construction, hosted URL selection, safe errors,
 correlation, and the 303 handoff. Its `INTTEGRO:*` comments map choices and
-alternatives to the shared [integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+alternatives to the shared [integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.1.1/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.1.1/integration-decisions.json).
