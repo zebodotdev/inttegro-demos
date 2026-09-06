@@ -5,6 +5,9 @@ import (
 	"net/url"
 	"strings"
 	"testing"
+
+	inttegro "github.com/zebodotdev/inttegro-sdk-go/v4"
+	"github.com/zebodotdev/inttegro-sdk-go/v4/money"
 )
 
 func TestParseCheckoutInputRejectsInvalidEmail(t *testing.T) {
@@ -17,7 +20,12 @@ func TestParseCheckoutInputRejectsInvalidEmail(t *testing.T) {
 }
 
 func TestBuildOrderRequest(t *testing.T) {
-	request := buildOrderRequest(checkoutInput{Name: "Akua", Email: "akua@example.com", Phone: "+233", AttemptID: "attempt_123"}, "https://demo.example")
+	product := catalogSelection{
+		Type: inttegro.ProductTypeService, Name: "August Studio Retainer", About: "A focused month of product design.",
+		Reference: "DEMO-LEDGERLINE-AUG-RETAINER",
+		Price:     inttegro.PriceParams{AmountParams: money.AmountParams{Currency: money.GHS, Value: 5000}},
+	}
+	request := buildOrderRequest(checkoutInput{Name: "Akua", Email: "akua@example.com", Phone: "+233", AttemptID: "attempt_123"}, "https://demo.example", product)
 	if request.RequestMeta.IdempotencyKey != "demo-attempt_123" {
 		t.Fatalf("unexpected idempotency key: %s", request.RequestMeta.IdempotencyKey)
 	}
@@ -27,7 +35,7 @@ func TestBuildOrderRequest(t *testing.T) {
 	if request.CheckoutSettings.RedirectURL != "https://demo.example/complete" {
 		t.Fatalf("unexpected redirect URL: %s", request.CheckoutSettings.RedirectURL)
 	}
-	if got := request.LineItems[0].Product.Name; got != "Invoice INV-2048" {
+	if got := request.LineItems[0].Product.Name; got != "August Studio Retainer" {
 		t.Fatalf("unexpected product name: %s", got)
 	}
 	if got := request.LineItems[0].Product.Type; got != "service" {

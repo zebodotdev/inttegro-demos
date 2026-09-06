@@ -49,6 +49,14 @@ type checkoutInput struct {
 	AttemptID string
 }
 
+type catalogSelection struct {
+	Type      inttegro.ProductType
+	Name      string
+	About     string
+	Reference string
+	Price     inttegro.PriceParams
+}
+
 type pageData struct {
 	AttemptID    string
 	ErrorCode    string
@@ -58,6 +66,8 @@ type pageData struct {
 var (
 	emailPattern   = regexp.MustCompile(`^[^\s@]+@[^\s@]+\.[^\s@]+$`)
 	attemptPattern = regexp.MustCompile(`^[A-Za-z0-9_-]{8,100}$`)
+	productPattern = regexp.MustCompile(`^prod_[A-Za-z0-9]+$`)
+	pricePattern   = regexp.MustCompile(`^pr_[A-Za-z0-9]+$`)
 	templates      = template.Must(template.ParseGlob("templates/*.html"))
 )
 
@@ -98,7 +108,32 @@ func publicOrigin(request *http.Request) (string, error) {
 	return parsed.Scheme + "://" + parsed.Host, nil
 }
 
-func buildOrderRequest(input checkoutInput, origin string) inttegro.OrderCreateParams {
+func selectCatalogProduct(product *inttegro.Product, priceID string) (catalogSelection, error) {
+	// INTTEGRO:SECURITY [catalog-authority] Product, Price, and amount are
+	// deployment configuration resolved with the trusted API key. The browser
+	// supplies none of them.
+	if product == nil || !product.Active {
+		return catalogSelection{}, &demoError{Code: "configuration_error", Message: "The configured demo product is not active."}
+	}
+	for _, price := range product.Prices {
+		if price.ID != priceID {
+			continue
+		}
+		// This SDK version does not expose the price's active flag in the product
+		// summary. An explicit ID match plus a positive nominal is the strongest
+		// available typed check; newer SDKs should additionally require active.
+		if price.Nominal == nil || price.Nominal.Value <= 0 {
+			break
+		}
+		return catalogSelection{
+			Type: product.Type, Name: product.Name, About: product.About, Reference: product.Reference,
+			Price: inttegro.PriceParams{AmountParams: money.AmountParams{Currency: price.Nominal.Currency, Value: price.Nominal.Value}},
+		}, nil
+	}
+	return catalogSelection{}, &demoError{Code: "configuration_error", Message: "The configured demo price is not available for this product."}
+}
+
+func buildOrderRequest(input checkoutInput, origin string, product catalogSelection) inttegro.OrderCreateParams {
 	return inttegro.OrderCreateParams{
 		// INTTEGRO:DECISION [stable-idempotency-key] Reuse this key for retries of
 		// one logical invoice payment. Production systems should persist a key
@@ -117,13 +152,14 @@ func buildOrderRequest(input checkoutInput, origin string) inttegro.OrderCreateP
 		LineItems: []inttegro.OrderLineItemParams{{
 			Type: inttegro.LineItemTypeProduct,
 			Product: &inttegro.ProductLineItemParams{
-				// INTTEGRO:DECISION [inline-product] Inline data keeps the service
-				// invoice self-contained. Catalog users can send product_id with an
-				// explicit price or price_id; do not mix both request shapes.
-				Type: inttegro.ProductTypeService, Name: "Invoice INV-2048", Quantity: 1,
-				// INTTEGRO:DECISION [minor-unit-money] 5000 minor units means
-				// GHS 50.00. Use a currency-aware decimal/money type for conversion.
-				Price: inttegro.PriceParams{AmountParams: money.AmountParams{Currency: money.GHS, Value: 5000}},
+				// INTTEGRO:DECISION [catalog-snapshot] The service resolves the
+				// configured Product and Price and snapshots the verified fields into
+				// the Order for compatibility across SDK versions.
+				// INTTEGRO:ALTERNATIVE [catalog-snapshot] When the SDK exposes the
+				// typed catalogue union, send product_id + price_id + quantity and
+				// omit the inline fields.
+				Type: product.Type, Name: product.Name, About: product.About, Reference: product.Reference,
+				Quantity: 1, Price: product.Price,
 			},
 		}},
 	}
@@ -136,27 +172,51 @@ func createHostedCheckout(ctx context.Context, input checkoutInput, origin strin
 	if apiKey == "" {
 		return "", "", &demoError{Code: "configuration_error", Message: "Set INTTEGRO_API_KEY on the server."}
 	}
+	productID := strings.TrimSpace(os.Getenv("INTTEGRO_DEMO_PRODUCT_ID"))
+	priceID := strings.TrimSpace(os.Getenv("INTTEGRO_DEMO_PRICE_ID"))
+	if !productPattern.MatchString(productID) || !pricePattern.MatchString(priceID) {
+		return "", "", &demoError{Code: "configuration_error", Message: "Set INTTEGRO_DEMO_PRODUCT_ID and INTTEGRO_DEMO_PRICE_ID on the server."}
+	}
 	// INTTEGRO:ALTERNATIVE [server-api-key] A production service can inject one
 	// startup-configured client for transport reuse and application-owned
 	// OpenTelemetry. The SDK chooses no exporter or vendor.
 	// https://studio.inttegro.com/sdk-observability
-	order, err := inttegro.NewClient(apiKey).Orders.Create(ctx, buildOrderRequest(input, origin))
+	client := inttegro.NewClient(apiKey)
+	// INTTEGRO:FLOW [catalog-lookup] Resolve at checkout so publication and
+	// price changes take effect. High-volume services can use a short cache with
+	// explicit invalidation. https://studio.inttegro.com/products
+	resolvedProduct, err := client.Products.Lookup(ctx, productID)
+	var product catalogSelection
+	if err == nil {
+		product, err = selectCatalogProduct(resolvedProduct, priceID)
+	}
+	if err == nil {
+		var order *inttegro.Order
+		order, err = client.Orders.Create(ctx, buildOrderRequest(input, origin, product))
+		if err == nil {
+			// INTTEGRO:DECISION [returned-checkout-url] Use the URL in the response;
+			// constructing one from order.ID depends on undocumented routing details.
+			if order.Invoice == nil || order.Invoice.Format == nil || order.Invoice.Format.Web == nil || order.Invoice.Format.Web.URL == "" {
+				return "", "", &demoError{Code: "api_error", Message: "Inttegro did not return a hosted checkout URL."}
+			}
+			return order.ID, order.Invoice.Format.Web.URL, nil
+		}
+	}
 	if err != nil {
 		// INTTEGRO:SECURITY [safe-error-boundary] Keep raw upstream payloads,
 		// credentials, and traces private. Public messages stay stable; record
 		// only bounded metadata and request IDs in protected telemetry.
+		var configurationError *demoError
+		if errors.As(err, &configurationError) {
+			return "", "", configurationError
+		}
 		var apiError *inttegro.APIError
 		if errors.As(err, &apiError) {
 			return "", "", &demoError{Code: "api_error", Message: "Inttegro rejected the checkout request."}
 		}
 		return "", "", &demoError{Code: "api_error", Message: "Checkout is temporarily unavailable."}
 	}
-	// INTTEGRO:DECISION [returned-checkout-url] Use the URL in the response;
-	// constructing one from order.ID depends on undocumented routing details.
-	if order.Invoice == nil || order.Invoice.Format == nil || order.Invoice.Format.Web == nil || order.Invoice.Format.Web.URL == "" {
-		return "", "", &demoError{Code: "api_error", Message: "Inttegro did not return a hosted checkout URL."}
-	}
-	return order.ID, order.Invoice.Format.Web.URL, nil
+	return "", "", &demoError{Code: "api_error", Message: "Checkout is temporarily unavailable."}
 }
 
 func newAttemptID() string {
