@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "demo": "nextjs",
+  "version": "1.2.0",
+  "sourceSuiteTag": "v1.2.0",
+  "sourceDemoTag": "nextjs-v1.2.0",
+  "sourceCommit": "b818dccf84f1b07664cacb53f15e2bf0c41ceb80",
+  "sourceSubtreeCommit": "066063c5194e6db58a8316f96e9159023dbc9a90"
+}

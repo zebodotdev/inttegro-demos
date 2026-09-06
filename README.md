@@ -36,7 +36,7 @@ Vercel is the idiomatic target; Cloudflare uses the checked-in OpenNext adapter
 to preserve the App Router and route handlers. Both flows clone an immutable
 deployment ref derived from the tagged source and ask for your own test
 credentials. The buttons become live when release `nextjs-v1.2.0` is published. See
-[`DEPLOYING.md`](../DEPLOYING.md) for the security contract and verification
+[`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.2.0/DEPLOYING.md) for the security contract and verification
 status.
 
 ## Understand the integration
@@ -46,5 +46,5 @@ requests, then read [`app/checkout/route.ts`](./app/checkout/route.ts) for the
 303 browser handoff and
 [`app/mobile/orders/route.ts`](./app/mobile/orders/route.ts) for the mobile trust
 boundary. Source comments link each consequential choice to the shared
-[integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+[integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.2.0/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.2.0/integration-decisions.json).
