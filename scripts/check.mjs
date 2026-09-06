@@ -154,6 +154,11 @@ for (const configPath of ['nextjs/wrangler.jsonc', 'nuxt/wrangler.jsonc', 'expre
   const config = readFileSync(join(demosRoot, configPath), 'utf8');
   assert(!config.includes('inttegro.dev'), `${configPath} must remain host-neutral for reader-owned deployment`);
 }
+const nuxtWorkerConfig = readFileSync(join(demosRoot, 'nuxt/wrangler.jsonc'), 'utf8');
+assert(
+  nuxtWorkerConfig.includes('"no_nodejs_compat", "no_nodejs_compat_v2"'),
+  'Nuxt must keep Nitro Node shims isolated from Cloudflare runtime Node shims',
+);
 
 const generatedCatalogue = JSON.parse(readFileSync(join(demosRoot, 'catalog/public/demos.json'), 'utf8'));
 assert.equal(generatedCatalogue.releaseVersion, release.version, 'catalogue must describe the current release');
