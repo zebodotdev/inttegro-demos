@@ -1,4 +1,4 @@
-from django.test import SimpleTestCase
+from django.test import Client, SimpleTestCase, override_settings
 import inttegro
 from inttegro import Currency, ProductType
 
@@ -29,3 +29,35 @@ class CheckoutServiceTests(SimpleTestCase):
         self.assertEqual(request.line_items[0].product.name, "Afterglow Sessions — Courtyard Admission")
         self.assertEqual(request.line_items[0].product.type.value, "digital")
         self.assertEqual(request.line_items[0].product.price.value, 5000)
+
+    @override_settings(
+        CSRF_TRUSTED_ORIGINS=["https://django-demo.inttegro.dev"],
+        INTTEGRO_DEMO_PUBLIC_URL="https://django-demo.inttegro.dev",
+        STORAGES={
+            "staticfiles": {
+                "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"
+            }
+        },
+    )
+    def test_trusted_https_proxy_accepts_public_origin(self):
+        client = Client(enforce_csrf_checks=True)
+        page = client.get("/", HTTP_X_FORWARDED_PROTO="https")
+        csrf_token = page.cookies["csrftoken"].value
+
+        response = client.post(
+            "/checkout",
+            {
+                "csrfmiddlewaretoken": csrf_token,
+                "attempt_id": "attempt_123",
+                "name": "Akua Mensah",
+                "email": "invalid",
+                "phone": "+233544998605",
+            },
+            HTTP_ORIGIN="https://django-demo.inttegro.dev",
+            HTTP_X_FORWARDED_PROTO="https",
+        )
+
+        # Invalid input reaches the view and follows its bounded error redirect;
+        # a proxy/CSRF regression would return 403 before the view runs.
+        self.assertEqual(response.status_code, 303)
+        self.assertIn("code=validation_error", response.headers["Location"])

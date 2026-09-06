@@ -20,10 +20,14 @@ amount. Run `python manage.py test` for the focused checks.
 
 ## Deploy your own
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-django-v1.2.1)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-django-v1.2.2)
 
 Render builds the released Dockerfile. Railway configuration is also ready; its
 button follows after the public template is registered and smoke-tested.
+Set `DJANGO_CSRF_TRUSTED_ORIGINS` to the deployment's exact HTTPS origin, such
+as `https://inttegro-demo-django.onrender.com`; this remains separate from the
+host-only `DJANGO_ALLOWED_HOSTS` value. The proxy must overwrite
+`X-Forwarded-Proto` before Django is allowed to trust it.
 Cloudflare Python Workers is deliberately not offered yet: Python Workers
 requires an asynchronous outbound HTTP path, while Inttegro Python SDK 6.0.0
 currently uses synchronous `urllib`. See [`DEPLOYING.md`](../DEPLOYING.md) for
