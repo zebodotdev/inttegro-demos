@@ -11,7 +11,11 @@ go mod download
 go run .
 ```
 
-Open <http://localhost:3003>. Run `go test ./...` for the focused checks.
+Open <http://localhost:3003>. Configure `INTTEGRO_DEMO_PRODUCT_ID` and
+`INTTEGRO_DEMO_PRICE_ID` with the active Ledgerline retainer Product and Price.
+The service resolves and validates both before constructing the Order; the
+invoice form cannot choose its own service or amount. Run `go test ./...` for
+the focused checks.
 
 ## Deploy your own
 
