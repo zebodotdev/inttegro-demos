@@ -29,7 +29,13 @@
   "cloudflare": {
     "bindings": {
       "NUXT_INTTEGRO_API_KEY": {
-        "description": "Create a test key in Inttegro Studio. Nuxt reads this only from private runtime configuration."
+        "description": "Create a dedicated API key in Inttegro Studio. Nuxt reads this only from private runtime configuration."
+      },
+      "NUXT_DEMO_PRODUCT_ID": {
+        "description": "The active Kora Market Product ID resolved by Nitro at checkout."
+      },
+      "NUXT_DEMO_PRICE_ID": {
+        "description": "An active Price ID belonging to the configured Kora Market Product."
       },
       "NUXT_DEMO_PUBLIC_URL": {
         "description": "Optional public origin for completion and cancellation URLs, without a trailing slash."
