@@ -13,7 +13,10 @@ set -a && source .env && set +a
 python manage.py runserver 3004
 ```
 
-Run `python manage.py test` for the focused checks.
+Configure `INTTEGRO_DEMO_PRODUCT_ID` and `INTTEGRO_DEMO_PRICE_ID` with the
+active Afterglow admission Product and Price. Django looks them up and validates
+their relationship server-side; the reservation form supplies no product or
+amount. Run `python manage.py test` for the focused checks.
 
 ## Deploy your own
 
