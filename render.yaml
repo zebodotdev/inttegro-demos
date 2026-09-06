@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: inttegro-demo-django
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: false
+    envVars:
+      - key: INTTEGRO_API_KEY
+        sync: false
+      - key: INTTEGRO_DEMO_PUBLIC_URL
+        sync: false
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_ALLOWED_HOSTS
+        value: .onrender.com
+      - key: DJANGO_DEBUG
+        value: "false"

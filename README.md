@@ -15,6 +15,17 @@ python manage.py runserver 3004
 
 Run `python manage.py test` for the focused checks.
 
+## Deploy your own
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-django-v1.1.0)
+
+Render builds the released Dockerfile. Railway configuration is also ready; its
+button follows after the public template is registered and smoke-tested.
+Cloudflare Python Workers is deliberately not offered yet: Python Workers
+requires an asynchronous outbound HTTP path, while Inttegro Python SDK 6.0.0
+currently uses synchronous `urllib`. See [`DEPLOYING.md`](../DEPLOYING.md) for
+the compatibility decision.
+
 ## Understand the integration
 
 Start with [`checkout/service.py`](./checkout/service.py) for the typed Order
