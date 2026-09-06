@@ -3,7 +3,10 @@
   "name": "inttegro-demo-express",
   "main": "src/worker.ts",
   "compatibility_date": "2026-09-06",
-  "compatibility_flags": ["nodejs_compat"],
+  // Express reads configuration through process.env on every supported host.
+  // Opt in explicitly so Cloudflare maps both text bindings and secret
+  // bindings into that Node-compatible interface at request time.
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_populate_process_env"],
   "assets": {
     "directory": "./public"
   },
