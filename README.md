@@ -14,3 +14,12 @@ python manage.py runserver 3004
 ```
 
 Run `python manage.py test` for the focused checks.
+
+## Understand the integration
+
+Start with [`checkout/service.py`](./checkout/service.py) for the typed Order
+request and safe error mapping, then read
+[`checkout/views.py`](./checkout/views.py) for the 303 handoff and correlation
+boundary. The `INTTEGRO:*` comments map choices and alternatives to the shared
+[integration guide](../INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](../integration-decisions.json).
