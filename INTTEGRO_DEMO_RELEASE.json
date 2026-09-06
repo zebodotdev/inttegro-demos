@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "demo": "rails",
+  "version": "1.1.1",
+  "sourceSuiteTag": "v1.1.1",
+  "sourceDemoTag": "rails-v1.1.1",
+  "sourceCommit": "9bde8ab17b5699b87b7cd6d3eb514f59777dd800",
+  "sourceSubtreeCommit": "c04317da69d89e5c46b5b6f7ae893039b1b528c4"
+}
