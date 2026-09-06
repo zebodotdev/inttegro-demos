@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { buildOrderRequest, DemoError, parseCheckoutInput } from '../src/checkout.js';
+import { buildOrderRequest, DemoError, parseCheckoutInput, selectCatalogProduct } from '../src/checkout.js';
 import { homePage } from '../src/pages.js';
 
 test('rejects invalid customer input', () => {
@@ -13,15 +13,40 @@ test('rejects invalid customer input', () => {
 test('builds the canonical hosted checkout request', () => {
   const request = buildOrderRequest({
     name: 'Akua Mensah', email: 'akua@example.com', phone: '+233544998605', attemptId: 'attempt_123',
-  }, 'https://demo.example');
+  }, 'https://demo.example', {
+    type: 'digital',
+    name: 'Afterglow Sessions — Courtyard Admission',
+    reference: 'DEMO-AFTERGLOW-COURTYARD',
+    price: { currency: 'ghs', value: 5000 },
+  });
   assert.equal(request.request_meta?.idempotency_key, 'demo-attempt_123');
   assert.equal(request.finalize, true);
   assert.equal(request.checkout_settings?.redirect_url, 'https://demo.example/complete');
   const lineItem = request.line_items[0];
   if (!lineItem || lineItem.type !== 'product') assert.fail('expected a product line item');
-  assert.equal(lineItem.product.name, 'Afterglow Sessions - Courtyard admission');
+  assert.equal(lineItem.product.name, 'Afterglow Sessions — Courtyard Admission');
   assert.equal(lineItem.product.type, 'digital');
   assert.equal(lineItem.product.price.value, 5000);
+});
+
+test('uses only the configured active catalogue price', () => {
+  const selected = selectCatalogProduct({
+    id: 'prod_demo',
+    type: 'digital',
+    name: 'Afterglow Sessions — Courtyard Admission',
+    active: true,
+    created_at: '2026-09-06T00:00:00Z',
+    prices: [{ id: 'pr_demo', active: true, nominal: { currency: 'ghs', value: 5000 } }],
+  }, 'pr_demo');
+  assert.equal(selected.price.value, 5000);
+  assert.throws(() => selectCatalogProduct({
+    id: 'prod_demo',
+    type: 'digital',
+    name: 'Afterglow Sessions — Courtyard Admission',
+    active: false,
+    created_at: '2026-09-06T00:00:00Z',
+    prices: [],
+  }, 'pr_demo'), /configured demo product/);
 });
 
 test('renders configuration guidance and escapes untrusted query errors', () => {
