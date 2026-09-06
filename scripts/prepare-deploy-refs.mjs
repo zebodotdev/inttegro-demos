@@ -14,12 +14,15 @@ if (!requestedTag || requestedTag !== expectedTag) {
   process.exit(1);
 }
 
-const git = (args, options = {}) => execFileSync('git', args, {
-  cwd: root,
-  encoding: 'utf8',
-  stdio: options.stdio || ['ignore', 'pipe', 'inherit'],
-  env: options.env || process.env,
-}).trim();
+const git = (args, options = {}) => {
+  const output = execFileSync('git', args, {
+    cwd: root,
+    encoding: 'utf8',
+    stdio: options.stdio || ['ignore', 'pipe', 'inherit'],
+    env: options.env || process.env,
+  });
+  return typeof output === 'string' ? output.trim() : '';
+};
 
 let sourceCommit;
 try {

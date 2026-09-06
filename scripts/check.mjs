@@ -207,6 +207,7 @@ const deployRefScript = readFileSync(join(demosRoot, 'scripts/prepare-deploy-ref
 for (const requiredReleaseGuard of [
   "git(['verify-tag', requestedTag]",
   "git(['verify-tag', sourceDemoTag]",
+  "typeof output === 'string' ? output.trim() : ''",
   "`${requestedTag}:LICENSE`",
   ".replaceAll('../DEPLOYING.md'",
 ]) {

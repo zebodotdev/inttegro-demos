@@ -14,12 +14,12 @@ Open <http://localhost:3002>. Run `npm run check` for type checking and tests.
 
 ## Deploy your own
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-nuxt-v1.1.0)
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-nuxt-v1.1.0&project-name=inttegro-demo-nuxt&repository-name=inttegro-demo-nuxt&env=NUXT_INTTEGRO_API_KEY%2CNUXT_DEMO_PUBLIC_URL&envDescription=Add%20an%20Inttegro%20test%20API%20key%20and%20the%20public%20origin%20assigned%20to%20this%20deployment.&envLink=https%3A%2F%2Fstudio.inttegro.com%2Fkeys)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-nuxt-v1.1.1)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-nuxt-v1.1.1&project-name=inttegro-demo-nuxt&repository-name=inttegro-demo-nuxt&env=NUXT_INTTEGRO_API_KEY%2CNUXT_DEMO_PUBLIC_URL&envDescription=Add%20an%20Inttegro%20test%20API%20key%20and%20the%20public%20origin%20assigned%20to%20this%20deployment.&envLink=https%3A%2F%2Fstudio.inttegro.com%2Fkeys)
 
 Cloudflare is the recommended target and builds through Nitro's Cloudflare
 preset. Vercel keeps Nuxt's provider-aware production build. Both buttons use
-an immutable deployment ref derived from `nuxt-v1.1.0` and become live when
+an immutable deployment ref derived from `nuxt-v1.1.1` and become live when
 that release is published. See [`DEPLOYING.md`](../DEPLOYING.md) for readiness
 and trade-offs.
 

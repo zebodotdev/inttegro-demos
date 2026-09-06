@@ -25,10 +25,10 @@ Original product and event artwork is generated for this repository and stored
 locally under [`assets/`](./assets); demos do not depend on third-party image
 hosts or runtime font services.
 
-## Release plan
+## Current release
 
-The release candidate is **1.1.0**. Use
-[`releases/v1.1.0.json`](./releases/v1.1.0.json) to resolve each demo to its
+The current release is **1.1.1**. Use
+[`releases/v1.1.1.json`](./releases/v1.1.1.json) to resolve each demo to its
 immutable Git tag and integration entry points. Studio and external
 documentation must link through those tags rather than `main`; see
 [RELEASING.md](./RELEASING.md) for the versioning, permalink, signature, and
