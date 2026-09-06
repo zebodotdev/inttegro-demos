@@ -11,6 +11,7 @@ const CartIcon = () => (
 export default async function Home({ searchParams }: HomeProps) {
   const error = await searchParams;
   const attemptId = randomUUID();
+  const needsConfiguration = error.code === 'configuration_error';
 
   return (
     <div className="story-kora">
@@ -62,7 +63,14 @@ export default async function Home({ searchParams }: HomeProps) {
       <dialog className="cart-dialog" data-cart-dialog {...(error.code ? { 'data-auto-open': '' } : {})}>
         <div className="cart-head"><h2>Your bag</h2><button className="icon-button" type="button" aria-label="Close bag" data-cart-close /></div>
         <div className="cart-body">
-          {error.code ? <p className="inline-error" role="alert"><strong>{error.code.replaceAll('_', ' ')}:</strong> {error.message || 'Checkout could not be started.'}</p> : null}
+          {needsConfiguration ? (
+            <section className="setup-card has-config-error" role="status">
+              <span className="setup-kicker">Setup required</span>
+              <h3>Connect this copy to Inttegro</h3>
+              <p>Add <code>INTTEGRO_API_KEY</code> as a server-side test secret, set this deployment’s public URL, then redeploy. The key must never use a <code>NEXT_PUBLIC_</code> prefix.</p>
+              <div className="setup-actions"><a href="https://studio.inttegro.com/keys">Create a test key</a><a href="https://github.com/zebodotdev/inttegro-demos/blob/nextjs-v1.1.0/nextjs/README.md#deploy-your-own">Deployment guide</a></div>
+            </section>
+          ) : error.code ? <p className="inline-error" role="alert"><strong>{error.code.replaceAll('_', ' ')}:</strong> {error.message || 'Checkout could not be started.'}</p> : null}
           <div className="cart-line"><img src="/kora-dawn-brew.jpg" alt="" /><div><div className="row"><h3>Dawn Brew Set</h3><strong>GHS 50</strong></div><p className="microcopy"><span data-finish-label>Sunrise clay</span> · Quantity 1</p></div></div>
           <div className="cart-total"><span>Total</span><strong>GHS 50.00</strong></div>
           <form className="checkout-form" action="/checkout" method="post" data-checkout-form>

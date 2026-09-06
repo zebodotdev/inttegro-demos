@@ -3,6 +3,7 @@ const route = useRoute();
 const attemptId = useState('attempt-id', () => crypto.randomUUID());
 const errorCode = computed(() => typeof route.query.code === 'string' ? route.query.code : '');
 const errorMessage = computed(() => typeof route.query.message === 'string' ? route.query.message : '');
+const needsConfiguration = computed(() => errorCode.value === 'configuration_error');
 useSeoMeta({ title: 'Kora Market — Inttegro + Nuxt', description: 'A production-shaped storefront powered by Nuxt and Inttegro.' });
 </script>
 
@@ -34,7 +35,12 @@ useSeoMeta({ title: 'Kora Market — Inttegro + Nuxt', description: 'A productio
     <dialog class="cart-dialog" data-cart-dialog :data-auto-open="errorCode ? '' : undefined">
       <div class="cart-head"><h2>Your bag</h2><button class="icon-button" type="button" aria-label="Close bag" data-cart-close /></div>
       <div class="cart-body">
-        <p v-if="errorCode" class="inline-error" role="alert"><strong>{{ errorCode.replaceAll('_', ' ') }}:</strong> {{ errorMessage || 'Checkout could not be started.' }}</p>
+        <section v-if="needsConfiguration" class="setup-card has-config-error" role="status">
+          <span class="setup-kicker">Setup required</span><h3>Connect this copy to Inttegro</h3>
+          <p>Add <code>NUXT_INTTEGRO_API_KEY</code> as a private test secret, set this deployment’s public URL, then redeploy. Never place the key in <code>runtimeConfig.public</code>.</p>
+          <div class="setup-actions"><a href="https://studio.inttegro.com/keys">Create a test key</a><a href="https://github.com/zebodotdev/inttegro-demos/blob/nuxt-v1.1.0/nuxt/README.md#deploy-your-own">Deployment guide</a></div>
+        </section>
+        <p v-else-if="errorCode" class="inline-error" role="alert"><strong>{{ errorCode.replaceAll('_', ' ') }}:</strong> {{ errorMessage || 'Checkout could not be started.' }}</p>
         <div class="cart-line"><img src="/kora-dawn-brew.jpg" alt=""><div><div class="row"><h3>Dawn Brew Set</h3><strong>GHS 50</strong></div><p class="microcopy"><span data-finish-label>Sunrise clay</span> · Quantity 1</p></div></div><div class="cart-total"><span>Total</span><strong>GHS 50.00</strong></div>
         <form class="checkout-form" action="/checkout" method="post" data-checkout-form><input type="hidden" name="attempt_id" :value="attemptId"><div class="field-grid"><label>Full name<input name="name" value="Akua Mensah" autocomplete="name" required></label><label>Email address<input name="email" type="email" value="akua@example.com" autocomplete="email" required></label></div><label>Phone number<input name="phone" type="tel" value="+233544998605" autocomplete="tel" required></label><button class="checkout-button" type="submit">Continue securely <span>→</span></button><p class="secure-note">Secure checkout powered by Inttegro · API key remains server-side</p></form>
       </div>
