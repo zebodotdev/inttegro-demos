@@ -24,6 +24,7 @@ def test_builds_shared_order_request():
         product,
     )
     assert request.request_meta.idempotency_key == "demo-attempt_123"
+    assert request.number == "AFTERGLOW-ATTEMPT-123"
     assert request.finalize is True
     assert request.checkout_settings.redirect_url == "https://demo.example/complete"
     assert request.line_items[0].product.name == "Afterglow Sessions — Courtyard Admission"

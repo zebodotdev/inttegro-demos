@@ -93,6 +93,11 @@ def build_order_request(value: CheckoutInput, origin: str, product: CatalogSelec
         # derived key; creating a fresh key after a timeout permits duplicates.
         # https://studio.inttegro.com/idempotency
         request_meta=inttegro.orders.RequestMeta(idempotency_key=f"demo-{value.attempt_id}"),
+        # INTTEGRO:DECISION [merchant-order-number] Send a recognizable merchant
+        # reference so Inttegro does not fall back to its generated or_ ID. The
+        # validated attempt keeps this demo value stable across retries. A real
+        # booking service should use its durable reservation number without PII.
+        number=f"AFTERGLOW-{value.attempt_id.replace('_', '-').upper()[:48]}",
         # INTTEGRO:DECISION [inline-customer] customer_data matches this guest
         # flow. Account-based products should resolve customer_id on the trusted
         # server. The Orders API accepts exactly one customer representation.
