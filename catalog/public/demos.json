@@ -1,0 +1,498 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/zebodotdev/inttegro-demos",
+  "releaseVersion": "1.1.0",
+  "suiteTag": "v1.1.0",
+  "domainStatus": "active",
+  "demos": [
+    {
+      "id": "nextjs",
+      "technology": "Next.js",
+      "language": "TypeScript",
+      "story": "kora-market",
+      "storyLabel": "Kora Market",
+      "releaseStatus": "verified",
+      "mode": "server",
+      "hostname": "nextjs-demo.inttegro.dev",
+      "tag": "nextjs-v1.1.0",
+      "deployRef": "deploy-nextjs-v1.1.0",
+      "environment": [
+        {
+          "name": "INTTEGRO_API_KEY",
+          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PUBLIC_URL",
+          "description": "The deployed origin used for checkout completion and cancellation URLs, without a trailing slash.",
+          "secret": false
+        },
+        {
+          "name": "INTTEGRO_DEMO_CUSTOMER_ID",
+          "description": "A test customer ID used only by the companion mobile-order route.",
+          "secret": false
+        }
+      ],
+      "providers": [
+        {
+          "id": "vercel",
+          "recommendation": "recommended",
+          "status": "prepared",
+          "config": "nextjs/vercel.json",
+          "name": "Vercel",
+          "documentation": "https://vercel.com/docs/deploy-button"
+        },
+        {
+          "id": "cloudflare",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "nextjs/wrangler.jsonc",
+          "name": "Cloudflare",
+          "documentation": "https://developers.cloudflare.com/workers/platform/deploy-buttons/"
+        }
+      ]
+    },
+    {
+      "id": "express",
+      "technology": "Express",
+      "language": "TypeScript",
+      "story": "afterglow-sessions",
+      "storyLabel": "Afterglow Sessions",
+      "releaseStatus": "verified",
+      "mode": "server",
+      "hostname": "express-demo.inttegro.dev",
+      "tag": "express-v1.1.0",
+      "deployRef": "deploy-express-v1.1.0",
+      "environment": [
+        {
+          "name": "INTTEGRO_API_KEY",
+          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PUBLIC_URL",
+          "description": "The deployed origin used for checkout completion and cancellation URLs, without a trailing slash.",
+          "secret": false
+        }
+      ],
+      "providers": [
+        {
+          "id": "railway",
+          "recommendation": "recommended",
+          "status": "template-pending",
+          "config": "express/railway.json",
+          "name": "Railway",
+          "documentation": "https://docs.railway.com/templates/publish-and-share"
+        },
+        {
+          "id": "render",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "express/render.yaml",
+          "name": "Render",
+          "documentation": "https://render.com/docs/deploy-to-render"
+        },
+        {
+          "id": "cloudflare",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "express/wrangler.jsonc",
+          "name": "Cloudflare",
+          "documentation": "https://developers.cloudflare.com/workers/platform/deploy-buttons/"
+        }
+      ]
+    },
+    {
+      "id": "nuxt",
+      "technology": "Vue + Nuxt",
+      "language": "TypeScript",
+      "story": "kora-market",
+      "storyLabel": "Kora Market",
+      "releaseStatus": "verified",
+      "mode": "server",
+      "hostname": "nuxt-demo.inttegro.dev",
+      "tag": "nuxt-v1.1.0",
+      "deployRef": "deploy-nuxt-v1.1.0",
+      "environment": [
+        {
+          "name": "NUXT_INTTEGRO_API_KEY",
+          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "secret": true
+        },
+        {
+          "name": "NUXT_DEMO_PUBLIC_URL",
+          "description": "The deployed origin used for checkout completion and cancellation URLs, without a trailing slash.",
+          "secret": false
+        }
+      ],
+      "providers": [
+        {
+          "id": "cloudflare",
+          "recommendation": "recommended",
+          "status": "prepared",
+          "config": "nuxt/wrangler.jsonc",
+          "name": "Cloudflare",
+          "documentation": "https://developers.cloudflare.com/workers/platform/deploy-buttons/"
+        },
+        {
+          "id": "vercel",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "nuxt/vercel.json",
+          "name": "Vercel",
+          "documentation": "https://vercel.com/docs/deploy-button"
+        }
+      ]
+    },
+    {
+      "id": "go",
+      "technology": "Go",
+      "language": "Go",
+      "story": "ledgerline",
+      "storyLabel": "Ledgerline",
+      "releaseStatus": "verified",
+      "mode": "server",
+      "hostname": "go-demo.inttegro.dev",
+      "tag": "go-v1.1.0",
+      "deployRef": "deploy-go-v1.1.0",
+      "environment": [
+        {
+          "name": "INTTEGRO_API_KEY",
+          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PUBLIC_URL",
+          "description": "The deployed origin used for checkout completion and cancellation URLs, without a trailing slash.",
+          "secret": false
+        }
+      ],
+      "providers": [
+        {
+          "id": "railway",
+          "recommendation": "recommended",
+          "status": "template-pending",
+          "config": "go/railway.json",
+          "name": "Railway",
+          "documentation": "https://docs.railway.com/templates/publish-and-share"
+        },
+        {
+          "id": "render",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "go/render.yaml",
+          "name": "Render",
+          "documentation": "https://render.com/docs/deploy-to-render"
+        }
+      ]
+    },
+    {
+      "id": "django",
+      "technology": "Django",
+      "language": "Python",
+      "story": "afterglow-sessions",
+      "storyLabel": "Afterglow Sessions",
+      "releaseStatus": "verified",
+      "mode": "server",
+      "hostname": "django-demo.inttegro.dev",
+      "tag": "django-v1.1.0",
+      "deployRef": "deploy-django-v1.1.0",
+      "environment": [
+        {
+          "name": "INTTEGRO_API_KEY",
+          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PUBLIC_URL",
+          "description": "The deployed origin used for checkout completion and cancellation URLs, without a trailing slash.",
+          "secret": false
+        },
+        {
+          "name": "DJANGO_SECRET_KEY",
+          "description": "A framework signing secret generated in the reader's deployment.",
+          "secret": true
+        },
+        {
+          "name": "DJANGO_ALLOWED_HOSTS",
+          "description": "A framework signing secret generated in the reader's deployment.",
+          "secret": true
+        }
+      ],
+      "providers": [
+        {
+          "id": "railway",
+          "recommendation": "recommended",
+          "status": "template-pending",
+          "config": "django/railway.json",
+          "name": "Railway",
+          "documentation": "https://docs.railway.com/templates/publish-and-share"
+        },
+        {
+          "id": "render",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "django/render.yaml",
+          "name": "Render",
+          "documentation": "https://render.com/docs/deploy-to-render"
+        },
+        {
+          "id": "cloudflare",
+          "recommendation": "experimental",
+          "status": "blocked",
+          "reason": "Python Workers supports asynchronous HTTP clients, while Inttegro Python SDK 6.0.0 currently uses synchronous urllib transport.",
+          "name": "Cloudflare",
+          "documentation": "https://developers.cloudflare.com/workers/platform/deploy-buttons/"
+        }
+      ]
+    },
+    {
+      "id": "fastapi",
+      "technology": "FastAPI",
+      "language": "Python",
+      "story": "afterglow-sessions",
+      "storyLabel": "Afterglow Sessions",
+      "releaseStatus": "verified",
+      "mode": "server",
+      "hostname": "fastapi-demo.inttegro.dev",
+      "tag": "fastapi-v1.1.0",
+      "deployRef": "deploy-fastapi-v1.1.0",
+      "environment": [
+        {
+          "name": "INTTEGRO_API_KEY",
+          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PUBLIC_URL",
+          "description": "The deployed origin used for checkout completion and cancellation URLs, without a trailing slash.",
+          "secret": false
+        }
+      ],
+      "providers": [
+        {
+          "id": "railway",
+          "recommendation": "recommended",
+          "status": "template-pending",
+          "config": "fastapi/railway.json",
+          "name": "Railway",
+          "documentation": "https://docs.railway.com/templates/publish-and-share"
+        },
+        {
+          "id": "render",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "fastapi/render.yaml",
+          "name": "Render",
+          "documentation": "https://render.com/docs/deploy-to-render"
+        },
+        {
+          "id": "cloudflare",
+          "recommendation": "experimental",
+          "status": "blocked",
+          "reason": "Python Workers supports asynchronous HTTP clients, while Inttegro Python SDK 6.0.0 currently uses synchronous urllib transport.",
+          "name": "Cloudflare",
+          "documentation": "https://developers.cloudflare.com/workers/platform/deploy-buttons/"
+        }
+      ]
+    },
+    {
+      "id": "rails",
+      "technology": "Rails",
+      "language": "Ruby",
+      "story": "kora-market",
+      "storyLabel": "Kora Market",
+      "releaseStatus": "verified",
+      "mode": "server",
+      "hostname": "rails-demo.inttegro.dev",
+      "tag": "rails-v1.1.0",
+      "deployRef": "deploy-rails-v1.1.0",
+      "environment": [
+        {
+          "name": "INTTEGRO_API_KEY",
+          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PUBLIC_URL",
+          "description": "The deployed origin used for checkout completion and cancellation URLs, without a trailing slash.",
+          "secret": false
+        },
+        {
+          "name": "SECRET_KEY_BASE",
+          "description": "A framework signing secret generated in the reader's deployment.",
+          "secret": true
+        }
+      ],
+      "providers": [
+        {
+          "id": "railway",
+          "recommendation": "recommended",
+          "status": "template-pending",
+          "config": "rails/railway.json",
+          "name": "Railway",
+          "documentation": "https://docs.railway.com/templates/publish-and-share"
+        },
+        {
+          "id": "render",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "rails/render.yaml",
+          "name": "Render",
+          "documentation": "https://render.com/docs/deploy-to-render"
+        }
+      ]
+    },
+    {
+      "id": "laravel",
+      "technology": "Laravel",
+      "language": "PHP",
+      "story": "kora-market",
+      "storyLabel": "Kora Market",
+      "releaseStatus": "verified",
+      "mode": "server",
+      "hostname": "laravel-demo.inttegro.dev",
+      "tag": "laravel-v1.1.0",
+      "deployRef": "deploy-laravel-v1.1.0",
+      "environment": [
+        {
+          "name": "INTTEGRO_API_KEY",
+          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PUBLIC_URL",
+          "description": "The deployed origin used for checkout completion and cancellation URLs, without a trailing slash.",
+          "secret": false
+        },
+        {
+          "name": "APP_KEY",
+          "description": "A framework signing secret generated in the reader's deployment.",
+          "secret": true
+        }
+      ],
+      "providers": [
+        {
+          "id": "railway",
+          "recommendation": "recommended",
+          "status": "template-pending",
+          "config": "laravel/railway.json",
+          "name": "Railway",
+          "documentation": "https://docs.railway.com/templates/publish-and-share"
+        },
+        {
+          "id": "render",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "laravel/render.yaml",
+          "name": "Render",
+          "documentation": "https://render.com/docs/deploy-to-render"
+        }
+      ]
+    },
+    {
+      "id": "spring-boot",
+      "technology": "Spring Boot",
+      "language": "Java",
+      "story": "ledgerline",
+      "storyLabel": "Ledgerline",
+      "releaseStatus": "publication-gated",
+      "mode": "server",
+      "hostname": "spring-boot-demo.inttegro.dev",
+      "tag": "spring-boot-v1.1.0",
+      "deployRef": "deploy-spring-boot-v1.1.0",
+      "environment": [
+        {
+          "name": "INTTEGRO_API_KEY",
+          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PUBLIC_URL",
+          "description": "The deployed origin used for checkout completion and cancellation URLs, without a trailing slash.",
+          "secret": false
+        }
+      ],
+      "providers": [
+        {
+          "id": "railway",
+          "recommendation": "recommended",
+          "status": "blocked",
+          "config": "spring-boot/railway.json",
+          "reason": "The Java SDK 5.0.0 dependency must be publicly available before a reader-owned remote build can succeed.",
+          "name": "Railway",
+          "documentation": "https://docs.railway.com/templates/publish-and-share"
+        },
+        {
+          "id": "render",
+          "recommendation": "alternative",
+          "status": "blocked",
+          "config": "spring-boot/render.yaml",
+          "reason": "The Java SDK 5.0.0 dependency must be publicly available before a reader-owned remote build can succeed.",
+          "name": "Render",
+          "documentation": "https://render.com/docs/deploy-to-render"
+        }
+      ]
+    },
+    {
+      "id": "ios-swiftui",
+      "technology": "SwiftUI",
+      "language": "Swift",
+      "story": "kora-market-mobile",
+      "storyLabel": "Kora Market mobile",
+      "releaseStatus": "preview",
+      "mode": "native",
+      "companionBackend": "nextjs",
+      "hostname": "ios-swiftui-demo.inttegro.dev",
+      "tag": "ios-swiftui-v1.1.0",
+      "deployRef": "deploy-ios-swiftui-v1.1.0",
+      "environment": [],
+      "providers": []
+    },
+    {
+      "id": "android-compose",
+      "technology": "Jetpack Compose",
+      "language": "Kotlin",
+      "story": "kora-market-mobile",
+      "storyLabel": "Kora Market mobile",
+      "releaseStatus": "preview",
+      "mode": "native",
+      "companionBackend": "nextjs",
+      "hostname": "android-compose-demo.inttegro.dev",
+      "tag": "android-compose-v1.1.0",
+      "deployRef": "deploy-android-compose-v1.1.0",
+      "environment": [],
+      "providers": []
+    },
+    {
+      "id": "flutter",
+      "technology": "Flutter",
+      "language": "Dart",
+      "story": "kora-market-mobile",
+      "storyLabel": "Kora Market mobile",
+      "releaseStatus": "native-gated",
+      "mode": "native",
+      "companionBackend": "nextjs",
+      "hostname": "flutter-demo.inttegro.dev",
+      "tag": "flutter-v1.1.0",
+      "deployRef": "deploy-flutter-v1.1.0",
+      "environment": [],
+      "providers": []
+    },
+    {
+      "id": "react-native-expo",
+      "technology": "React Native + Expo",
+      "language": "TypeScript",
+      "story": "kora-market-mobile",
+      "storyLabel": "Kora Market mobile",
+      "releaseStatus": "native-gated",
+      "mode": "native",
+      "companionBackend": "nextjs",
+      "hostname": "react-native-expo-demo.inttegro.dev",
+      "tag": "react-native-expo-v1.1.0",
+      "deployRef": "deploy-react-native-expo-v1.1.0",
+      "environment": [],
+      "providers": []
+    }
+  ]
+}

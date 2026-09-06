@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f1e9" />
+    <meta name="description" content="Explore complete, deployable Inttegro API and mobile SDK integrations." />
+    <title>Inttegro demos — integrations you can touch</title>
+    <link rel="icon" href="/assets/favicon.svg" />
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <header class="masthead">
+      <a class="brand" href="#top" aria-label="Inttegro demos home">
+        <span class="brand-mark" aria-hidden="true">I</span>
+        <span>Inttegro <em>Demos</em></span>
+      </a>
+      <nav aria-label="Catalogue navigation">
+        <a href="#demos">Explore</a>
+        <a href="https://studio.inttegro.com" rel="noreferrer">Documentation</a>
+        <a class="github-link" href="https://github.com/zebodotdev/inttegro-demos" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow"><span></span>Production-shaped examples</p>
+          <h1 id="hero-title">See the integration.<br /><i>Ship the idea.</i></h1>
+          <p class="hero-lede">Complete storefront, ticketing, invoice, and native experiences—each wired to an official Inttegro SDK and ready to make your own.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#demos">Explore demos <span aria-hidden="true">↓</span></a>
+            <a class="button button-secondary" href="https://studio.inttegro.com/accept-payment-with-inttegro-checkout">Read the guide</a>
+          </div>
+        </div>
+        <aside class="release-panel" aria-label="Current release">
+          <div class="release-topline"><span>Current suite</span><span class="live-dot">Release candidate</span></div>
+          <strong id="release-version">v1.1.0</strong>
+          <p>One contract, thirteen idiomatic implementations, immutable source links.</p>
+          <dl>
+            <div><dt>Server demos</dt><dd>9</dd></div>
+            <div><dt>Native demos</dt><dd>4</dd></div>
+            <div><dt>Product stories</dt><dd>4</dd></div>
+          </dl>
+        </aside>
+      </section>
+
+      <section class="principles" aria-label="Demo principles">
+        <p><span>01</span> Official SDKs</p>
+        <p><span>02</span> Server-held secrets</p>
+        <p><span>03</span> Tagged source</p>
+        <p><span>04</span> Reader-owned deployments</p>
+      </section>
+
+      <section class="catalogue" id="demos" aria-labelledby="catalogue-title">
+        <div class="section-head">
+          <div><p class="eyebrow"><span></span>Choose your stack</p><h2 id="catalogue-title">A familiar path in.</h2></div>
+          <p>Filter by runtime or deployment target. Every available button is backed by checked-in configuration and an explicit setup contract.</p>
+        </div>
+
+        <div class="filter-bar" aria-label="Filter demos">
+          <div class="segmented" role="group" aria-label="Runtime">
+            <button type="button" class="filter is-active" data-filter="all" aria-pressed="true">All</button>
+            <button type="button" class="filter" data-filter="server" aria-pressed="false">Web & server</button>
+            <button type="button" class="filter" data-filter="native" aria-pressed="false">Mobile</button>
+          </div>
+          <label class="provider-filter">Deploy to
+            <select id="provider-filter">
+              <option value="all">Any provider</option>
+              <option value="cloudflare">Cloudflare</option>
+              <option value="vercel">Vercel</option>
+              <option value="render">Render</option>
+              <option value="railway">Railway</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="demo-grid" id="demo-grid" aria-live="polite"></div>
+        <p class="empty-state" id="empty-state" hidden>No released demo matches these filters yet.</p>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">I</span><span>Inttegro <em>Demos</em></span></a>
+      <p>Built to be read, deployed, changed, and understood.</p>
+      <a href="https://github.com/zebodotdev/inttegro-demos/blob/v1.1.0/LICENSE">MIT License</a>
+    </footer>
+
+    <dialog class="deploy-dialog" id="deploy-dialog" aria-labelledby="deploy-title">
+      <form method="dialog"><button class="close-button" aria-label="Close deployment options">×</button></form>
+      <div class="dialog-heading">
+        <p class="eyebrow"><span></span>Reader-owned deployment</p>
+        <h2 id="deploy-title">Deploy <span></span></h2>
+        <p id="deploy-intro"></p>
+      </div>
+      <div class="provider-list" id="provider-list"></div>
+      <details class="environment-details">
+        <summary>Environment variables <span>What you’ll need</span></summary>
+        <div id="environment-list"></div>
+      </details>
+      <p class="dialog-note">Your provider receives the values you enter. Inttegro never places a secret in the deployment URL or cloned source.</p>
+    </dialog>
+  </body>
+</html>
