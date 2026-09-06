@@ -17,3 +17,14 @@ The first command is temporarily required because version `5.0.0` of the Java
 SDK is documented but is not yet available from Maven Central. Once it is
 published, consumers can remove that local-install step without changing the
 demo code or dependency coordinate.
+
+## Understand the integration
+
+Start with
+[`CheckoutService.java`](./src/main/java/com/inttegro/demo/CheckoutService.java)
+for the builder-based Order request and error boundary, then read
+[`CheckoutController.java`](./src/main/java/com/inttegro/demo/CheckoutController.java)
+for validation, correlation, and the 303 handoff. The `INTTEGRO:*` comments map
+choices and alternatives to the shared
+[integration guide](../INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](../integration-decisions.json).

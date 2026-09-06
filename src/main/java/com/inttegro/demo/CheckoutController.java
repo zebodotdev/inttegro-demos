@@ -24,6 +24,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Controller
 public class CheckoutController {
+    /*
+     * INTTEGRO:FLOW [hosted-checkout] POST /checkout hands the browser to the
+     * hosted URL described at
+     * https://studio.inttegro.com/accept-payment-with-inttegro-checkout.
+     * INTTEGRO:VERIFY [server-side-verification] /complete is a UX return, not
+     * payment proof. Resolve and look up the owner-scoped order before
+     * fulfillment; current reconciliation guidance is
+     * https://studio.inttegro.com/webhooks.
+     */
     private final CheckoutService checkoutService;
     private final String configuredOrigin;
 
@@ -46,9 +55,17 @@ public class CheckoutController {
         try {
             String origin = configuredOrigin.isEmpty() ? requestOrigin(request) : configuredOrigin;
             var result = checkoutService.create(form, origin);
+            // INTTEGRO:DECISION [durable-order-correlation] This HttpOnly cookie
+            // is only an illustrative correlation aid. Production systems
+            // persist merchant invoice, owner, Inttegro order ID, and
+            // idempotency key in a durable mapping.
             var cookie = ResponseCookie.from("inttegro_demo_order", result.orderId()).httpOnly(true).secure(request.isSecure()).sameSite("Lax").path("/").maxAge(1800).build();
+            // INTTEGRO:DECISION [see-other-redirect] HTTP 303 follows with GET;
+            // unlike 307/308, it cannot replay this merchant POST body.
             return ResponseEntity.status(HttpStatus.SEE_OTHER).location(URI.create(result.checkoutUrl())).header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
         } catch (DemoException error) {
+            // INTTEGRO:SECURITY [safe-error-boundary] Only bounded public errors
+            // reach the redirect. Detailed SDK diagnostics remain server-side.
             return errorRedirect(error.code(), error.getMessage());
         }
     }
