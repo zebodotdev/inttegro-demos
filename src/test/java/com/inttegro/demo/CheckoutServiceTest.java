@@ -21,6 +21,7 @@ class CheckoutServiceTest {
                 "https://demo.example",
                 product);
         assertThat(request.requestMeta.idempotencyKey).isEqualTo("demo-attempt_123");
+        assertThat(request.number).isEqualTo("INV-2048-ATTEMPT-123");
         assertThat(request.finalize).isTrue();
         assertThat(request.checkoutSettings.redirectUrl).isEqualTo("https://demo.example/complete");
         assertThat(request.lineItems.get(0).product.name).isEqualTo("August Studio Retainer");
