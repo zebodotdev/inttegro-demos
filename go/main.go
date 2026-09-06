@@ -131,12 +131,21 @@ func selectCatalogProduct(product *inttegro.Product, priceID string) (catalogSel
 }
 
 func buildOrderRequest(input checkoutInput, origin string, product catalogSelection) inttegro.OrderCreateParams {
+	orderSuffix := strings.ToUpper(strings.ReplaceAll(input.AttemptID, "_", "-"))
+	if len(orderSuffix) > 48 {
+		orderSuffix = orderSuffix[:48]
+	}
 	return inttegro.OrderCreateParams{
 		// INTTEGRO:DECISION [stable-idempotency-key] Reuse this key for retries of
 		// one logical invoice payment. Production systems should persist a key
 		// derived from the merchant invoice; a fresh retry key permits duplicates.
 		// https://studio.inttegro.com/idempotency
 		RequestMeta: &inttegro.RequestMeta{IdempotencyKey: "demo-" + input.AttemptID},
+		// INTTEGRO:DECISION [merchant-order-number] Ledgerline supplies a merchant
+		// reference instead of accepting the generated or_ ID as the order number.
+		// The demo suffix is retry-stable. A production portal should use its durable
+		// invoice or receivables number and must not encode customer PII.
+		Number: "INV-2048-" + orderSuffix,
 		// INTTEGRO:DECISION [inline-customer] customer_data fits this guest flow.
 		// Account-based apps should resolve customer_id on the server; Inttegro
 		// accepts exactly one of the two customer representations.

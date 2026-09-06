@@ -97,6 +97,25 @@
       "docs": ["idempotency", "orders"]
     },
     {
+      "id": "merchant-order-number",
+      "appliesTo": ["hosted-web", "native-payment-sheet"],
+      "selected": "Send a human-readable merchant order number that is stable for the logical checkout.",
+      "rationale": "Without number, Inttegro uses its generated order ID as the order number, which weakens customer-facing labels and merchant reconciliation.",
+      "alternatives": [
+        {
+          "id": "durable-commerce-number",
+          "whenToUse": "Production carts, bookings, invoices, subscriptions, or sales orders.",
+          "consequences": "Use the existing merchant-owned number and persist its mapping to the Inttegro order ID. Keep it unchanged for idempotent retries and exclude customer PII."
+        },
+        {
+          "id": "inttegro-id-fallback",
+          "whenToUse": "The merchant has no separate order-numbering system and intentionally wants Inttegro IDs in every customer and operations surface.",
+          "consequences": "Omit number; Inttegro will use the generated order ID as the order number and invoice label fallback."
+        }
+      ],
+      "docs": ["orders"]
+    },
+    {
       "id": "inline-customer",
       "appliesTo": ["hosted-web"],
       "selected": "Send customer_data for a guest checkout.",

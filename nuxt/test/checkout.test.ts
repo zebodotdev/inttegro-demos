@@ -20,6 +20,7 @@ describe('Nuxt checkout', () => {
       catalogSelection,
     );
     expect(request.request_meta?.idempotency_key).toBe('demo-attempt_123');
+    expect(request.number).toBe('KORA-ATTEMPT-123');
     expect(request.finalize).toBe(true);
     const lineItem = request.line_items[0];
     expect(lineItem?.type).toBe('product');

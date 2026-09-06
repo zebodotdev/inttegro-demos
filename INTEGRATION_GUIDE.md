@@ -102,6 +102,40 @@ Canonical documentation:
 
 - [Idempotent requests](https://studio.inttegro.com/idempotency)
 
+### Supply the merchant's order number
+
+Every demo sets the Order's top-level `number`. This is the human-facing,
+merchant-owned reference used in operational reconciliation and as an invoice
+label fallback. When it is omitted, Inttegro uses the generated `or_…` order ID
+as the order number. That fallback is useful for integrations without their own
+numbering system, but it is a poor default for merchants that already identify
+carts, bookings, invoices, or sales orders in their own system.
+
+The demos have no database, so they form a recognizable reference from the
+story name and the already validated checkout `attempt_id`: `KORA-…` for the
+storefronts, `AFTERGLOW-…` for ticketing, and `INV-2048-…` for Ledgerline. The
+suffix is normalized, bounded to keep the complete value below Inttegro's
+80-character limit, and—critically—stable when the same request is retried.
+
+Production code should not invent a new random number at the API boundary.
+Read the durable merchant order number from the same trusted cart, reservation,
+or receivables record that owns the idempotency key, then persist its mapping to
+the returned Inttegro order ID. Do not encode names, email addresses, phone
+numbers, or other customer PII in the number. An order number is a correlation
+handle, not authentication, authorization, proof of ownership, or proof of
+payment.
+
+`number`, `request_meta.idempotency_key`, and `invoice_settings.number` serve
+different purposes. The order number is for people and business systems; the
+idempotency key controls request replay; an explicit invoice number is optional
+rendering/accounting data. Reusing one stable business identifier as input to
+both the order number and idempotency-key strategy can be sensible, but the
+fields should not be treated as interchangeable.
+
+Canonical documentation:
+
+- [Orders API](https://studio.inttegro.com/orders)
+
 ### Choose customer and catalog representations deliberately
 
 Order creation accepts exactly one customer representation. The web demos use

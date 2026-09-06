@@ -24,6 +24,7 @@ final class CheckoutServiceTest extends TestCase
         ], 'https://demo.example', $product);
 
         self::assertSame('demo-attempt_123', $payload['request_meta']['idempotency_key']);
+        self::assertSame('KORA-ATTEMPT-123', $payload['number']);
         self::assertTrue($payload['finalize']);
         self::assertSame('https://demo.example/complete', $payload['checkout_settings']['redirect_url']);
         self::assertSame(ProductType::Physical, $payload['line_items'][0]['product']['type']);

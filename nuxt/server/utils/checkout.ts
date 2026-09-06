@@ -32,6 +32,10 @@ export type CatalogSelection = {
   price: NonNullable<Product['prices']>[number]['nominal'];
 };
 
+function merchantOrderNumber(prefix: string, attemptId: string): string {
+  return `${prefix}-${attemptId.replaceAll('_', '-').toUpperCase().slice(0, 48)}`;
+}
+
 export function parseCheckoutInput(body: Record<string, unknown>): CheckoutInput {
   const input = { name: String(body.name ?? '').trim(), email: String(body.email ?? '').trim(), phone: String(body.phone ?? '').trim(), attemptId: String(body.attempt_id ?? '').trim() };
   if (!input.name || !input.phone || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) throw new DemoError('validation_error', 'Enter a name, valid email, and phone number.');
@@ -64,6 +68,11 @@ export function buildOrderRequest(input: CheckoutInput, origin: string, product:
     // invoice-derived key; a fresh random key per network retry permits duplicates.
     // https://studio.inttegro.com/idempotency
     request_meta: { idempotency_key: `demo-${input.attemptId}` },
+    // INTTEGRO:DECISION [merchant-order-number] Supply a recognizable merchant
+    // reference rather than accepting Inttegro's generated or_ ID fallback. The
+    // demo derives it from the validated attempt so replayed requests agree.
+    // Production systems should use a persisted cart/order number without PII.
+    number: merchantOrderNumber('KORA', input.attemptId),
     // INTTEGRO:DECISION [inline-customer] customer_data fits this guest flow.
     // Account-based products should resolve customer_id on the server; the
     // Orders API accepts exactly one of these representations.

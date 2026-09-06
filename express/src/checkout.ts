@@ -37,6 +37,10 @@ export type CatalogSelection = {
   price: NonNullable<Product['prices']>[number]['nominal'];
 };
 
+function merchantOrderNumber(prefix: string, attemptId: string): string {
+  return `${prefix}-${attemptId.replaceAll('_', '-').toUpperCase().slice(0, 48)}`;
+}
+
 export class DemoError extends Error {
   constructor(
     readonly code: 'configuration_error' | 'validation_error' | 'api_error',
@@ -91,6 +95,11 @@ export function buildOrderRequest(
     // its cart/reservation; generating a fresh key during a retry allows duplicates.
     // https://studio.inttegro.com/idempotency
     request_meta: { idempotency_key: `demo-${input.attemptId}` },
+    // INTTEGRO:DECISION [merchant-order-number] Set a human-facing merchant
+    // reference so Inttegro does not use its generated or_ ID as the order
+    // number. The validated attempt makes this demo value stable across retries.
+    // In production, use the persisted booking number and never encode PII.
+    number: merchantOrderNumber('AFTERGLOW', input.attemptId),
     // INTTEGRO:DECISION [inline-customer] Guest ticketing uses customer_data.
     // Resolve a stored customer_id server-side for account-based journeys; the
     // Orders API accepts exactly one customer representation.

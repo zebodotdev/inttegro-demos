@@ -24,6 +24,7 @@ class CheckoutServiceTests(SimpleTestCase):
             product,
         )
         self.assertEqual(request.request_meta.idempotency_key, "demo-attempt_123")
+        self.assertEqual(request.number, "AFTERGLOW-ATTEMPT-123")
         self.assertTrue(request.finalize)
         self.assertEqual(request.checkout_settings.redirect_url, "https://demo.example/complete")
         self.assertEqual(request.line_items[0].product.name, "Afterglow Sessions — Courtyard Admission")

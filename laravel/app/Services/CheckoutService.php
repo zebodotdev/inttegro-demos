@@ -81,6 +81,12 @@ final class CheckoutService
             // cart/invoice-derived key; creating a new key after a timeout can
             // create a duplicate. https://studio.inttegro.com/idempotency
             'request_meta' => ['idempotency_key' => 'demo-'.$checkout['attempt_id']],
+            // INTTEGRO:DECISION [merchant-order-number] Supply a recognizable
+            // merchant reference instead of accepting Inttegro's generated or_
+            // ID fallback. The validated attempt makes this demo value stable
+            // across retries. Production should use its persisted sales-order
+            // number and never include customer PII.
+            'number' => 'KORA-'.strtoupper(substr(str_replace('_', '-', $checkout['attempt_id']), 0, 48)),
             // INTTEGRO:DECISION [inline-customer] customer_data suits this guest
             // flow. Account-based apps should resolve customer_id server-side;
             // the Orders API accepts exactly one customer representation.

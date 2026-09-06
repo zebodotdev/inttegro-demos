@@ -12,6 +12,7 @@ import com.inttegro.prices.PriceParams;
 import com.inttegro.products.Product;
 import com.inttegro.products.ProductType;
 import java.net.URI;
+import java.util.Locale;
 
 import org.springframework.stereotype.Service;
 
@@ -81,6 +82,12 @@ public class CheckoutService {
                 // timeout permits duplicates.
                 // https://studio.inttegro.com/idempotency
                 .requestMeta(RequestMeta.withIdempotencyKey("demo-" + form.attemptId()))
+                // INTTEGRO:DECISION [merchant-order-number] Supply Ledgerline's
+                // reference instead of using Inttegro's generated or_ ID as the
+                // order number. The validated attempt keeps this demo reference
+                // stable across retries. Production should use its persisted
+                // invoice number and must not encode customer PII.
+                .number("INV-2048-" + form.attemptId().replace('_', '-').toUpperCase(Locale.ROOT).substring(0, Math.min(48, form.attemptId().length())))
                 // INTTEGRO:DECISION [inline-customer] customerData fits this
                 // guest flow. Account-based apps should resolve customerId on
                 // the server; Inttegro accepts exactly one representation.
@@ -91,7 +98,7 @@ public class CheckoutService {
                 // can still change.
                 .finalizeOrder(true)
                 .checkoutSettings(CheckoutSettings.builder().redirectUrl(origin + "/complete").cancelUrl(origin + "/cancel").build())
-                .lineItem(OrderLineItemParams.product(product -> product
+                .lineItem(OrderLineItemParams.product(item -> item
                         // INTTEGRO:DECISION [catalog-snapshot] Resolve the Product
                         // and Price, then snapshot the verified fields into the
                         // Order for compatibility across SDK versions.
