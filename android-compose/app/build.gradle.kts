@@ -10,6 +10,12 @@ val demoBackendUrl = providers.gradleProperty("inttegroDemoBackendUrl")
     .replace("\\", "\\\\")
     .replace("\"", "\\\"")
 
+val screenshotMode = providers.gradleProperty("inttegroScreenshotMode")
+    .orElse(providers.environmentVariable("INTTEGRO_SCREENSHOT_MODE"))
+    .orElse("false")
+    .get()
+    .toBoolean()
+
 android {
     namespace = "com.inttegro.demo.compose"
     compileSdk = 37
@@ -21,6 +27,7 @@ android {
         versionCode = 1
         versionName = "0.1.0"
         buildConfigField("String", "INTTEGRO_DEMO_BACKEND_URL", "\"$demoBackendUrl\"")
+        buildConfigField("boolean", "INTTEGRO_SCREENSHOT_MODE", screenshotMode.toString())
     }
 
     buildFeatures {

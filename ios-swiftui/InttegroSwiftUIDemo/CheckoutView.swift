@@ -35,6 +35,21 @@ struct CheckoutView: View {
     @State private var selectedCategory = "New in"
     @State private var selectedFinish = "Sunrise"
 
+    init() {
+#if DEBUG
+        if ProcessInfo.processInfo.environment["INTTEGRO_STUDIO_SCREENSHOTS"] == "1" {
+            _configuration = State(
+                initialValue: try? PaymentSheetConfiguration(
+                    orderID: "or_studio_screenshot",
+                    returnURL: URL(string: "inttegro-demo://inttegro-return"),
+                    appearance: .init(primaryColor: "#173D33", cornerRadius: 30)
+                )
+            )
+            _isPaymentSheetPresented = State(initialValue: true)
+        }
+#endif
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -237,18 +252,44 @@ struct CheckoutView: View {
             // INTTEGRO:DECISION [native-payment-sheet] Inttegro owns the native
             // payment-method UI and provider transitions. Kora Market retains
             // its product, cart, loading, cancellation, and result experience.
-            InttegroPaymentSheet(
-                configuration: configuration,
-                // INTTEGRO:OBSERVABILITY [application-owned-observability] These
-                // privacy-safe lifecycle events go to the app's own logger. They
-                // are diagnostics, not payment state; do not add customer data,
-                // secrets, or raw provider payloads.
-                telemetryEventHandler: logPaymentSheetEvent,
-                onCompletion: handle
-            )
-            .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.visible)
+#if DEBUG
+            if isStudioScreenshotMode {
+                InttegroPaymentSheet(
+                    configuration: configuration,
+                    adapter: StudioScreenshotPaymentSheetAdapter(),
+                    onCompletion: handle
+                )
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+            } else {
+                livePaymentSheet(configuration)
+            }
+#else
+            livePaymentSheet(configuration)
+#endif
         }
+    }
+
+    private func livePaymentSheet(_ configuration: PaymentSheetConfiguration) -> some View {
+        InttegroPaymentSheet(
+            configuration: configuration,
+            // INTTEGRO:OBSERVABILITY [application-owned-observability] These
+            // privacy-safe lifecycle events go to the app's own logger. They
+            // are diagnostics, not payment state; do not add customer data,
+            // secrets, or raw provider payloads.
+            telemetryEventHandler: logPaymentSheetEvent,
+            onCompletion: handle
+        )
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
+    }
+
+    private var isStudioScreenshotMode: Bool {
+#if DEBUG
+        ProcessInfo.processInfo.environment["INTTEGRO_STUDIO_SCREENSHOTS"] == "1"
+#else
+        false
+#endif
     }
 
     private func finishColor(_ finish: String) -> Color {
@@ -315,5 +356,67 @@ private func logPaymentSheetEvent(_ event: PaymentSheetTelemetryEvent) {
 private extension Color {
     static let koraForest = Color(red: 0.09, green: 0.24, blue: 0.20)
 }
+
+#if DEBUG
+private struct StudioScreenshotPaymentSheetAdapter: PaymentSheetAdapter {
+    func retrieveCheckout(orderID _: String) async throws -> PaymentSheetSession {
+        try await Task.sleep(for: .milliseconds(250))
+        return PaymentSheetSession(
+            id: "or_studio_screenshot",
+            merchant: .init(
+                displayName: "Kora Market",
+                supportText: nil
+            ),
+            amount: .init(value: 5_000, currency: "GHS"),
+            paymentMethods: [
+                .init(
+                    id: "momo_saved",
+                    kind: .mobileMoney,
+                    label: "MTN Mobile Money",
+                    detail: "••• ••• 0042"
+                ),
+                .init(
+                    id: "mobile_money",
+                    kind: .mobileMoney,
+                    source: .new,
+                    label: "Use another number",
+                    detail: "MTN MoMo, Telecel Cash, or AirtelTigo Money"
+                ),
+            ],
+            expiresAt: Date().addingTimeInterval(15 * 60)
+        )
+    }
+
+    func pay(
+        session _: PaymentSheetSession,
+        selection _: PaymentSheetPaymentSelection
+    ) async throws -> PaymentSheetPaymentOutcome {
+        try await Task.sleep(for: .milliseconds(500))
+        return .completed(paymentID: "py_studio_screenshot")
+    }
+
+    func requestConfirmation(
+        session _: PaymentSheetSession,
+        challenge: PaymentSheetConfirmationChallenge
+    ) async throws -> PaymentSheetPaymentOutcome {
+        .requiresConfirmation(challenge)
+    }
+
+    func confirmPayment(
+        session _: PaymentSheetSession,
+        challenge _: PaymentSheetConfirmationChallenge,
+        token _: String
+    ) async throws -> PaymentSheetPaymentOutcome {
+        .pending(nil)
+    }
+
+    func refreshPayment(
+        session _: PaymentSheetSession
+    ) async throws -> PaymentSheetPaymentOutcome {
+        try await Task.sleep(for: .seconds(30))
+        return .completed(paymentID: "py_studio_screenshot")
+    }
+}
+#endif
 
 #Preview { CheckoutView() }

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.animateColorAsState
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -119,31 +119,45 @@ private fun KoraMarketScreen() {
     var showMenu by remember { mutableStateOf(false) }
     var selectedCategory by remember { mutableStateOf("New in") }
     var selectedFinish by remember { mutableStateOf(finishes.first()) }
-    var checkoutOrderId by rememberSaveable { mutableStateOf<String?>(null) }
-    var checkoutFlowId by rememberSaveable { mutableStateOf<String?>(null) }
+    var checkoutOrderId by rememberSaveable {
+        mutableStateOf(
+            if (BuildConfig.INTTEGRO_SCREENSHOT_MODE) "or_android_documentation" else null,
+        )
+    }
+    var checkoutFlowId by rememberSaveable {
+        mutableStateOf(
+            if (BuildConfig.INTTEGRO_SCREENSHOT_MODE) "android-documentation" else null,
+        )
+    }
     var isCreatingOrder by remember { mutableStateOf(false) }
     var outcome by rememberSaveable { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
     val beginCheckout: () -> Unit = {
         if (!isCreatingOrder) {
-            isCreatingOrder = true
-            outcome = null
-            scope.launch {
-                try {
-                    // INTTEGRO:DECISION [stable-idempotency-key] This UUID names
-                    // one logical attempt. Network retries for that attempt must
-                    // reuse it; production apps persist it with the cart.
-                    // https://studio.inttegro.com/idempotency
-                    val attemptId = UUID.randomUUID().toString()
-                    // INTTEGRO:FLOW [mobile-backend-boundary] The trusted backend
-                    // authenticates the customer and owns order construction.
-                    checkoutOrderId = DemoBackend(BuildConfig.INTTEGRO_DEMO_BACKEND_URL)
-                        .createCheckoutOrder(attemptId)
-                    checkoutFlowId = attemptId
-                } catch (error: Exception) {
-                    outcome = error.message ?: "Payment is temporarily unavailable."
-                } finally {
-                    isCreatingOrder = false
+            if (BuildConfig.INTTEGRO_SCREENSHOT_MODE) {
+                checkoutOrderId = "or_android_documentation"
+                checkoutFlowId = "android-documentation"
+                outcome = null
+            } else {
+                isCreatingOrder = true
+                outcome = null
+                scope.launch {
+                    try {
+                        // INTTEGRO:DECISION [stable-idempotency-key] This UUID names
+                        // one logical attempt. Network retries for that attempt must
+                        // reuse it; production apps persist it with the cart.
+                        // https://studio.inttegro.com/idempotency
+                        val attemptId = UUID.randomUUID().toString()
+                        // INTTEGRO:FLOW [mobile-backend-boundary] The trusted backend
+                        // authenticates the customer and owns order construction.
+                        checkoutOrderId = DemoBackend(BuildConfig.INTTEGRO_DEMO_BACKEND_URL)
+                            .createCheckoutOrder(attemptId)
+                        checkoutFlowId = attemptId
+                    } catch (error: Exception) {
+                        outcome = error.message ?: "Payment is temporarily unavailable."
+                    } finally {
+                        isCreatingOrder = false
+                    }
                 }
             }
         }
@@ -202,7 +216,7 @@ private fun KoraMarketScreen() {
                             Spacer(Modifier.size(10.dp))
                         }
                         Text(
-                            if (isCreatingOrder) "Preparing checkout" else "Pay with Inttegro",
+                            if (isCreatingOrder) "Preparing checkout" else "Pay GHS 50.00",
                             fontWeight = FontWeight.SemiBold,
                         )
                     }
@@ -325,6 +339,11 @@ private fun KoraMarketScreen() {
                 returnUrl = "inttegro-demo://payment-return",
             ),
             telemetry = telemetry,
+            adapter = if (BuildConfig.INTTEGRO_SCREENSHOT_MODE) {
+                DemoPaymentSheetAdapter
+            } else {
+                null
+            },
             onDismissRequest = {
                 checkoutOrderId = null
                 checkoutFlowId = null

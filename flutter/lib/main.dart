@@ -81,15 +81,15 @@ class _KoraProductScreenState extends State<KoraProductScreen> {
   void initState() {
     super.initState();
     // INTTEGRO:OBSERVABILITY [application-owned-observability] The SDK exposes
-    // privacy-safe lifecycle fields to the app. Forward them to your own
+    // privacy-safe diagnostic fields to the app. Forward them to your own
     // telemetry pipeline if useful, but do not attach customer data, secrets,
     // or raw provider payloads. These events are diagnostics, not payment state.
     // https://studio.inttegro.com/sdk-observability
-    _telemetrySubscription = Inttegro.instance.paymentSheetEvents.listen(
+    _telemetrySubscription = Inttegro.instance.paymentSheetTelemetryEvents.listen(
       (event) => debugPrint(
         'Inttegro payment sheet: flow=${event.flowId} '
-        'event=${event.name} sequence=${event.sequence} '
-        'operation=${event.operation ?? 'none'} '
+        'event=${event.name.wireValue} sequence=${event.sequence} '
+        'operation=${event.operation?.wireValue ?? 'none'} '
         'status=${event.httpStatusCode ?? 0} '
         'request=${event.requestId ?? 'none'} '
         'error=${event.errorType ?? 'none'}',

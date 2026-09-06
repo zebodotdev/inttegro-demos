@@ -9,6 +9,23 @@ The app asks the Kora Market backend for a finalized mobile-money-only order,
 then uses the SDK's native Checkout transport. Payment-sheet telemetry is sent
 to Logcat under `InttegroPaymentSheet` without installing an exporter.
 
+## Native payment sheet
+
+<table>
+  <tr>
+    <td><img src="./docs/images/payment-sheet-methods.png" alt="Attached MTN Mobile Money account in the native Android payment sheet" width="320"></td>
+    <td><img src="./docs/images/payment-sheet-mobile-money.png" alt="Segmented Mobile Money number entry and network selection in the native Android payment sheet" width="320"></td>
+  </tr>
+  <tr>
+    <td><img src="./docs/images/payment-sheet-saved-method.png" alt="Filled payer contact and billing details in the native Android payment sheet" width="320"></td>
+    <td><img src="./docs/images/payment-sheet-completed.png" alt="Completed native Android payment sheet for Kora Market" width="320"></td>
+  </tr>
+</table>
+
+These are genuine captures of the production Compose sheet running on a Pixel
+9 Android emulator. The local capture adapter supplies deterministic checkout
+data and never sends a payment.
+
 ## Run
 
 Set `INTTEGRO_DEMO_BACKEND_URL` or the `inttegroDemoBackendUrl` Gradle property,
@@ -23,6 +40,19 @@ The repository includes a Gradle wrapper:
 ```sh
 ./gradlew :app:assembleDebug
 ```
+
+## Capture documentation screenshots
+
+Build with deterministic, non-sensitive checkout data when capturing the real
+Android SDK UI for documentation:
+
+```sh
+./gradlew :app:assembleDebug -PinttegroScreenshotMode=true
+```
+
+This mode opens the production `InttegroPaymentSheet` automatically and injects
+only a local adapter. It does not call the Checkout API or require merchant
+credentials. Builds without the property keep the normal backend flow.
 
 A production app receives only a finalized `orderId` created by its backend.
 Fulfillment still relies on authoritative server-side payment status.

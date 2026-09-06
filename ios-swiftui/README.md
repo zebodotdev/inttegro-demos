@@ -37,6 +37,33 @@ xcodebuild build \
 A production app receives only a finalized `orderID` from its merchant backend.
 Payment completion must still be verified on the server.
 
+## Capture the native payment sheet
+
+For documentation screenshots, launch a Debug build with
+`INTTEGRO_STUDIO_SCREENSHOTS=1`. This opens the real SDK payment sheet with a
+deterministic, local checkout fixture; it does not call the Inttegro API or
+create a payment.
+
+```sh
+SIMCTL_CHILD_INTTEGRO_STUDIO_SCREENSHOTS=1 \
+  xcrun simctl launch --terminate-running-process booted \
+  com.inttegro.demo.swiftui
+
+xcrun simctl io booted screenshot --mask alpha payment-sheet.png
+```
+
+The switch is compiled only in Debug builds. Release builds always use the
+SDK's live Checkout adapter.
+
+The fixture opens on the attached payment method. Choose **Change payment
+method** to capture active number entry; the SDK expands to the large detent.
+Enable **Save payment method** to capture the full owner/contact form. The
+fields are native controls and the values entered for a screenshot remain
+local to that simulator run.
+
+The screenshot fixture completes immediately after **Pay**. Capture the SDK's
+`Payment complete` state before choosing **Done**; no payment is created.
+
 ## Deploy the companion backend
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-nextjs-v1.2.3&project-name=inttegro-demo-nextjs&repository-name=inttegro-demo-nextjs&env=INTTEGRO_API_KEY%2CINTTEGRO_DEMO_PRODUCT_ID%2CINTTEGRO_DEMO_PRICE_ID%2CINTTEGRO_DEMO_CUSTOMER_ID%2CINTTEGRO_DEMO_PUBLIC_URL&envDescription=Add%20a%20dedicated%20Inttegro%20API%20key%2C%20active%20Product%20and%20Price%20IDs%2C%20demo%20Customer%20ID%2C%20and%20the%20public%20origin.&envLink=https%3A%2F%2Fstudio.inttegro.com%2Fkeys)
