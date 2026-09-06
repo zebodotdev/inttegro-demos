@@ -5,6 +5,15 @@ import express from 'express';
 import { createHostedCheckout, DemoError, parseCheckoutInput } from './checkout.js';
 import { homePage, resultPage } from './pages.js';
 
+/**
+ * INTTEGRO:FLOW [hosted-checkout] POST /checkout is the browser-to-hosted-
+ * checkout handoff. Order construction is documented in checkout.ts and at
+ * https://studio.inttegro.com/accept-payment-with-inttegro-checkout.
+ * INTTEGRO:VERIFY [server-side-verification] /complete is not authoritative
+ * payment evidence. Verify with a server-side order lookup and reconcile
+ * non-terminal orders: https://studio.inttegro.com/webhooks.
+ */
+
 const app = express();
 const here = path.dirname(fileURLToPath(import.meta.url));
 
@@ -22,14 +31,21 @@ app.post('/checkout', async (request, response) => {
   try {
     const input = parseCheckoutInput(request.body as Record<string, unknown>);
     const result = await createHostedCheckout(input, `${request.protocol}://${request.get('host')}`);
+    // INTTEGRO:DECISION [durable-order-correlation] This HttpOnly cookie is only
+    // an illustrative correlation aid. A production database must bind the
+    // merchant reservation, owner, Inttegro order, and idempotency key.
     response.cookie('inttegro_demo_order', result.orderId, {
       httpOnly: true,
       sameSite: 'lax',
       secure: request.secure,
       maxAge: 30 * 60 * 1000,
     });
+    // INTTEGRO:DECISION [see-other-redirect] 303 follows the hosted URL with GET;
+    // 307/308 would preserve POST and risk forwarding the merchant form body.
     response.redirect(303, result.checkoutUrl);
   } catch (error) {
+    // INTTEGRO:SECURITY [safe-error-boundary] Only bounded public messages reach
+    // the query string. Detailed SDK errors remain in protected server telemetry.
     const safe = error instanceof DemoError
       ? error
       : new DemoError('api_error', 'Checkout is temporarily unavailable.');
