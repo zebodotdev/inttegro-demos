@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "demo": "express",
+  "version": "1.1.1",
+  "sourceSuiteTag": "v1.1.1",
+  "sourceDemoTag": "express-v1.1.1",
+  "sourceCommit": "9bde8ab17b5699b87b7cd6d3eb514f59777dd800",
+  "sourceSubtreeCommit": "9eddf156e10d50053ea6d6c382691c38fc111805"
+}
