@@ -29,6 +29,9 @@ func TestBuildOrderRequest(t *testing.T) {
 	if request.RequestMeta.IdempotencyKey != "demo-attempt_123" {
 		t.Fatalf("unexpected idempotency key: %s", request.RequestMeta.IdempotencyKey)
 	}
+	if request.Number != "INV-2048-ATTEMPT-123" {
+		t.Fatalf("unexpected merchant order number: %s", request.Number)
+	}
 	if request.Finalize == nil || !*request.Finalize {
 		t.Fatal("order must be finalized")
 	}
