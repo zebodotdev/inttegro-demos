@@ -11,7 +11,10 @@ set -a && source .env && set +a
 npm run dev
 ```
 
-Open <http://localhost:3001>. Run `npm run check` to compile and execute the
+Open <http://localhost:3001>. Configure `INTTEGRO_DEMO_PRODUCT_ID` and
+`INTTEGRO_DEMO_PRICE_ID` with the active Afterglow admission Product and Price.
+Express resolves and validates both on the server; the reservation form cannot
+choose its own ticket or amount. Run `npm run check` to compile and execute the
 focused unit tests.
 
 ## Deploy your own
