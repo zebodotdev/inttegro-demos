@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "version": "1.2.3",
+  "suiteTag": "v1.2.3",
+  "repository": "https://github.com/zebodotdev/inttegro-demos",
+  "permalinkTemplate": "https://github.com/zebodotdev/inttegro-demos/blob/{tag}/{file}#L{start}-L{end}",
+  "rawTemplate": "https://raw.githubusercontent.com/zebodotdev/inttegro-demos/{tag}/{file}",
+  "releaseNotes": "releases/v1.2.3.md",
+  "deploymentManifest": "deployments.json",
+  "demos": [
+    {
+      "id": "nextjs",
+      "version": "1.2.3",
+      "tag": "nextjs-v1.2.3",
+      "path": "nextjs",
+      "entryPoints": ["nextjs/lib/checkout.ts", "nextjs/app/checkout/route.ts", "nextjs/app/mobile/orders/route.ts"]
+    },
+    {
+      "id": "express",
+      "version": "1.2.3",
+      "tag": "express-v1.2.3",
+      "path": "express",
+      "entryPoints": ["express/src/checkout.ts", "express/src/app.ts"]
+    },
+    {
+      "id": "nuxt",
+      "version": "1.2.3",
+      "tag": "nuxt-v1.2.3",
+      "path": "nuxt",
+      "entryPoints": ["nuxt/server/utils/checkout.ts", "nuxt/server/routes/checkout.post.ts"]
+    },
+    {
+      "id": "go",
+      "version": "1.2.3",
+      "tag": "go-v1.2.3",
+      "path": "go",
+      "entryPoints": ["go/main.go"]
+    },
+    {
+      "id": "django",
+      "version": "1.2.3",
+      "tag": "django-v1.2.3",
+      "path": "django",
+      "entryPoints": ["django/checkout/service.py", "django/checkout/views.py"]
+    },
+    {
+      "id": "fastapi",
+      "version": "1.2.3",
+      "tag": "fastapi-v1.2.3",
+      "path": "fastapi",
+      "entryPoints": ["fastapi/app/checkout.py", "fastapi/app/main.py"]
+    },
+    {
+      "id": "rails",
+      "version": "1.2.3",
+      "tag": "rails-v1.2.3",
+      "path": "rails",
+      "entryPoints": ["rails/app/services/checkout_service.rb", "rails/app/controllers/checkouts_controller.rb"]
+    },
+    {
+      "id": "laravel",
+      "version": "1.2.3",
+      "tag": "laravel-v1.2.3",
+      "path": "laravel",
+      "entryPoints": ["laravel/app/Services/CheckoutService.php", "laravel/app/Http/Controllers/CheckoutController.php"]
+    },
+    {
+      "id": "spring-boot",
+      "version": "1.2.3",
+      "tag": "spring-boot-v1.2.3",
+      "path": "spring-boot",
+      "entryPoints": ["spring-boot/src/main/java/com/inttegro/demo/CheckoutService.java", "spring-boot/src/main/java/com/inttegro/demo/CheckoutController.java"]
+    },
+    {
+      "id": "ios-swiftui",
+      "version": "1.2.3",
+      "tag": "ios-swiftui-v1.2.3",
+      "path": "ios-swiftui",
+      "entryPoints": ["ios-swiftui/InttegroSwiftUIDemo/DemoBackend.swift", "ios-swiftui/InttegroSwiftUIDemo/CheckoutView.swift"]
+    },
+    {
+      "id": "android-compose",
+      "version": "1.2.3",
+      "tag": "android-compose-v1.2.3",
+      "path": "android-compose",
+      "entryPoints": ["android-compose/app/src/main/java/com/inttegro/demo/compose/DemoBackend.kt", "android-compose/app/src/main/java/com/inttegro/demo/compose/MainActivity.kt"]
+    },
+    {
+      "id": "flutter",
+      "version": "1.2.3",
+      "tag": "flutter-v1.2.3",
+      "path": "flutter",
+      "entryPoints": ["flutter/lib/demo_backend.dart", "flutter/lib/main.dart"]
+    },
+    {
+      "id": "react-native-expo",
+      "version": "1.2.3",
+      "tag": "react-native-expo-v1.2.3",
+      "path": "react-native-expo",
+      "entryPoints": ["react-native-expo/src/demoBackend.ts", "react-native-expo/App.tsx"]
+    }
+  ]
+}

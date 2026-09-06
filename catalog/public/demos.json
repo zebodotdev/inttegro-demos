@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "https://github.com/zebodotdev/inttegro-demos",
-  "releaseVersion": "1.2.2",
-  "suiteTag": "v1.2.2",
+  "releaseVersion": "1.2.3",
+  "suiteTag": "v1.2.3",
   "domainStatus": "active",
   "demos": [
     {
@@ -19,8 +19,8 @@
         "url": "https://nextjs-demo.inttegro.dev"
       },
       "hostname": "nextjs-demo.inttegro.dev",
-      "tag": "nextjs-v1.2.2",
-      "deployRef": "deploy-nextjs-v1.2.2",
+      "tag": "nextjs-v1.2.3",
+      "deployRef": "deploy-nextjs-v1.2.3",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -81,8 +81,8 @@
         "url": "https://express-demo.inttegro.dev"
       },
       "hostname": "express-demo.inttegro.dev",
-      "tag": "express-v1.2.2",
-      "deployRef": "deploy-express-v1.2.2",
+      "tag": "express-v1.2.3",
+      "deployRef": "deploy-express-v1.2.3",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -146,8 +146,8 @@
         "url": "https://nuxt-demo.inttegro.dev"
       },
       "hostname": "nuxt-demo.inttegro.dev",
-      "tag": "nuxt-v1.2.2",
-      "deployRef": "deploy-nuxt-v1.2.2",
+      "tag": "nuxt-v1.2.3",
+      "deployRef": "deploy-nuxt-v1.2.3",
       "environment": [
         {
           "name": "NUXT_INTTEGRO_API_KEY",
@@ -203,8 +203,8 @@
         "url": "https://go-demo.inttegro.dev"
       },
       "hostname": "go-demo.inttegro.dev",
-      "tag": "go-v1.2.2",
-      "deployRef": "deploy-go-v1.2.2",
+      "tag": "go-v1.2.3",
+      "deployRef": "deploy-go-v1.2.3",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -260,8 +260,8 @@
         "url": "https://django-demo.inttegro.dev"
       },
       "hostname": "django-demo.inttegro.dev",
-      "tag": "django-v1.2.2",
-      "deployRef": "deploy-django-v1.2.2",
+      "tag": "django-v1.2.3",
+      "deployRef": "deploy-django-v1.2.3",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -340,8 +340,8 @@
         "url": "https://fastapi-demo.inttegro.dev"
       },
       "hostname": "fastapi-demo.inttegro.dev",
-      "tag": "fastapi-v1.2.2",
-      "deployRef": "deploy-fastapi-v1.2.2",
+      "tag": "fastapi-v1.2.3",
+      "deployRef": "deploy-fastapi-v1.2.3",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -405,8 +405,8 @@
         "url": "https://rails-demo.inttegro.dev"
       },
       "hostname": "rails-demo.inttegro.dev",
-      "tag": "rails-v1.2.2",
-      "deployRef": "deploy-rails-v1.2.2",
+      "tag": "rails-v1.2.3",
+      "deployRef": "deploy-rails-v1.2.3",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -467,8 +467,8 @@
         "url": "https://laravel-demo.inttegro.dev"
       },
       "hostname": "laravel-demo.inttegro.dev",
-      "tag": "laravel-v1.2.2",
-      "deployRef": "deploy-laravel-v1.2.2",
+      "tag": "laravel-v1.2.3",
+      "deployRef": "deploy-laravel-v1.2.3",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -524,8 +524,8 @@
       "releaseStatus": "publication-gated",
       "mode": "server",
       "hostname": "spring-boot-demo.inttegro.dev",
-      "tag": "spring-boot-v1.2.2",
-      "deployRef": "deploy-spring-boot-v1.2.2",
+      "tag": "spring-boot-v1.2.3",
+      "deployRef": "deploy-spring-boot-v1.2.3",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -579,8 +579,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "ios-swiftui-demo.inttegro.dev",
-      "tag": "ios-swiftui-v1.2.2",
-      "deployRef": "deploy-ios-swiftui-v1.2.2",
+      "tag": "ios-swiftui-v1.2.3",
+      "deployRef": "deploy-ios-swiftui-v1.2.3",
       "environment": [],
       "providers": []
     },
@@ -594,8 +594,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "android-compose-demo.inttegro.dev",
-      "tag": "android-compose-v1.2.2",
-      "deployRef": "deploy-android-compose-v1.2.2",
+      "tag": "android-compose-v1.2.3",
+      "deployRef": "deploy-android-compose-v1.2.3",
       "environment": [],
       "providers": []
     },
@@ -609,8 +609,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "flutter-demo.inttegro.dev",
-      "tag": "flutter-v1.2.2",
-      "deployRef": "deploy-flutter-v1.2.2",
+      "tag": "flutter-v1.2.3",
+      "deployRef": "deploy-flutter-v1.2.3",
       "environment": [],
       "providers": []
     },
@@ -624,8 +624,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "react-native-expo-demo.inttegro.dev",
-      "tag": "react-native-expo-v1.2.2",
-      "deployRef": "deploy-react-native-expo-v1.2.2",
+      "tag": "react-native-expo-v1.2.3",
+      "deployRef": "deploy-react-native-expo-v1.2.3",
       "environment": [],
       "providers": []
     }
