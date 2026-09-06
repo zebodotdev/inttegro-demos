@@ -20,6 +20,7 @@ test('builds the canonical hosted checkout request', () => {
     price: { currency: 'ghs', value: 5000 },
   });
   assert.equal(request.request_meta?.idempotency_key, 'demo-attempt_123');
+  assert.equal(request.number, 'AFTERGLOW-ATTEMPT-123');
   assert.equal(request.finalize, true);
   assert.equal(request.checkout_settings?.redirect_url, 'https://demo.example/complete');
   const lineItem = request.line_items[0];
