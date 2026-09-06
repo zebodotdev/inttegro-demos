@@ -46,7 +46,27 @@ class CheckoutService
       checkout
     end
 
-    def order_params(checkout, origin)
+    def catalog_selection(product, price_id)
+      # INTTEGRO:SECURITY [catalog-authority] Product and price never come from
+      # the submitted Rails params. Resolve them with the server credential and
+      # verify their relationship before building the Order.
+      raise DemoError.new("configuration_error", "The configured demo product is not active.") unless product.active
+
+      price = product.prices&.find { |candidate| candidate.id == price_id && candidate.active }
+      unless price && price.nominal.value.positive?
+        raise DemoError.new("configuration_error", "The configured demo price is not active for this product.")
+      end
+
+      {
+        type: product.type,
+        name: product.name,
+        about: product.about,
+        reference: product.reference,
+        price: Inttegro::PriceParams.new(currency: price.nominal.currency, value: price.nominal.value)
+      }.compact
+    end
+
+    def order_params(checkout, origin, product)
       {
         # INTTEGRO:DECISION [stable-idempotency-key] Reuse this key for a retry of
         # the same logical checkout. Production systems should persist a stable
@@ -66,15 +86,15 @@ class CheckoutService
         line_items: [{
           type: "product",
           product: {
-            # INTTEGRO:DECISION [inline-product] Inline product data makes this
-            # demo self-contained. Catalog users can choose product_id with an
-            # explicit price or price_id; never mix inline and catalog fields.
-            type: Inttegro::ProductType::PHYSICAL,
-            name: "Dawn Brew Set",
+            # INTTEGRO:DECISION [catalog-snapshot] The service looks up the
+            # configured Inttegro Product and Price, validates their relationship,
+            # and snapshots the authoritative fields into this Order. That shape
+            # remains compatible across maintained SDK versions.
+            # INTTEGRO:ALTERNATIVE [catalog-snapshot] When the selected SDK
+            # exposes the typed catalogue union, send product_id + price_id +
+            # quantity instead and do not mix in inline product fields.
+            **product,
             quantity: 1,
-            # INTTEGRO:DECISION [minor-unit-money] Integer 5000 means GHS 50.00.
-            # Convert variable input with a decimal/money type, not Float.
-            price: Inttegro::PriceParams.new(currency: Inttegro::Money::Currency::GHS, value: 5000)
           }
         }]
       }
@@ -93,6 +113,11 @@ class CheckoutService
       # store and rotate it there; never serialize it to the browser.
       api_key = ENV.fetch("INTTEGRO_API_KEY", "").strip
       raise DemoError.new("configuration_error", "Set INTTEGRO_API_KEY on the server.") if api_key.empty?
+      product_id = ENV.fetch("INTTEGRO_DEMO_PRODUCT_ID", "").strip
+      price_id = ENV.fetch("INTTEGRO_DEMO_PRICE_ID", "").strip
+      unless product_id.match?(/\Aprod_[A-Za-z0-9]+\z/) && price_id.match?(/\Apr_[A-Za-z0-9]+\z/)
+        raise DemoError.new("configuration_error", "Set INTTEGRO_DEMO_PRODUCT_ID and INTTEGRO_DEMO_PRICE_ID on the server.")
+      end
 
       public_origin = "#{uri.scheme}://#{uri.host}"
       public_origin += ":#{uri.port}" unless [80, 443].include?(uri.port)
@@ -100,7 +125,12 @@ class CheckoutService
       # startup-configured client for transport reuse and application-owned
       # OpenTelemetry. Per-operation construction keeps this demo easy to trace.
       # https://studio.inttegro.com/sdk-observability
-      order = Inttegro::Client.new(api_key: api_key).orders.create(**order_params(checkout, public_origin))
+      client = Inttegro::Client.new(api_key: api_key)
+      # INTTEGRO:FLOW [catalog-lookup] Fetch at checkout time so publication and
+      # price changes are observed. A high-volume service can add a short cache
+      # with explicit invalidation. https://studio.inttegro.com/products
+      product = catalog_selection(client.products.lookup(product_id: product_id), price_id)
+      order = client.orders.create(**order_params(checkout, public_origin, product))
       # INTTEGRO:DECISION [returned-checkout-url] Use the response URL rather
       # than deriving one from order.id and undocumented routing conventions.
       checkout_url = order.invoice&.format_value&.web&.url

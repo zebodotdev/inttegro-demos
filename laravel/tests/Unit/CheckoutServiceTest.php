@@ -3,6 +3,8 @@
 namespace Tests\Unit;
 
 use App\Services\CheckoutService;
+use Inttegro\Money\Currency;
+use Inttegro\PriceParams;
 use Inttegro\ProductType;
 use PHPUnit\Framework\TestCase;
 
@@ -10,9 +12,16 @@ final class CheckoutServiceTest extends TestCase
 {
     public function test_it_builds_the_shared_order_payload(): void
     {
+        $product = [
+            'type' => ProductType::Physical,
+            'name' => 'Dawn Brew Set',
+            'about' => 'A quiet ritual for slow mornings.',
+            'reference' => 'DEMO-KORA-DAWN-BREW',
+            'price' => new PriceParams(Currency::GHS, 5000),
+        ];
         $payload = CheckoutService::orderPayload([
             'name' => 'Akua', 'email' => 'akua@example.com', 'phone' => '+233', 'attempt_id' => 'attempt_123',
-        ], 'https://demo.example');
+        ], 'https://demo.example', $product);
 
         self::assertSame('demo-attempt_123', $payload['request_meta']['idempotency_key']);
         self::assertTrue($payload['finalize']);

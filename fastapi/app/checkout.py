@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from urllib.parse import urlparse
 
 import inttegro
-from inttegro import APIError, Currency, LineItemType, ProductType
+from inttegro import APIError, LineItemType, ProductType
 
 
 # Inttegro integration map
@@ -40,6 +40,15 @@ class CheckoutInput:
     attempt_id: str
 
 
+@dataclass(frozen=True)
+class CatalogSelection:
+    type: ProductType
+    name: str
+    about: str | None
+    reference: str | None
+    price: inttegro.PriceParams
+
+
 def parse_checkout_input(name: str, email: str, phone: str, attempt_id: str) -> CheckoutInput:
     value = CheckoutInput(name.strip(), email.strip(), phone.strip(), attempt_id.strip())
     if not value.name or not value.phone or not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", value.email):
@@ -60,7 +69,24 @@ def validated_origin(value: str) -> str:
     return f"{parsed.scheme}://{parsed.netloc}"
 
 
-def build_order_request(value: CheckoutInput, origin: str) -> inttegro.orders.CreateRequest:
+def select_catalog_product(product, price_id: str) -> CatalogSelection:
+    # INTTEGRO:SECURITY [catalog-authority] The untrusted form supplies no
+    # product, price, or amount. Resolve and validate them on this server.
+    if not product.active:
+        raise DemoError("configuration_error", "The configured demo product is not active.")
+    price = next((candidate for candidate in (product.prices or []) if candidate.id == price_id and candidate.active), None)
+    if price is None or price.nominal.value <= 0:
+        raise DemoError("configuration_error", "The configured demo price is not active for this product.")
+    return CatalogSelection(
+        type=product.type,
+        name=product.name,
+        about=product.about,
+        reference=product.reference,
+        price=inttegro.PriceParams(currency=price.nominal.currency, value=price.nominal.value),
+    )
+
+
+def build_order_request(value: CheckoutInput, origin: str, product: CatalogSelection) -> inttegro.orders.CreateRequest:
     return inttegro.orders.CreateRequest(
         # INTTEGRO:DECISION [stable-idempotency-key] Reuse the key for retries of
         # this logical checkout. Production systems persist a cart- or booking-
@@ -80,15 +106,18 @@ def build_order_request(value: CheckoutInput, origin: str) -> inttegro.orders.Cr
         line_items=[inttegro.orders.ProductLineItem(
             type=LineItemType.PRODUCT,
             product=inttegro.orders.Product(
-                # INTTEGRO:DECISION [inline-product] Inline data keeps this event
-                # self-contained. Catalog users can send product_id with price or
-                # price_id; do not mix catalog and inline product fields.
-                type=ProductType.DIGITAL,
-                name="Afterglow Sessions - Courtyard admission",
+                # INTTEGRO:DECISION [catalog-snapshot] The service resolves the
+                # configured Product and Price and snapshots the verified fields
+                # into the Order for compatibility across SDK versions.
+                # INTTEGRO:ALTERNATIVE [catalog-snapshot] SDKs with the typed
+                # catalogue union can send product_id + price_id + quantity
+                # instead, without mixing in inline product fields.
+                type=product.type,
+                name=product.name,
+                about=product.about,
+                reference=product.reference,
                 quantity=1,
-                # INTTEGRO:DECISION [minor-unit-money] 5000 minor units is
-                # GHS 50.00. Convert variable input using decimal/money types.
-                price=inttegro.PriceParams(currency=Currency.GHS, value=5000),
+                price=product.price,
             ),
         )],
     )
@@ -100,12 +129,21 @@ def create_hosted_checkout(value: CheckoutInput, origin: str) -> tuple[str, str]
     api_key = os.environ.get("INTTEGRO_API_KEY", "").strip()
     if not api_key:
         raise DemoError("configuration_error", "Set INTTEGRO_API_KEY on the server.")
+    product_id = os.environ.get("INTTEGRO_DEMO_PRODUCT_ID", "").strip()
+    price_id = os.environ.get("INTTEGRO_DEMO_PRICE_ID", "").strip()
+    if not re.fullmatch(r"prod_[A-Za-z0-9]+", product_id) or not re.fullmatch(r"pr_[A-Za-z0-9]+", price_id):
+        raise DemoError("configuration_error", "Set INTTEGRO_DEMO_PRODUCT_ID and INTTEGRO_DEMO_PRICE_ID on the server.")
     try:
         # INTTEGRO:ALTERNATIVE [server-api-key] Long-running apps can inject one
         # startup-configured client for connection reuse and application-owned
         # OpenTelemetry. The SDK chooses no exporter or vendor.
         # https://studio.inttegro.com/sdk-observability
-        order = inttegro.InttegroClient(api_key=api_key).orders.create(build_order_request(value, validated_origin(origin)))
+        client = inttegro.InttegroClient(api_key=api_key)
+        # INTTEGRO:FLOW [catalog-lookup] Fetch at checkout time so publication
+        # and price changes are observed. High-volume apps may use a short cache
+        # with an explicit invalidation policy. https://studio.inttegro.com/products
+        product = select_catalog_product(client.products.lookup(product_id), price_id)
+        order = client.orders.create(build_order_request(value, validated_origin(origin), product))
         # INTTEGRO:DECISION [returned-checkout-url] Use the response field rather
         # than constructing a URL from order.id and undocumented routing.
         checkout_url = order.invoice.format.web.url

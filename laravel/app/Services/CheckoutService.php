@@ -4,8 +4,8 @@ namespace App\Services;
 
 use Inttegro\APIError;
 use Inttegro\Client;
-use Inttegro\Money\Currency;
 use Inttegro\PriceParams;
+use Inttegro\Product;
 use Inttegro\ProductType;
 use RuntimeException;
 
@@ -37,8 +37,43 @@ final class DemoError extends RuntimeException
 
 final class CheckoutService
 {
-    /** @param array{name: string, email: string, phone: string, attempt_id: string} $checkout */
-    public static function orderPayload(array $checkout, string $origin): array
+    /**
+     * @return array{type: ProductType, name: string, about: ?string, reference: ?string, price: PriceParams}
+     */
+    public static function catalogSelection(Product $product, string $priceId): array
+    {
+        // INTTEGRO:SECURITY [catalog-authority] Product, Price, and amount are
+        // deployment configuration resolved with the server credential. The
+        // public form cannot choose any of them.
+        if (!$product->active) {
+            throw new DemoError('configuration_error', 'The configured demo product is not active.');
+        }
+
+        $selected = null;
+        foreach ($product->prices ?? [] as $price) {
+            if ($price->id === $priceId && $price->active) {
+                $selected = $price;
+                break;
+            }
+        }
+        if ($selected === null || $selected->nominal->value <= 0) {
+            throw new DemoError('configuration_error', 'The configured demo price is not active for this product.');
+        }
+
+        return [
+            'type' => ProductType::from($product->type),
+            'name' => $product->name,
+            'about' => $product->about,
+            'reference' => $product->reference,
+            'price' => new PriceParams($selected->nominal->currency, $selected->nominal->value),
+        ];
+    }
+
+    /**
+     * @param array{name: string, email: string, phone: string, attempt_id: string} $checkout
+     * @param array{type: ProductType, name: string, about: ?string, reference: ?string, price: PriceParams} $product
+     */
+    public static function orderPayload(array $checkout, string $origin, array $product): array
     {
         return [
             // INTTEGRO:DECISION [stable-idempotency-key] Reuse the key for a
@@ -59,16 +94,19 @@ final class CheckoutService
             'line_items' => [[
                 'type' => 'product',
                 'product' => [
-                    // INTTEGRO:DECISION [inline-product] Inline product data
-                    // keeps this demo self-contained. Catalog merchants can use
-                    // product_id plus price or price_id; do not mix both shapes.
-                    'type' => ProductType::Physical,
-                    'name' => 'Dawn Brew Set',
+                    // INTTEGRO:DECISION [catalog-snapshot] The service looks up
+                    // the configured Product and Price, verifies their
+                    // relationship, and snapshots those authoritative fields
+                    // into the Order for compatibility across SDK versions.
+                    // INTTEGRO:ALTERNATIVE [catalog-snapshot] When the SDK
+                    // exposes the typed catalogue union, send product_id +
+                    // price_id + quantity instead and omit the inline fields.
+                    'type' => $product['type'],
+                    'name' => $product['name'],
+                    'about' => $product['about'],
+                    'reference' => $product['reference'],
                     'quantity' => 1,
-                    // INTTEGRO:DECISION [minor-unit-money] Integer 5000 is
-                    // GHS 50.00. Use a currency-aware decimal/money type when
-                    // converting variable amounts.
-                    'price' => new PriceParams(Currency::GHS, 5000),
+                    'price' => $product['price'],
                 ],
             ]],
         ];
@@ -85,6 +123,11 @@ final class CheckoutService
         if ($apiKey === '') {
             throw new DemoError('configuration_error', 'Set INTTEGRO_API_KEY on the server.');
         }
+        $productId = trim((string) getenv('INTTEGRO_DEMO_PRODUCT_ID'));
+        $priceId = trim((string) getenv('INTTEGRO_DEMO_PRICE_ID'));
+        if (!preg_match('/^prod_[A-Za-z0-9]+$/', $productId) || !preg_match('/^pr_[A-Za-z0-9]+$/', $priceId)) {
+            throw new DemoError('configuration_error', 'Set INTTEGRO_DEMO_PRODUCT_ID and INTTEGRO_DEMO_PRICE_ID on the server.');
+        }
         // INTTEGRO:SECURITY [configured-public-origin] Prefer an allow-listed
         // origin in production. Request-derived values are safe only behind a
         // precise trusted-proxy configuration. Return URLs must be HTTP(S), and
@@ -100,7 +143,13 @@ final class CheckoutService
             // inject one startup-configured Client for transport reuse and
             // application-owned OpenTelemetry. Per-call construction is concise
             // for the demo. https://studio.inttegro.com/sdk-observability
-            $order = (new Client($apiKey))->orders->create(self::orderPayload($checkout, $publicOrigin));
+            $client = new Client($apiKey);
+            // INTTEGRO:FLOW [catalog-lookup] Resolve the Product at checkout so
+            // publication and price changes take effect. High-volume services
+            // can use a short cache with explicit invalidation.
+            // https://studio.inttegro.com/products
+            $product = self::catalogSelection($client->products->lookup($productId), $priceId);
+            $order = $client->orders->create(self::orderPayload($checkout, $publicOrigin, $product));
             // INTTEGRO:DECISION [returned-checkout-url] Use the URL in the
             // response. Constructing one from the order ID relies on
             // undocumented routing conventions.

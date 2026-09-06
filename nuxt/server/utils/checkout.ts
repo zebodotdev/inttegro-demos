@@ -1,4 +1,4 @@
-import { Currencies, InttegroAPIError, InttegroClient, ProductTypes, type CreateOrderRequest } from '@inttegro/inttegro-sdk';
+import { InttegroAPIError, InttegroClient, type CreateOrderRequest, type Product } from '@inttegro/inttegro-sdk';
 
 /**
  * Inttegro integration map
@@ -24,6 +24,14 @@ export class DemoError extends Error {
 
 export type CheckoutInput = { name: string; email: string; phone: string; attemptId: string };
 
+export type CatalogSelection = {
+  type: Product['type'];
+  name: string;
+  about?: string;
+  reference?: string;
+  price: NonNullable<Product['prices']>[number]['nominal'];
+};
+
 export function parseCheckoutInput(body: Record<string, unknown>): CheckoutInput {
   const input = { name: String(body.name ?? '').trim(), email: String(body.email ?? '').trim(), phone: String(body.phone ?? '').trim(), attemptId: String(body.attempt_id ?? '').trim() };
   if (!input.name || !input.phone || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) throw new DemoError('validation_error', 'Enter a name, valid email, and phone number.');
@@ -31,7 +39,25 @@ export function parseCheckoutInput(body: Record<string, unknown>): CheckoutInput
   return input;
 }
 
-export function buildOrderRequest(input: CheckoutInput, origin: string): CreateOrderRequest {
+export function selectCatalogProduct(product: Product, priceId: string): CatalogSelection {
+  // INTTEGRO:SECURITY [catalog-authority] Resolve the Product and Price on this
+  // trusted Nitro server. The browser sends neither identifier nor amount, so
+  // it cannot swap catalogue records or tamper with the price.
+  if (!product.active) throw new DemoError('configuration_error', 'The configured demo product is not active.');
+  const price = product.prices?.find(candidate => candidate.id === priceId && candidate.active);
+  if (!price || !Number.isSafeInteger(price.nominal.value) || price.nominal.value <= 0) {
+    throw new DemoError('configuration_error', 'The configured demo price is not active for this product.');
+  }
+  return {
+    type: product.type,
+    name: product.name,
+    ...(product.about ? { about: product.about } : {}),
+    ...(product.reference ? { reference: product.reference } : {}),
+    price: price.nominal,
+  };
+}
+
+export function buildOrderRequest(input: CheckoutInput, origin: string, product: CatalogSelection): CreateOrderRequest {
   return {
     // INTTEGRO:DECISION [stable-idempotency-key] Reuse this key when retrying the
     // same logical checkout. Production systems should persist a cart- or
@@ -50,24 +76,33 @@ export function buildOrderRequest(input: CheckoutInput, origin: string): CreateO
     line_items: [{
       type: 'product',
       product: {
-        // INTTEGRO:DECISION [inline-product] Inline product data keeps this demo
-        // self-contained. Catalog users can choose product_id plus an explicit
-        // price or price_id; do not mix catalog references with inline fields.
-        type: ProductTypes.Physical,
-        name: 'Dawn Brew Set',
+        // INTTEGRO:DECISION [catalog-snapshot] The service looks up the configured
+        // Inttegro Product and Price, validates their relationship, and snapshots
+        // that authoritative data into the Order. This works across SDK versions.
+        // INTTEGRO:ALTERNATIVE [catalog-snapshot] SDKs that expose the typed
+        // catalogue union can instead send product_id + price_id + quantity.
+        // Never mix that reference shape with these inline product fields.
+        ...product,
         quantity: 1,
-        // INTTEGRO:DECISION [minor-unit-money] 5000 minor units means GHS 50.00.
-        price: { currency: Currencies.GHS, value: 5000 },
       },
     }],
   };
 }
 
-export async function createHostedCheckout(input: CheckoutInput, apiKey: string, origin: string) {
+export async function createHostedCheckout(
+  input: CheckoutInput,
+  apiKey: string,
+  origin: string,
+  productId: string,
+  priceId: string,
+) {
   // INTTEGRO:SECURITY [server-api-key] The SDK call belongs in Nitro server
   // code. Use a deployment secret manager in production, not source or public
   // runtime configuration.
   if (!apiKey.trim()) throw new DemoError('configuration_error', 'Set NUXT_INTTEGRO_API_KEY on the server.');
+  if (!/^prod_[A-Za-z0-9]+$/.test(productId) || !/^pr_[A-Za-z0-9]+$/.test(priceId)) {
+    throw new DemoError('configuration_error', 'Set NUXT_DEMO_PRODUCT_ID and NUXT_DEMO_PRICE_ID on the server.');
+  }
   let publicOrigin: string;
   // INTTEGRO:SECURITY [configured-public-origin] Prefer an allow-listed origin
   // in production. A request-derived fallback is safe only behind a precisely
@@ -78,7 +113,13 @@ export async function createHostedCheckout(input: CheckoutInput, apiKey: string,
     // client configured at startup for connection reuse and application-owned
     // OpenTelemetry. Per-operation construction keeps this demo focused.
     // https://studio.inttegro.com/sdk-observability
-    const order = await new InttegroClient({ apiKey }).orders.create(buildOrderRequest(input, publicOrigin));
+    const client = new InttegroClient({ apiKey });
+    // INTTEGRO:FLOW [catalog-lookup] Fetch at checkout time so publication and
+    // price changes are observed. A high-volume app may use a short bounded cache
+    // with explicit invalidation rather than an unbounded process-lifetime cache.
+    // https://studio.inttegro.com/products
+    const product = selectCatalogProduct(await client.products.lookup({ product_id: productId }), priceId);
+    const order = await client.orders.create(buildOrderRequest(input, publicOrigin, product));
     // INTTEGRO:DECISION [returned-checkout-url] Use the URL in the response;
     // constructing one from order.id relies on undocumented routing details.
     const checkoutUrl = order.invoice?.format?.web?.url;
