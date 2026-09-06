@@ -40,6 +40,7 @@ test('builds the Kora Market Dawn Brew Set order', () => {
   );
 
   assert.equal(request.request_meta?.idempotency_key, 'demo-attempt_123');
+  assert.equal(request.number, 'KORA-ATTEMPT-123');
   assert.equal(request.finalize, true);
   assert.equal(request.checkout_settings?.redirect_url, 'https://demo.example/complete');
   assert.equal(request.line_items?.[0]?.product?.name, 'Dawn Brew Set');
@@ -69,6 +70,7 @@ test('builds a finalized mobile-money-only order on the server', () => {
   );
 
   assert.equal(request.request_meta?.idempotency_key, 'mobile-demo-mobile_attempt_123');
+  assert.equal(request.number, 'KORA-MOBILE-MOBILE-ATTEMPT-123');
   assert.equal(request.customer_id, 'cus_demo');
   assert.equal(request.finalize, true);
   assert.deepEqual(request.payment_method_types, ['mobile_money']);
