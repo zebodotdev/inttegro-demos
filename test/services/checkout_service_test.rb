@@ -18,6 +18,7 @@ class CheckoutServiceTest < ActiveSupport::TestCase
     }
     request = CheckoutService.order_params(checkout, "https://demo.example", product)
     assert_equal "demo-attempt_123", request.dig(:request_meta, :idempotency_key)
+    assert_equal "KORA-ATTEMPT-123", request[:number]
     assert_equal true, request[:finalize]
     assert_equal "https://demo.example/complete", request.dig(:checkout_settings, :redirect_url)
     assert_equal "Dawn Brew Set", request.dig(:line_items, 0, :product, :name)
