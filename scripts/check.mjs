@@ -190,6 +190,12 @@ assert(
   !catalogueApplication.includes('taggedSubdirectory'),
   'catalogue deploy actions must not send provider builds to tagged subdirectories',
 );
+assert(
+  catalogueApplication.includes("['prepared', 'verified'].includes(provider.status)"),
+  'catalogue must let readers launch prepared or verified provider configurations',
+);
+const catalogueDocument = readFileSync(join(demosRoot, 'catalog/public/index.html'), 'utf8');
+assert(!catalogueDocument.includes('Release candidate'), 'published catalogue must not label the current release as a candidate');
 
 for (const id of ['nextjs', 'nuxt', 'express']) {
   const readme = readFileSync(join(demosRoot, id, 'README.md'), 'utf8');

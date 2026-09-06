@@ -15,7 +15,7 @@ Open <http://localhost:3007>. Run `composer test` for the focused checks.
 
 ## Deploy your own
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-laravel-v1.1.2)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-laravel-v1.1.3)
 
 Render builds the released Dockerfile. Railway uses the same image and
 checked-in health policy; its button follows after the public template is

@@ -119,7 +119,7 @@ function openDeployDialog(demo) {
       const row = document.createElement('div');
       row.className = 'provider-option';
       const url = deployUrl(demo, provider);
-      const actionable = provider.status === 'verified' && Boolean(url);
+      const actionable = ['prepared', 'verified'].includes(provider.status) && Boolean(url);
       row.innerHTML = `
         <span class="provider-monogram">${provider.name.slice(0, 2).toUpperCase()}</span>
         <div class="provider-copy">
