@@ -84,7 +84,9 @@ function card(demo, index) {
       <div class="demo-meta"><span>${demo.language}</span><span class="status">${demo.releaseStatus}</span></div>
       <h3>${demo.technology}</h3>
       <p>${storyDescriptions[demo.story]}</p>
-      <code class="hostname">${demo.hostname}</code>
+      ${demo.live?.status === 'verified'
+        ? `<a class="hostname" href="${demo.live.url}" rel="noreferrer">Open live demo <span aria-hidden="true">↗</span></a>`
+        : `<code class="hostname">${demo.hostname}</code>`}
       <div class="demo-footer">
         <button class="demo-action" type="button">${demo.mode === 'native' ? 'Run this demo' : 'Deploy this demo'} <span aria-hidden="true">↗</span></button>
         <a class="source-link" href="${sourceUrl(demo)}">Tagged source</a>

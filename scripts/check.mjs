@@ -119,6 +119,15 @@ for (const demo of deployments.demos) {
     assert.equal(demo.companionBackend, 'nextjs', `${demo.id} must identify the shared mobile backend`);
     continue;
   }
+  if (demo.live) {
+    assert.equal(demo.live.status, 'verified', `${demo.id} live deployment must be verified`);
+    assert(['cloudflare', 'railway'].includes(demo.live.provider), `${demo.id} uses an unknown live provider`);
+    assert.equal(
+      demo.live.url,
+      `https://${deployments.domain.demoHostTemplate.replace('{id}', demo.id)}`,
+      `${demo.id} live URL must use the canonical host`,
+    );
+  }
   assert(demo.providers.length > 0, `${demo.id} must document at least one provider`);
   assert.equal(
     demo.providers.filter((provider) => provider.recommendation === 'recommended').length,
@@ -140,6 +149,16 @@ for (const demo of deployments.demos) {
   }
 }
 
+for (const id of ['nextjs', 'nuxt', 'express', 'django', 'fastapi', 'rails', 'laravel', 'go']) {
+  const demo = deployments.demos.find((candidate) => candidate.id === id);
+  assert.equal(demo.live?.status, 'verified', `${id} must record its verified first-party deployment`);
+}
+assert.equal(
+  deployments.demos.find((demo) => demo.id === 'spring-boot').live,
+  undefined,
+  'Spring Boot must not claim a live deployment while its SDK publication is gated',
+);
+
 for (const id of ['express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'spring-boot']) {
   for (const file of ['Dockerfile', '.dockerignore', 'render.yaml', 'railway.json']) {
     assert(existsSync(join(demosRoot, id, file)), `${id} must include ${file} for portable deployment`);
@@ -152,6 +171,7 @@ for (const id of ['nextjs', 'nuxt']) {
 }
 assert(existsSync(join(demosRoot, 'express/wrangler.jsonc')), 'Express must include its Cloudflare Worker contract');
 assert(existsSync(join(demosRoot, 'catalog/wrangler.jsonc')), 'catalogue must be ready for Cloudflare Static Assets');
+assert(existsSync(join(demosRoot, 'hosting/railway-edge/wrangler.jsonc')), 'Railway-hosted demos must define their first-party edge routes');
 
 for (const configPath of ['nextjs/wrangler.jsonc', 'nuxt/wrangler.jsonc', 'express/wrangler.jsonc', 'catalog/wrangler.jsonc']) {
   const config = readFileSync(join(demosRoot, configPath), 'utf8');

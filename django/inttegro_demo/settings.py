@@ -4,7 +4,23 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "inttegro-demo-development-only")
 DEBUG = os.environ.get("DJANGO_DEBUG", "true").lower() == "true"
-ALLOWED_HOSTS = [host.strip() for host in os.environ.get("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,testserver").split(",")]
+# The hosted demo is behind a known HTTPS reverse proxy. Keep both values
+# explicit: ALLOWED_HOSTS controls which HTTP hosts Django serves, while
+# CSRF_TRUSTED_ORIGINS controls which browser origins may submit unsafe methods.
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get(
+        "DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1,testserver"
+    ).split(",")
+]
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
+]
+# Only enable this when the deployment proxy overwrites X-Forwarded-Proto;
+# trusting a client-controlled value would let callers spoof request.is_secure().
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 INSTALLED_APPS = [
     "django.contrib.contenttypes",

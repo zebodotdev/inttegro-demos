@@ -48,6 +48,7 @@ const demos = manifest.demos.filter((demo) => demo.release === 'v1').map((demo) 
     releaseStatus: demo.status,
     mode: deployment.mode || 'server',
     companionBackend: deployment.companionBackend,
+    live: deployment.live,
     hostname: deployments.domain.demoHostTemplate.replace('{id}', demo.id),
     tag: released.tag,
     deployRef: deployments.deployRefTemplate.replace('{id}', demo.id).replace('{version}', release.version),

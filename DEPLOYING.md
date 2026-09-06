@@ -72,6 +72,12 @@ generated there. They are never shared Inttegro credentials.
   visible button requires a published template ID, so it remains hidden until
   the template is created and smoke-tested in the Inttegro workspace.
 
+First-party hosting is recorded separately under each demo's `live` object in
+`deployments.json`. The `provider` there identifies where Inttegro runs the
+public example; it does not make that provider reader-launchable. Provider
+buttons continue to follow the `providers` list and require a prepared manifest
+or a verified public template.
+
 Python Workers supports Django and FastAPI, but the current Inttegro Python SDK
 uses a synchronous `urllib` transport. Cloudflare documents asynchronous HTTP
 clients as the supported outbound path for Python Workers. Rewriting the demo to
@@ -89,9 +95,9 @@ expect their configuration at repository root, so releases also publish one
 generated subtree branch per deployable demo:
 
 ```text
-deploy-nextjs-v1.2.1
-deploy-express-v1.2.1
-deploy-nuxt-v1.2.1
+deploy-nextjs-v1.2.2
+deploy-express-v1.2.2
+deploy-nuxt-v1.2.2
 ...
 ```
 
@@ -104,7 +110,7 @@ or reused. Studio permalinks continue to use the signed per-demo tag.
 Run the branch preparation script only after the suite tag exists:
 
 ```sh
-node scripts/prepare-deploy-refs.mjs v1.2.1
+node scripts/prepare-deploy-refs.mjs v1.2.2
 ```
 
 The script creates local branches but never pushes them. Inspect each branch,

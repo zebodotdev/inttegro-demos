@@ -1,0 +1,16 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "inttegro-demo-railway-edge",
+  "main": "worker.js",
+  "compatibility_date": "2026-09-01",
+  "routes": [
+    { "pattern": "django-demo.inttegro.dev", "custom_domain": true },
+    { "pattern": "fastapi-demo.inttegro.dev", "custom_domain": true },
+    { "pattern": "go-demo.inttegro.dev", "custom_domain": true },
+    { "pattern": "laravel-demo.inttegro.dev", "custom_domain": true },
+    { "pattern": "rails-demo.inttegro.dev", "custom_domain": true }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}
