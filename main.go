@@ -119,10 +119,7 @@ func selectCatalogProduct(product *inttegro.Product, priceID string) (catalogSel
 		if price.ID != priceID {
 			continue
 		}
-		// This SDK version does not expose the price's active flag in the product
-		// summary. An explicit ID match plus a positive nominal is the strongest
-		// available typed check; newer SDKs should additionally require active.
-		if price.Nominal == nil || price.Nominal.Value <= 0 {
+		if !price.Active || price.Nominal == nil || price.Nominal.Value <= 0 {
 			break
 		}
 		return catalogSelection{
