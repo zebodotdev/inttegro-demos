@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "https://github.com/zebodotdev/inttegro-demos",
-  "releaseVersion": "1.2.0",
-  "suiteTag": "v1.2.0",
+  "releaseVersion": "1.2.1",
+  "suiteTag": "v1.2.1",
   "domainStatus": "active",
   "demos": [
     {
@@ -14,8 +14,8 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "nextjs-demo.inttegro.dev",
-      "tag": "nextjs-v1.2.0",
-      "deployRef": "deploy-nextjs-v1.2.0",
+      "tag": "nextjs-v1.2.1",
+      "deployRef": "deploy-nextjs-v1.2.1",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -55,7 +55,7 @@
         {
           "id": "cloudflare",
           "recommendation": "alternative",
-          "status": "prepared",
+          "status": "verified",
           "config": "nextjs/wrangler.jsonc",
           "name": "Cloudflare",
           "documentation": "https://developers.cloudflare.com/workers/platform/deploy-buttons/"
@@ -71,8 +71,8 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "express-demo.inttegro.dev",
-      "tag": "express-v1.2.0",
-      "deployRef": "deploy-express-v1.2.0",
+      "tag": "express-v1.2.1",
+      "deployRef": "deploy-express-v1.2.1",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -115,7 +115,7 @@
         {
           "id": "cloudflare",
           "recommendation": "alternative",
-          "status": "prepared",
+          "status": "verified",
           "config": "express/wrangler.jsonc",
           "name": "Cloudflare",
           "documentation": "https://developers.cloudflare.com/workers/platform/deploy-buttons/"
@@ -131,8 +131,8 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "nuxt-demo.inttegro.dev",
-      "tag": "nuxt-v1.2.0",
-      "deployRef": "deploy-nuxt-v1.2.0",
+      "tag": "nuxt-v1.2.1",
+      "deployRef": "deploy-nuxt-v1.2.1",
       "environment": [
         {
           "name": "NUXT_INTTEGRO_API_KEY",
@@ -159,7 +159,7 @@
         {
           "id": "cloudflare",
           "recommendation": "recommended",
-          "status": "prepared",
+          "status": "verified",
           "config": "nuxt/wrangler.jsonc",
           "name": "Cloudflare",
           "documentation": "https://developers.cloudflare.com/workers/platform/deploy-buttons/"
@@ -183,8 +183,8 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "go-demo.inttegro.dev",
-      "tag": "go-v1.2.0",
-      "deployRef": "deploy-go-v1.2.0",
+      "tag": "go-v1.2.1",
+      "deployRef": "deploy-go-v1.2.1",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -235,8 +235,8 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "django-demo.inttegro.dev",
-      "tag": "django-v1.2.0",
-      "deployRef": "deploy-django-v1.2.0",
+      "tag": "django-v1.2.1",
+      "deployRef": "deploy-django-v1.2.1",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -305,8 +305,8 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "fastapi-demo.inttegro.dev",
-      "tag": "fastapi-v1.2.0",
-      "deployRef": "deploy-fastapi-v1.2.0",
+      "tag": "fastapi-v1.2.1",
+      "deployRef": "deploy-fastapi-v1.2.1",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -365,8 +365,8 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "rails-demo.inttegro.dev",
-      "tag": "rails-v1.2.0",
-      "deployRef": "deploy-rails-v1.2.0",
+      "tag": "rails-v1.2.1",
+      "deployRef": "deploy-rails-v1.2.1",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -422,8 +422,8 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "laravel-demo.inttegro.dev",
-      "tag": "laravel-v1.2.0",
-      "deployRef": "deploy-laravel-v1.2.0",
+      "tag": "laravel-v1.2.1",
+      "deployRef": "deploy-laravel-v1.2.1",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -479,8 +479,8 @@
       "releaseStatus": "publication-gated",
       "mode": "server",
       "hostname": "spring-boot-demo.inttegro.dev",
-      "tag": "spring-boot-v1.2.0",
-      "deployRef": "deploy-spring-boot-v1.2.0",
+      "tag": "spring-boot-v1.2.1",
+      "deployRef": "deploy-spring-boot-v1.2.1",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -534,8 +534,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "ios-swiftui-demo.inttegro.dev",
-      "tag": "ios-swiftui-v1.2.0",
-      "deployRef": "deploy-ios-swiftui-v1.2.0",
+      "tag": "ios-swiftui-v1.2.1",
+      "deployRef": "deploy-ios-swiftui-v1.2.1",
       "environment": [],
       "providers": []
     },
@@ -549,8 +549,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "android-compose-demo.inttegro.dev",
-      "tag": "android-compose-v1.2.0",
-      "deployRef": "deploy-android-compose-v1.2.0",
+      "tag": "android-compose-v1.2.1",
+      "deployRef": "deploy-android-compose-v1.2.1",
       "environment": [],
       "providers": []
     },
@@ -564,8 +564,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "flutter-demo.inttegro.dev",
-      "tag": "flutter-v1.2.0",
-      "deployRef": "deploy-flutter-v1.2.0",
+      "tag": "flutter-v1.2.1",
+      "deployRef": "deploy-flutter-v1.2.1",
       "environment": [],
       "providers": []
     },
@@ -579,8 +579,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "react-native-expo-demo.inttegro.dev",
-      "tag": "react-native-expo-v1.2.0",
-      "deployRef": "deploy-react-native-expo-v1.2.0",
+      "tag": "react-native-expo-v1.2.1",
+      "deployRef": "deploy-react-native-expo-v1.2.1",
       "environment": [],
       "providers": []
     }

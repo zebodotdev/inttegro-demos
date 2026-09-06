@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "https://github.com/zebodotdev/inttegro-demos",
-  "releaseVersion": "1.2.0",
-  "suiteTag": "v1.2.0",
+  "releaseVersion": "1.2.1",
+  "suiteTag": "v1.2.1",
   "domain": {
     "status": "active",
     "provider": "cloudflare",
@@ -71,7 +71,7 @@
       "additionalEnvironment": ["INTTEGRO_DEMO_CUSTOMER_ID"],
       "providers": [
         { "id": "vercel", "recommendation": "recommended", "status": "prepared", "config": "nextjs/vercel.json" },
-        { "id": "cloudflare", "recommendation": "alternative", "status": "prepared", "config": "nextjs/wrangler.jsonc" }
+        { "id": "cloudflare", "recommendation": "alternative", "status": "verified", "config": "nextjs/wrangler.jsonc" }
       ]
     },
     {
@@ -83,7 +83,7 @@
         "INTTEGRO_DEMO_PUBLIC_URL": "NUXT_DEMO_PUBLIC_URL"
       },
       "providers": [
-        { "id": "cloudflare", "recommendation": "recommended", "status": "prepared", "config": "nuxt/wrangler.jsonc" },
+        { "id": "cloudflare", "recommendation": "recommended", "status": "verified", "config": "nuxt/wrangler.jsonc" },
         { "id": "vercel", "recommendation": "alternative", "status": "prepared", "config": "nuxt/vercel.json" }
       ]
     },
@@ -92,7 +92,7 @@
       "providers": [
         { "id": "railway", "recommendation": "recommended", "status": "template-pending", "config": "express/railway.json" },
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "express/render.yaml" },
-        { "id": "cloudflare", "recommendation": "alternative", "status": "prepared", "config": "express/wrangler.jsonc" }
+        { "id": "cloudflare", "recommendation": "alternative", "status": "verified", "config": "express/wrangler.jsonc" }
       ]
     },
     {
