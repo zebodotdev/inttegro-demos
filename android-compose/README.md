@@ -17,7 +17,7 @@ to Logcat under `InttegroPaymentSheet` without installing an exporter.
     <td><img src="./docs/images/payment-sheet-mobile-money.png" alt="Segmented Mobile Money number entry and network selection in the native Android payment sheet" width="320"></td>
   </tr>
   <tr>
-    <td><img src="./docs/images/payment-sheet-saved-method.png" alt="Filled payer contact and billing details in the native Android payment sheet" width="320"></td>
+    <td><img src="./docs/images/payment-sheet-saved-method.png" alt="Filled personal and contact details in the native Android payment sheet" width="320"></td>
     <td><img src="./docs/images/payment-sheet-completed.png" alt="Completed native Android payment sheet for Kora Market" width="320"></td>
   </tr>
 </table>

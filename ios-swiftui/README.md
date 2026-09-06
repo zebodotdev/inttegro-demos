@@ -57,7 +57,7 @@ SDK's live Checkout adapter.
 
 The fixture opens on the attached payment method. Choose **Change payment
 method** to capture active number entry; the SDK expands to the large detent.
-Enable **Save payment method** to capture the full owner/contact form. The
+Enable **Save for next time** to capture the full personal/contact form. The
 fields are native controls and the values entered for a screenshot remain
 local to that simulator run.
 
