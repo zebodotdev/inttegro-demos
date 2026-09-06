@@ -5,6 +5,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     inttegroApiKey: '',
     demoPublicUrl: '',
+    demoProductId: '',
+    demoPriceId: '',
   },
   typescript: { typeCheck: true },
 });

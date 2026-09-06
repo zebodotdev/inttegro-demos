@@ -15,7 +15,13 @@ export default defineEventHandler(async (event) => {
     const input = parseCheckoutInput(body);
     const config = useRuntimeConfig(event);
     const requestOrigin = getRequestURL(event).origin;
-    const result = await createHostedCheckout(input, config.inttegroApiKey, config.demoPublicUrl || requestOrigin);
+    const result = await createHostedCheckout(
+      input,
+      config.inttegroApiKey,
+      config.demoPublicUrl || requestOrigin,
+      config.demoProductId,
+      config.demoPriceId,
+    );
     // INTTEGRO:DECISION [durable-order-correlation] This cookie is a compact demo
     // aid, not ownership or payment evidence. Persist the merchant order,
     // Inttegro order ID, owner, and idempotency key together in production.
