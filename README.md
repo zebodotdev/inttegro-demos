@@ -24,7 +24,7 @@ Render builds the released Dockerfile with Puma. Railway uses the same image and
 checked-in health policy; its button follows after the public template is
 registered and smoke-tested. The deploy flow generates the framework signing
 secret separately from `INTTEGRO_API_KEY`. See
-[`DEPLOYING.md`](../DEPLOYING.md).
+[`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.2.1/DEPLOYING.md).
 
 ## Understand the integration
 
@@ -34,5 +34,5 @@ Order creation and safe error mapping, then read
 [`app/controllers/checkouts_controller.rb`](./app/controllers/checkouts_controller.rb)
 for the 303 handoff and correlation boundary. The `INTTEGRO:*` comments map
 choices and alternatives to the shared
-[integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+[integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.2.1/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.2.1/integration-decisions.json).
