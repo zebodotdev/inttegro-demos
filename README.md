@@ -28,7 +28,7 @@ Render and Railway manifests plus a multi-stage Dockerfile are included, but no
 public button is shown yet. A reader-owned remote build cannot resolve Inttegro
 Java SDK 5.0.0 until that artifact is published. Publishing a button before that
 gate clears would advertise a broken path. See
-[`DEPLOYING.md`](../DEPLOYING.md) for the release gate.
+[`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.2.3/DEPLOYING.md) for the release gate.
 
 ## Understand the integration
 
@@ -38,5 +38,5 @@ for the builder-based Order request and error boundary, then read
 [`CheckoutController.java`](./src/main/java/com/inttegro/demo/CheckoutController.java)
 for validation, correlation, and the 303 handoff. The `INTTEGRO:*` comments map
 choices and alternatives to the shared
-[integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+[integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.2.3/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.2.3/integration-decisions.json).
