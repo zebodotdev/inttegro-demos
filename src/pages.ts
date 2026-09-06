@@ -2,8 +2,16 @@ const page = (body: string, title = 'Afterglow Sessions — Inttegro × Express'
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08091d">
 <title>${title}</title><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/styles.css"><script src="/demo-ui.js" defer></script></head><body>${body}</body></html>`;
 
+const escapeHtml = (value: string) => value.replace(/[&<>'"]/g, (character) => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
+})[character] || character);
+
 export function homePage(attemptId: string, error?: { code: string; message: string }) {
-  const alert = error ? `<p class="inline-error" role="alert"><strong>${error.code.replaceAll('_', ' ')}:</strong> ${error.message}</p>` : '';
+  const alert = error?.code === 'configuration_error'
+    ? `<section class="setup-card has-config-error" role="status"><span class="setup-kicker">Setup required</span><h3>Connect this copy to Inttegro</h3><p>Add <code>INTTEGRO_API_KEY</code> as a server-side test secret, set this deployment’s public URL, then redeploy. The key never belongs in browser JavaScript.</p><div class="setup-actions"><a href="https://studio.inttegro.com/keys">Create a test key</a><a href="https://github.com/zebodotdev/inttegro-demos/blob/express-v1.1.0/express/README.md#deploy-your-own">Deployment guide</a></div></section>`
+    : error
+      ? `<p class="inline-error" role="alert"><strong>${escapeHtml(error.code.replaceAll('_', ' '))}:</strong> ${escapeHtml(error.message)}</p>`
+      : '';
   return page(`<div class="story-event">
     <header class="site-header"><a class="brand" href="#top"><span class="brand-mark">A</span>Afterglow</a><nav class="header-nav" aria-label="Event navigation"><a href="#lineup">Lineup</a><a href="#venue">Venue</a><a class="header-action" href="#tickets">Get tickets</a></nav></header>
     <main id="top"><section class="event-hero" aria-labelledby="event-title"><img class="event-hero-image" src="/accra-afterglow.jpg" alt="An intimate outdoor concert glowing under amber stage lights"><div class="event-hero-content"><div><p class="event-kicker"><span class="status-dot"></span> Accra Sessions · Volume 08</p><h1 id="event-title">After<br>glow.</h1><div class="event-meta"><span>◷ 6:30 PM — late</span><span>⌖ The Observatory, Cantonments</span><span>♬ Live soul · alté · jazz</span></div></div><aside class="date-card" aria-label="Saturday 19 September"><strong>19</strong><span>September · Sat</span></aside></div></section>

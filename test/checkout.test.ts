@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { buildOrderRequest, DemoError, parseCheckoutInput } from '../src/checkout.js';
+import { homePage } from '../src/pages.js';
 
 test('rejects invalid customer input', () => {
   assert.throws(
@@ -21,4 +22,20 @@ test('builds the canonical hosted checkout request', () => {
   assert.equal(lineItem.product.name, 'Afterglow Sessions - Courtyard admission');
   assert.equal(lineItem.product.type, 'digital');
   assert.equal(lineItem.product.price.value, 5000);
+});
+
+test('renders configuration guidance and escapes untrusted query errors', () => {
+  const setup = homePage('attempt_123', {
+    code: 'configuration_error',
+    message: 'Set INTTEGRO_API_KEY on the server.',
+  });
+  assert.match(setup, /Connect this copy to Inttegro/);
+  assert.match(setup, /has-config-error/);
+
+  const unsafe = homePage('attempt_123', {
+    code: '<script>',
+    message: '<img src=x onerror=alert(1)>',
+  });
+  assert.doesNotMatch(unsafe, /<script>|<img src=x/);
+  assert.match(unsafe, /&lt;script&gt;/);
 });
