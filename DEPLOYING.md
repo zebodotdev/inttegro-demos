@@ -28,10 +28,20 @@ documentation. A missing key is a setup state, not an application failure.
 
 ## Environment contract
 
-All server demos require a test-mode `INTTEGRO_API_KEY`. Nuxt exposes the same
+All server demos require a dedicated `INTTEGRO_API_KEY`. Nuxt exposes the same
 server-only value under `NUXT_INTTEGRO_API_KEY` because Nuxt runtime config uses
 that prefix. Never add a browser-visible prefix such as `NEXT_PUBLIC_`,
-`NUXT_PUBLIC_`, or `VITE_` to the API key.
+`NUXT_PUBLIC_`, or `VITE_` to the API key. Prefer the narrowest key type your
+account offers, dedicate it to the demo deployment, and rotate or revoke it
+without affecting another workload.
+
+`INTTEGRO_DEMO_PRODUCT_ID` and `INTTEGRO_DEMO_PRICE_ID` identify an active
+Product and one active Price belonging to it. Nuxt uses
+`NUXT_DEMO_PRODUCT_ID` and `NUXT_DEMO_PRICE_ID`. The server looks up the Product
+at checkout, validates the configured pair, and supplies authoritative catalog
+data to order creation. These IDs are configuration, not secrets, but they must
+not be accepted from the public request because the customer cannot choose the
+merchant's product or amount.
 
 `INTTEGRO_DEMO_PUBLIC_URL` (or `NUXT_DEMO_PUBLIC_URL`) is the exact deployed
 origin without a trailing slash. Requiring an explicit value avoids trusting an
@@ -39,8 +49,8 @@ attacker-controlled `Host` or forwarded-host header when the application builds
 completion and cancellation URLs. Provider templates may ask for this value
 after the provider assigns its initial hostname.
 
-The Next.js companion backend also requires `INTTEGRO_DEMO_CUSTOMER_ID`, a test
-customer used to create the four native demos' finalized orders. It remains on
+The Next.js companion backend also requires `INTTEGRO_DEMO_CUSTOMER_ID`, a
+dedicated customer used to create the four native demos' finalized orders. It remains on
 the server alongside the API key and is not required by the other web demos.
 
 Framework-generated signing secrets such as `DJANGO_SECRET_KEY`,
@@ -110,7 +120,7 @@ A provider changes from `prepared` to `verified` only after all of these pass:
 2. `GET /health` returns 200 and identifies the expected demo.
 3. The home page, static assets, form validation, cancellation return, and
    missing-configuration state render correctly over HTTPS.
-4. With a dedicated test key, one checkout reaches the Inttegro-hosted URL and
+4. With a dedicated key and configured Product/Price pair, one checkout reaches the Inttegro-hosted URL and
    no key appears in HTML, JavaScript, redirect query strings, or provider logs.
 5. The deployed release metadata matches the tag advertised by the catalogue.
 6. The user can clone or eject the deployed source and modify it independently.

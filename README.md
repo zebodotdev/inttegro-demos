@@ -103,11 +103,16 @@ Server demos use these environment variables:
 
 ```dotenv
 INTTEGRO_API_KEY=sk_test_replace_me
-INTTEGRO_DEMO_CUSTOMER_ID=cus_replace_me
+INTTEGRO_DEMO_PRODUCT_ID=prod_replace_me
+INTTEGRO_DEMO_PRICE_ID=pr_replace_me
+INTTEGRO_DEMO_CUSTOMER_ID=cu_replace_me
 INTTEGRO_DEMO_PUBLIC_URL=http://localhost:3000
 ```
 
 `INTTEGRO_API_KEY` must never be exposed to browser or mobile code.
+`INTTEGRO_DEMO_PRODUCT_ID` and `INTTEGRO_DEMO_PRICE_ID` select the catalog item
+that the trusted server looks up and validates at checkout; public requests do
+not supply product identity or amount.
 `INTTEGRO_DEMO_CUSTOMER_ID` is used only by the Next.js mobile-order route and
 must also remain server-side.
 `INTTEGRO_DEMO_PUBLIC_URL` is the externally reachable origin used for checkout

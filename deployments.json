@@ -39,7 +39,19 @@
       "secret": true,
       "required": true,
       "documentation": "https://studio.inttegro.com/keys",
-      "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code."
+      "description": "A dedicated server-side Inttegro API key. Never expose it to browser or mobile code."
+    },
+    "INTTEGRO_DEMO_PRODUCT_ID": {
+      "secret": false,
+      "required": true,
+      "documentation": "https://studio.inttegro.com/products",
+      "description": "The active Inttegro Product selected by this demo. The trusted server looks it up at checkout."
+    },
+    "INTTEGRO_DEMO_PRICE_ID": {
+      "secret": false,
+      "required": true,
+      "documentation": "https://studio.inttegro.com/products",
+      "description": "An active Inttegro Price belonging to the configured demo Product."
     },
     "INTTEGRO_DEMO_PUBLIC_URL": {
       "secret": false,
@@ -64,7 +76,12 @@
     },
     {
       "id": "nuxt",
-      "environmentAliases": { "INTTEGRO_API_KEY": "NUXT_INTTEGRO_API_KEY", "INTTEGRO_DEMO_PUBLIC_URL": "NUXT_DEMO_PUBLIC_URL" },
+      "environmentAliases": {
+        "INTTEGRO_API_KEY": "NUXT_INTTEGRO_API_KEY",
+        "INTTEGRO_DEMO_PRODUCT_ID": "NUXT_DEMO_PRODUCT_ID",
+        "INTTEGRO_DEMO_PRICE_ID": "NUXT_DEMO_PRICE_ID",
+        "INTTEGRO_DEMO_PUBLIC_URL": "NUXT_DEMO_PUBLIC_URL"
+      },
       "providers": [
         { "id": "cloudflare", "recommendation": "recommended", "status": "prepared", "config": "nuxt/wrangler.jsonc" },
         { "id": "vercel", "recommendation": "alternative", "status": "prepared", "config": "nuxt/vercel.json" }

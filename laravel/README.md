@@ -11,7 +11,10 @@ php artisan key:generate
 php artisan serve --port 3007
 ```
 
-Open <http://localhost:3007>. Run `composer test` for the focused checks.
+Open <http://localhost:3007>. Configure `INTTEGRO_DEMO_PRODUCT_ID` and
+`INTTEGRO_DEMO_PRICE_ID` with the active Kora Market Product and Price. Laravel
+resolves and validates both server-side; the storefront cannot submit its own
+product or amount. Run `composer test` for the focused checks.
 
 ## Deploy your own
 

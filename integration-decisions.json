@@ -16,6 +16,7 @@
     "orders": "https://studio.inttegro.com/orders",
     "idempotency": "https://studio.inttegro.com/idempotency",
     "keys": "https://studio.inttegro.com/keys",
+    "products": "https://studio.inttegro.com/products",
     "paymentMethods": "https://studio.inttegro.com/payment-methods",
     "sdks": "https://studio.inttegro.com/sdks",
     "observability": "https://studio.inttegro.com/sdk-observability",
@@ -124,23 +125,28 @@
       "docs": ["orders"]
     },
     {
-      "id": "inline-product",
+      "id": "catalog-snapshot",
       "appliesTo": ["hosted-web", "native-payment-sheet"],
-      "selected": "Send one inline product with a server-owned price.",
-      "rationale": "Each demo is a self-contained story with one fixed item and no catalog synchronization requirement.",
+      "selected": "Look up a configured Inttegro Product and Price on the trusted server, validate them, and snapshot their authoritative fields into the Order.",
+      "rationale": "The public demo request cannot choose product identity or amount, catalog publication and price changes remain authoritative, and the snapshot works across maintained SDK versions whose typed catalog-reference request shapes are not yet uniform.",
       "alternatives": [
         {
           "id": "catalog-product-explicit-price",
-          "whenToUse": "The product identity is canonical but the transaction price is calculated by the merchant.",
+          "whenToUse": "The Product identity is canonical but the transaction price is calculated by trusted merchant logic.",
           "consequences": "Send product_id and an explicit price; Inttegro snapshots catalog data into the order."
         },
         {
           "id": "catalog-product-price-id",
-          "whenToUse": "Both product and price are maintained in the Inttegro catalog.",
-          "consequences": "Send product_id and price_id and do not mix in inline product fields."
+          "whenToUse": "Both Product and Price are maintained in Inttegro and the selected SDK exposes the typed catalog-reference line-item shape.",
+          "consequences": "Send product_id, price_id, and quantity without inline product fields; this is the preferred direct representation once the SDK surface supports it."
+        },
+        {
+          "id": "merchant-catalog-snapshot",
+          "whenToUse": "The merchant owns its catalog outside Inttegro.",
+          "consequences": "Resolve product identity and amount from the merchant database, then send an inline product snapshot; never accept authoritative fields from the browser or mobile client."
         }
       ],
-      "docs": ["orders"]
+      "docs": ["products", "orders"]
     },
     {
       "id": "minor-unit-money",

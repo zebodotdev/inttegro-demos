@@ -110,11 +110,34 @@ Applications with accounts, repeat buyers, saved addresses, or customer history
 should usually create or resolve a Customer on the server and send
 `customer_id` instead. Never send both fields.
 
-The demos also use an inline product because each application presents one
-self-contained item. A merchant with a canonical Inttegro catalog can instead
-send a `product_id` with either an explicit price or a `price_id`. Catalog-backed
-orders give stable references and snapshot the catalog data into the order.
-Do not mix inline product fields with `product_id` in one line item.
+Each server demo reads `INTTEGRO_DEMO_PRODUCT_ID` and
+`INTTEGRO_DEMO_PRICE_ID` from trusted deployment configuration (Nuxt uses the
+equivalent `NUXT_` names). It calls the Products lookup operation at checkout,
+requires the configured Product to be active, and verifies that the configured
+Price belongs to it and has a positive nominal amount. The browser and mobile
+apps send none of those values, so changing an input field or request body
+cannot select a different product or total.
+
+The demos then snapshot the verified Product name, type, description,
+reference, and Price into the Order's inline line-item shape. This is an
+intentional portability trade-off: current maintained SDK releases do not all
+expose the same typed request model for catalog references. When the SDK in your
+language supports it, the more direct catalog-backed alternative is to send
+`product_id`, `price_id`, and `quantity` and omit every inline product field.
+Use `product_id` with an explicit server-calculated price when identity comes
+from Inttegro but transaction pricing belongs to trusted merchant logic.
+
+Looking up on every checkout makes publication and price changes take effect
+immediately and keeps the example easy to reason about. A high-volume service
+can cache the validated snapshot briefly, but must define invalidation for
+unpublishing, archiving, price activation, currency changes, and catalog
+rollouts. Treat a missing, inactive, mismatched, or zero-value configuration as
+a deployment error rather than falling back to a hard-coded amount.
+
+If the merchant owns its canonical catalog elsewhere, resolve product identity
+and price from that database and send an inline snapshot. Do not mix inline
+product fields with `product_id` in one line item, and never accept authoritative
+catalog or money fields from an untrusted browser or mobile request.
 
 Every `price.value` is an integer in the currency's smallest unit. In these
 demos, `5000` GHS minor units means GHS 50.00. Convert decimal user input with a
@@ -123,6 +146,7 @@ amounts.
 
 Canonical documentation:
 
+- [Products and prices](https://studio.inttegro.com/products)
 - [Orders API and line-item shapes](https://studio.inttegro.com/orders)
 
 ### Finalize now or build a draft

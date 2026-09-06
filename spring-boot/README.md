@@ -11,7 +11,11 @@ set -a && source .env && set +a
 mvn spring-boot:run
 ```
 
-Open <http://localhost:3008>. Run `mvn test` for the focused checks.
+Open <http://localhost:3008>. Configure `INTTEGRO_DEMO_PRODUCT_ID` and
+`INTTEGRO_DEMO_PRICE_ID` with the active Ledgerline retainer Product and Price.
+Spring resolves and validates both before constructing the Order; the invoice
+form cannot choose its own service or amount. Run `mvn test` for the focused
+checks.
 
 The first command is temporarily required because version `5.0.0` of the Java
 SDK is documented but is not yet available from Maven Central. Once it is
