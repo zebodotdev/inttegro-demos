@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "demo": "go",
+  "version": "1.2.3",
+  "sourceSuiteTag": "v1.2.3",
+  "sourceDemoTag": "go-v1.2.3",
+  "sourceCommit": "3f6fcf57a7cad6e30aaf50ea77bb62ec2f5a8196",
+  "sourceSubtreeCommit": "0c66b037e897bb8dc3404cf4e2beeacc5cd37c5a"
+}
