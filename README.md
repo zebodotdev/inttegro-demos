@@ -11,7 +11,10 @@ set -a && source .env && set +a
 bin/rails server --port 3006
 ```
 
-Open <http://localhost:3006>. Run `bin/rails test` for the focused checks.
+Open <http://localhost:3006>. Configure `INTTEGRO_DEMO_PRODUCT_ID` and
+`INTTEGRO_DEMO_PRICE_ID` with the active Kora Market Product and Price. Rails
+resolves and validates both server-side; the storefront cannot submit its own
+product or amount. Run `bin/rails test` for the focused checks.
 
 ## Deploy your own
 
