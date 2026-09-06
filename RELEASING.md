@@ -86,9 +86,15 @@ perspective but are also signed annotated Git objects.
 6. Push `main` first, then push the exact tags explicitly.
 7. Compare every remote tag's peeled commit with the local release commit.
 8. Publish one GitHub Release on the suite tag using the tracked Markdown notes.
-9. Verify a representative GitHub `blob/{tag}/{path}#Lx-Ly` URL before updating
+9. Run `node scripts/prepare-deploy-refs.mjs vX.Y.Z`, inspect each generated
+   signed branch, and push every exact `deploy-{demo}-vX.Y.Z` ref explicitly.
+   Protect published deployment refs from force-pushes and deletion.
+10. Exercise every public provider button from a clean account or project and
+   update deployment status only from recorded evidence.
+11. Verify a representative GitHub `blob/{tag}/{path}#Lx-Ly` URL before updating
    Studio.
 
 The repository contract check validates release metadata, demo coverage, tag
-names, source paths, and permalink templates. Remote tag signatures and GitHub
-Release publication are deployment evidence and must be checked separately.
+names, source paths, permalinks, provider manifests, and deployment refs. Remote
+tag signatures, provider smoke tests, template publication, and GitHub Release
+publication are deployment evidence and must be checked separately.

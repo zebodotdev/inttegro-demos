@@ -8,6 +8,7 @@ const manifest = JSON.parse(readFileSync(join(demosRoot, 'manifest.json'), 'utf8
 const decisions = JSON.parse(readFileSync(join(demosRoot, 'integration-decisions.json'), 'utf8'));
 const releaseManifestPath = join(demosRoot, manifest.currentRelease.manifest);
 const release = JSON.parse(readFileSync(releaseManifestPath, 'utf8'));
+const deployments = JSON.parse(readFileSync(join(demosRoot, 'deployments.json'), 'utf8'));
 
 assert.equal(manifest.schemaVersion, 1);
 assert.equal(manifest.demos.length, 18, 'the roadmap must contain 18 demos');
@@ -40,6 +41,7 @@ assert.equal(
   'raw source template must use an immutable tag',
 );
 assert(existsSync(join(demosRoot, release.releaseNotes)), 'release notes referenced by the manifest must exist');
+assert.equal(release.deploymentManifest, 'deployments.json', 'release must identify its deployment contract');
 assert.equal(release.demos.length, v1.length, 'current release must include every implemented V1 demo');
 assert.deepEqual(
   release.demos.map((demo) => demo.id).toSorted(),
@@ -79,6 +81,139 @@ for (const demo of v1) {
   const directory = join(demosRoot, demo.id);
   assert(existsSync(directory), `missing V1 directory: ${demo.id}`);
   assert(existsSync(join(directory, 'README.md')), `missing V1 README: ${demo.id}`);
+}
+
+assert.equal(deployments.schemaVersion, 1, 'deployment manifest schema must be version 1');
+assert.equal(deployments.repository, release.repository, 'deployment repository must remain canonical');
+assert.equal(deployments.releaseVersion, release.version, 'deployments must target the current release');
+assert.equal(deployments.suiteTag, release.suiteTag, 'deployments must target the current suite tag');
+assert.equal(deployments.domain.status, 'active', 'inttegro.dev must be recorded as an active release domain');
+assert.equal(deployments.domain.provider, 'cloudflare');
+assert.match(deployments.domain.activatedAt, /^\d{4}-\d{2}-\d{2}$/);
+assert.equal(deployments.domain.catalogHost, 'demos.inttegro.dev');
+assert.equal(deployments.domain.demoHostTemplate, '{id}-demo.inttegro.dev');
+assert.equal(deployments.domain.nativeBackendHost, 'mobile-api.inttegro.dev');
+assert.equal(deployments.deployRefTemplate, 'deploy-{id}-v{version}');
+assert.equal(deployments.environment.INTTEGRO_DEMO_CUSTOMER_ID.default, false);
+assert.deepEqual(
+  deployments.demos.map((demo) => demo.id).toSorted(),
+  v1.map((demo) => demo.id).toSorted(),
+  'deployment metadata must cover every V1 demo exactly once',
+);
+
+const providerStatuses = new Set(['prepared', 'verified', 'template-pending', 'blocked']);
+const providerRecommendations = new Set(['recommended', 'alternative', 'experimental']);
+const providerIds = new Set(Object.keys(deployments.providers));
+for (const provider of Object.values(deployments.providers)) {
+  assert.match(provider.documentation, /^https:\/\//, `${provider.name} must link its canonical deployment documentation`);
+  assert.match(provider.buttonImage, /^https:\/\//, `${provider.name} must define its official button image`);
+}
+
+for (const demo of deployments.demos) {
+  assert.equal(new Set(demo.providers.map((provider) => provider.id)).size, demo.providers.length, `${demo.id} provider IDs must be unique`);
+  if (demo.mode === 'native') {
+    assert.equal(demo.providers.length, 0, `${demo.id} must not advertise a cloud deployment for native application code`);
+    assert.equal(demo.companionBackend, 'nextjs', `${demo.id} must identify the shared mobile backend`);
+    continue;
+  }
+  assert(demo.providers.length > 0, `${demo.id} must document at least one provider`);
+  assert.equal(
+    demo.providers.filter((provider) => provider.recommendation === 'recommended').length,
+    1,
+    `${demo.id} must identify exactly one recommended provider`,
+  );
+  for (const provider of demo.providers) {
+    assert(providerIds.has(provider.id), `${demo.id} references unknown provider ${provider.id}`);
+    assert(providerStatuses.has(provider.status), `${demo.id}/${provider.id} has invalid status`);
+    assert(providerRecommendations.has(provider.recommendation), `${demo.id}/${provider.id} has invalid recommendation`);
+    if (provider.config) {
+      assert(existsSync(join(demosRoot, provider.config)), `${demo.id}/${provider.id} config does not exist: ${provider.config}`);
+    }
+    if (provider.status === 'blocked') {
+      assert(provider.reason, `${demo.id}/${provider.id} must explain why it is blocked`);
+    } else {
+      assert(provider.config, `${demo.id}/${provider.id} must point to checked-in configuration`);
+    }
+  }
+}
+
+for (const id of ['express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'spring-boot']) {
+  for (const file of ['Dockerfile', '.dockerignore', 'render.yaml', 'railway.json']) {
+    assert(existsSync(join(demosRoot, id, file)), `${id} must include ${file} for portable deployment`);
+  }
+}
+
+for (const id of ['nextjs', 'nuxt']) {
+  assert(existsSync(join(demosRoot, id, 'vercel.json')), `${id} must include an explicit Vercel contract`);
+  assert(existsSync(join(demosRoot, id, 'wrangler.jsonc')), `${id} must include an explicit Cloudflare contract`);
+}
+assert(existsSync(join(demosRoot, 'express/wrangler.jsonc')), 'Express must include its Cloudflare Worker contract');
+assert(existsSync(join(demosRoot, 'catalog/wrangler.jsonc')), 'catalogue must be ready for Cloudflare Static Assets');
+
+for (const configPath of ['nextjs/wrangler.jsonc', 'nuxt/wrangler.jsonc', 'express/wrangler.jsonc', 'catalog/wrangler.jsonc']) {
+  const config = readFileSync(join(demosRoot, configPath), 'utf8');
+  assert(!config.includes('inttegro.dev'), `${configPath} must remain host-neutral for reader-owned deployment`);
+}
+
+const generatedCatalogue = JSON.parse(readFileSync(join(demosRoot, 'catalog/public/demos.json'), 'utf8'));
+assert.equal(generatedCatalogue.releaseVersion, release.version, 'catalogue must describe the current release');
+assert.equal(generatedCatalogue.suiteTag, release.suiteTag, 'catalogue suite tag must be current');
+assert.equal(generatedCatalogue.domainStatus, 'active', 'catalogue must label the active release domain truthfully');
+assert.deepEqual(
+  generatedCatalogue.demos.map((demo) => demo.id),
+  v1.map((demo) => demo.id),
+  'catalogue order must follow the V1 manifest',
+);
+const generatedNext = generatedCatalogue.demos.find((demo) => demo.id === 'nextjs');
+assert(
+  generatedNext.environment.some((variable) => variable.name === 'INTTEGRO_DEMO_CUSTOMER_ID'),
+  'Next.js catalogue deployment requirements must include the mobile demo customer',
+);
+for (const demo of generatedCatalogue.demos.filter((candidate) => candidate.mode === 'server' && candidate.id !== 'nextjs')) {
+  assert(
+    !demo.environment.some((variable) => variable.name === 'INTTEGRO_DEMO_CUSTOMER_ID'),
+    `${demo.id} must not request the Next.js-only demo customer`,
+  );
+}
+
+const catalogueApplication = readFileSync(join(demosRoot, 'catalog/public/app.js'), 'utf8');
+assert(
+  catalogueApplication.includes('const deploymentSource = `${data.repository}/tree/${demo.deployRef}`'),
+  'catalogue deploy actions must use root-level immutable deployment refs',
+);
+assert(
+  !catalogueApplication.includes('taggedSubdirectory'),
+  'catalogue deploy actions must not send provider builds to tagged subdirectories',
+);
+
+for (const id of ['nextjs', 'nuxt', 'express']) {
+  const readme = readFileSync(join(demosRoot, id, 'README.md'), 'utf8');
+  assert(
+    readme.includes(`/tree/deploy-${id}-v${release.version}`),
+    `${id} deployment buttons must target its root-level immutable deployment ref`,
+  );
+}
+
+for (const id of ['ios-swiftui', 'android-compose', 'flutter', 'react-native-expo']) {
+  const readme = readFileSync(join(demosRoot, id, 'README.md'), 'utf8');
+  assert(readme.includes('## Deploy the companion backend'), `${id} must explain how to deploy its server trust boundary`);
+  assert(
+    readme.includes(`/tree/deploy-nextjs-v${release.version}`),
+    `${id} companion deployment button must target the immutable Next.js deployment ref`,
+  );
+}
+
+const deployRefScript = readFileSync(join(demosRoot, 'scripts/prepare-deploy-refs.mjs'), 'utf8');
+for (const requiredReleaseGuard of [
+  "git(['verify-tag', requestedTag]",
+  "git(['verify-tag', sourceDemoTag]",
+  "`${requestedTag}:LICENSE`",
+  ".replaceAll('../DEPLOYING.md'",
+]) {
+  assert(
+    deployRefScript.includes(requiredReleaseGuard),
+    `deployment ref preparation must preserve release guard: ${requiredReleaseGuard}`,
+  );
 }
 
 assert(existsSync(join(demosRoot, 'INTEGRATION_GUIDE.md')), 'missing human-readable integration guide');
@@ -208,4 +343,4 @@ for (const path of textFiles(demosRoot)) {
   assert(!source.includes(staleMobileField), `stale mobile SDK field in ${path}`);
 }
 
-console.log('Demo contract check passed: release tags, 13 V1 entries, four intentional stories, integration decisions, source commentary, original artwork, and Inttegro SDK naming are consistent.');
+console.log('Demo contract check passed: release tags, 13 V1 entries, four stories, deployment contracts, catalogue metadata, source commentary, original artwork, and Inttegro SDK naming are consistent.');
