@@ -20,7 +20,7 @@ Open <http://localhost:3002>. Run `npm run check` for type checking and tests.
 Cloudflare is the recommended target and builds through Nitro's Cloudflare
 preset. Vercel keeps Nuxt's provider-aware production build. Both buttons use
 an immutable deployment ref derived from `nuxt-v1.1.1` and become live when
-that release is published. See [`DEPLOYING.md`](../DEPLOYING.md) for readiness
+that release is published. See [`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.1.1/DEPLOYING.md) for readiness
 and trade-offs.
 
 ## Understand the integration
@@ -29,5 +29,5 @@ Start with [`server/utils/checkout.ts`](./server/utils/checkout.ts) for Order
 construction and error mapping, then read
 [`server/routes/checkout.post.ts`](./server/routes/checkout.post.ts) for cookie
 correlation and the 303 handoff. The `INTTEGRO:*` comments map choices and
-alternatives to the shared [integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+alternatives to the shared [integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.1.1/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.1.1/integration-decisions.json).
