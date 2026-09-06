@@ -3,7 +3,10 @@
   "name": "inttegro-demo-nuxt",
   "main": ".output/server/index.mjs",
   "compatibility_date": "2026-09-06",
-  "compatibility_flags": ["nodejs_compat"],
+  // Nitro's Cloudflare preset already supplies the Node shims used by this
+  // bundle. Opting out of the runtime's additional shims avoids resolving the
+  // generated Buffer fallback through a missing `node:buffer` module.
+  "compatibility_flags": ["no_nodejs_compat", "no_nodejs_compat_v2"],
   "assets": {
     "directory": ".output/public",
     "binding": "ASSETS"
