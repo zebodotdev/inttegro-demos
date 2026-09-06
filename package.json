@@ -27,7 +27,13 @@
   "cloudflare": {
     "bindings": {
       "INTTEGRO_API_KEY": {
-        "description": "Create a test key in Inttegro Studio. This value remains server-side."
+        "description": "Create a dedicated API key in Inttegro Studio. This value remains server-side."
+      },
+      "INTTEGRO_DEMO_PRODUCT_ID": {
+        "description": "The active Afterglow admission Product ID resolved by the server at checkout."
+      },
+      "INTTEGRO_DEMO_PRICE_ID": {
+        "description": "An active Price ID belonging to the configured Afterglow Product."
       },
       "INTTEGRO_DEMO_PUBLIC_URL": {
         "description": "Optional public origin for completion and cancellation URLs, without a trailing slash."
