@@ -99,6 +99,12 @@ def build_order_request(checkout: CheckoutInput, origin: str, product: CatalogSe
         # cart or booking; a new random key on retry can create a duplicate.
         # https://studio.inttegro.com/idempotency
         request_meta=inttegro.orders.RequestMeta(idempotency_key=f"demo-{checkout.attempt_id}"),
+        # INTTEGRO:DECISION [merchant-order-number] Send a human-facing merchant
+        # reference instead of accepting Inttegro's generated or_ ID fallback.
+        # This demo derives a retry-stable value from its validated attempt. A
+        # production ticketing system should use its persisted booking number
+        # and must not encode customer PII in the reference.
+        number=f"AFTERGLOW-{checkout.attempt_id.replace('_', '-').upper()[:48]}",
         # INTTEGRO:DECISION [inline-customer] Guest checkout uses customer_data.
         # Account-based flows should resolve customer_id on the server. The
         # Orders API accepts exactly one of the two customer representations.
