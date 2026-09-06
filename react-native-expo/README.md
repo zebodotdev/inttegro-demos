@@ -27,5 +27,13 @@ npm run android
 
 The configured demo backend must expose `POST /mobile/orders` and return
 `{ "orderId": "or_..." }`. That backend owns the merchant API
-key and constructs the fixed GHS 50.00 Dawn Brew Set order. A completed client result
-still requires authoritative server-side payment verification.
+key and constructs the fixed GHS 50.00 Dawn Brew Set order. A completed client
+result still requires authoritative server-side payment verification.
+
+## Understand the integration
+
+Start with [`src/demoBackend.ts`](./src/demoBackend.ts) for the merchant-backend
+trust boundary, then read [`App.tsx`](./App.tsx) for sheet initialization,
+presentation, telemetry, and result semantics. The `INTTEGRO:*` comments map
+choices and alternatives to the shared [integration guide](../INTEGRATION_GUIDE.md)
+and [machine-readable decision registry](../integration-decisions.json).

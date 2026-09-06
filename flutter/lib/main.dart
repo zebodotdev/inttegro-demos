@@ -5,6 +5,23 @@ import 'package:inttegro_flutter/inttegro_flutter.dart';
 
 import 'demo_backend.dart';
 
+/*
+ * Inttegro payment-sheet integration map
+ *
+ * INTTEGRO:FLOW [native-payment-sheet] Ask the merchant backend for a finalized
+ * Order, initialize the Inttegro SDK with its ID and the app return URL, then
+ * present the native payment sheet.
+ * INTTEGRO:SECURITY [server-api-key] The Flutter app receives an order ID, never
+ * a merchant API key. See https://studio.inttegro.com/keys.
+ * INTTEGRO:ALTERNATIVE [native-payment-sheet] A product that intentionally
+ * prefers browser checkout can open the returned hosted URL in a secure browser
+ * surface while retaining the same server-side verification boundary.
+ * INTTEGRO:DOCS https://studio.inttegro.com/sdks
+ * INTTEGRO:DOCS https://studio.inttegro.com/payment-methods
+ * See ../../INTEGRATION_GUIDE.md and ../../integration-decisions.json for the complete
+ * rationale and machine-readable alternatives.
+ */
+
 void main() => runApp(const KoraMarketApp());
 
 class KoraMarketApp extends StatelessWidget {
@@ -63,6 +80,11 @@ class _KoraProductScreenState extends State<KoraProductScreen> {
   @override
   void initState() {
     super.initState();
+    // INTTEGRO:OBSERVABILITY [application-owned-observability] The SDK exposes
+    // privacy-safe lifecycle fields to the app. Forward them to your own
+    // telemetry pipeline if useful, but do not attach customer data, secrets,
+    // or raw provider payloads. These events are diagnostics, not payment state.
+    // https://studio.inttegro.com/sdk-observability
     _telemetrySubscription = Inttegro.instance.paymentSheetEvents.listen(
       (event) => debugPrint(
         'Inttegro payment sheet: flow=${event.flowId} '
@@ -87,16 +109,30 @@ class _KoraProductScreenState extends State<KoraProductScreen> {
     setState(() => _busy = true);
     try {
       if (_backendUrl.isEmpty) throw StateError('Set INTTEGRO_DEMO_BACKEND_URL.');
+      // INTTEGRO:DECISION [stable-idempotency-key] This value represents one
+      // logical checkout. A retry of that attempt must reuse it. Production apps
+      // persist the attempt alongside the authenticated cart.
+      // https://studio.inttegro.com/idempotency
       final order = await DemoBackend(_backendUrl).createCheckoutOrder(
         'flutter_${DateTime.now().microsecondsSinceEpoch.toRadixString(36)}',
       );
+      // INTTEGRO:DECISION [native-payment-sheet] The backend creates a finalized,
+      // checkout-ready Order. The return URL must be registered by the native
+      // hosts; it resumes UX after an external step but does not prove payment.
       await Inttegro.instance.initializePaymentSheet(
         PaymentSheetConfiguration(
           orderId: order.orderId,
           returnUrl: Uri.parse('inttegro-demo://payment-return'),
         ),
       );
+      // Inttegro owns payment-method presentation and provider transitions;
+      // Kora owns the surrounding product, loading, cancellation, and result UI.
       final result = await Inttegro.instance.presentPaymentSheet();
+      // INTTEGRO:VERIFY [server-side-verification] The result below drives
+      // immediate UX only. Before fulfillment, the backend must look up the
+      // owner-scoped Order. Use bounded polling plus reconciliation while
+      // merchant-facing webhooks are unavailable:
+      // https://studio.inttegro.com/webhooks
       _status = switch (result) {
         PaymentSheetCompleted() => 'Payment submitted. We’ll verify it before fulfillment.',
         PaymentSheetCanceled() => 'Checkout paused. Your Dawn Brew Set is still in the bag.',

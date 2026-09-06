@@ -64,8 +64,15 @@ Each V1 demo:
 7. Handles configuration, validation, and Inttegro API failures without leaking
    credentials or raw internal errors.
 
-See [CONTRACT.md](./CONTRACT.md) for the normative acceptance contract.
-See [MOBILE.md](./MOBILE.md) for the mobile backend boundary and device checks.
+See [INTEGRATION_GUIDE.md](./INTEGRATION_GUIDE.md) for the rationale,
+trade-offs, production alternatives, and links to canonical Inttegro
+documentation. Its companion
+[`integration-decisions.json`](./integration-decisions.json) exposes the same
+decision model to documentation tools and machine readers. Source comments use
+stable `INTTEGRO:*` markers and decision IDs from that registry.
+
+See [CONTRACT.md](./CONTRACT.md) for the normative acceptance contract and
+[MOBILE.md](./MOBILE.md) for the mobile backend boundary and device checks.
 
 ## Configuration
 

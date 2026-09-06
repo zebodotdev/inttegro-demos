@@ -77,6 +77,22 @@ Every server-backed demo must provide:
 - at least one test proving the expected Inttegro order request; and
 - an `.env.example` containing placeholders only.
 
+Every V1 integration entry point must also:
+
+- link to applicable canonical documentation at `studio.inttegro.com`;
+- use the stable `INTTEGRO:*` comment vocabulary documented in
+  [INTEGRATION_GUIDE.md](./INTEGRATION_GUIDE.md);
+- identify consequential choices with a decision ID from
+  [`integration-decisions.json`](./integration-decisions.json).
+
+Taken together, each demo's entry points must explain at least one viable
+alternative where the example's choice is not universally correct.
+
+Comments must describe trust boundaries and lifecycle semantics, not merely
+translate the next line of code. The JSON registry is part of the public demo
+contract: paths must exist, decision IDs must be unique, and every referenced
+documentation key must resolve.
+
 Mobile demos instead test configuration validation and the demo-backend request
 boundary, then follow the native device and accessibility matrix in
 [MOBILE.md](./MOBILE.md).

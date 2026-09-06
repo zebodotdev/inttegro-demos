@@ -33,3 +33,12 @@ The backend must expose `POST /mobile/orders` and return
 `{ "orderId": "or_..." }`. It owns `INTTEGRO_API_KEY` and builds the
 fixed GHS 50.00 Dawn Brew Set order. A completed client result still requires
 authoritative server-side verification.
+
+## Understand the integration
+
+Start with [`lib/demo_backend.dart`](./lib/demo_backend.dart) for the
+merchant-backend trust boundary, then read [`lib/main.dart`](./lib/main.dart)
+for sheet initialization, presentation, telemetry, and result semantics. The
+`INTTEGRO:*` comments map choices and alternatives to the shared
+[integration guide](../INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](../integration-decisions.json).

@@ -19,6 +19,22 @@ import (
 	"github.com/zebodotdev/inttegro-sdk-go/v4/money"
 )
 
+// Inttegro integration map
+//
+// INTTEGRO:FLOW [hosted-checkout] This trusted server validates an invoice
+// payment, creates and finalizes an Order, and redirects to its hosted invoice
+// URL.
+// INTTEGRO:SECURITY [server-api-key] INTTEGRO_API_KEY stays in this server
+// process. Never emit it into HTML, client JavaScript, logs, or error responses.
+// INTTEGRO:ALTERNATIVE [hosted-checkout] Direct API payment is available to
+// products prepared to own more payment state, recovery UI, method-specific
+// behavior, testing, and compliance analysis.
+// INTTEGRO:DOCS https://studio.inttegro.com/accept-payment-with-inttegro-checkout
+// INTTEGRO:DOCS https://studio.inttegro.com/orders
+// INTTEGRO:DOCS https://studio.inttegro.com/keys
+// See ../INTEGRATION_GUIDE.md and ../integration-decisions.json for the shared
+// rationale and machine-readable alternatives.
+
 type demoError struct {
 	Code    string
 	Message string
@@ -63,6 +79,10 @@ func parseCheckoutInput(request *http.Request) (checkoutInput, error) {
 }
 
 func publicOrigin(request *http.Request) (string, error) {
+	// INTTEGRO:SECURITY [configured-public-origin] Prefer an allow-listed
+	// configured origin in production. A request-derived fallback is safe only
+	// behind a precisely configured trusted proxy chain. Return URLs must be
+	// HTTP(S); Inttegro appends order_id after checkout.
 	value := strings.TrimSpace(os.Getenv("INTTEGRO_DEMO_PUBLIC_URL"))
 	if value == "" {
 		scheme := "http"
@@ -80,14 +100,29 @@ func publicOrigin(request *http.Request) (string, error) {
 
 func buildOrderRequest(input checkoutInput, origin string) inttegro.OrderCreateParams {
 	return inttegro.OrderCreateParams{
-		RequestMeta:      &inttegro.RequestMeta{IdempotencyKey: "demo-" + input.AttemptID},
-		CustomerData:     &inttegro.CustomerData{Name: input.Name, Email: input.Email, PhoneNumber: input.Phone},
+		// INTTEGRO:DECISION [stable-idempotency-key] Reuse this key for retries of
+		// one logical invoice payment. Production systems should persist a key
+		// derived from the merchant invoice; a fresh retry key permits duplicates.
+		// https://studio.inttegro.com/idempotency
+		RequestMeta: &inttegro.RequestMeta{IdempotencyKey: "demo-" + input.AttemptID},
+		// INTTEGRO:DECISION [inline-customer] customer_data fits this guest flow.
+		// Account-based apps should resolve customer_id on the server; Inttegro
+		// accepts exactly one of the two customer representations.
+		CustomerData: &inttegro.CustomerData{Name: input.Name, Email: input.Email, PhoneNumber: input.Phone},
+		// INTTEGRO:DECISION [finalize-on-create] This invoice is already settled,
+		// so finalization freezes it and creates checkout formats in one operation.
+		// Use draft -> update -> finalize for mutable lines, tax, or approval.
 		Finalize:         inttegro.Bool(true),
 		CheckoutSettings: &inttegro.CheckoutSettings{RedirectURL: origin + "/complete", CancelURL: origin + "/cancel"},
 		LineItems: []inttegro.OrderLineItemParams{{
 			Type: inttegro.LineItemTypeProduct,
 			Product: &inttegro.ProductLineItemParams{
+				// INTTEGRO:DECISION [inline-product] Inline data keeps the service
+				// invoice self-contained. Catalog users can send product_id with an
+				// explicit price or price_id; do not mix both request shapes.
 				Type: inttegro.ProductTypeService, Name: "Invoice INV-2048", Quantity: 1,
+				// INTTEGRO:DECISION [minor-unit-money] 5000 minor units means
+				// GHS 50.00. Use a currency-aware decimal/money type for conversion.
 				Price: inttegro.PriceParams{AmountParams: money.AmountParams{Currency: money.GHS, Value: 5000}},
 			},
 		}},
@@ -95,18 +130,29 @@ func buildOrderRequest(input checkoutInput, origin string) inttegro.OrderCreateP
 }
 
 func createHostedCheckout(ctx context.Context, input checkoutInput, origin string) (string, string, error) {
+	// INTTEGRO:SECURITY [server-api-key] Source this from a deployment secret
+	// manager and rotate it there; never serialize it into a public response.
 	apiKey := strings.TrimSpace(os.Getenv("INTTEGRO_API_KEY"))
 	if apiKey == "" {
 		return "", "", &demoError{Code: "configuration_error", Message: "Set INTTEGRO_API_KEY on the server."}
 	}
+	// INTTEGRO:ALTERNATIVE [server-api-key] A production service can inject one
+	// startup-configured client for transport reuse and application-owned
+	// OpenTelemetry. The SDK chooses no exporter or vendor.
+	// https://studio.inttegro.com/sdk-observability
 	order, err := inttegro.NewClient(apiKey).Orders.Create(ctx, buildOrderRequest(input, origin))
 	if err != nil {
+		// INTTEGRO:SECURITY [safe-error-boundary] Keep raw upstream payloads,
+		// credentials, and traces private. Public messages stay stable; record
+		// only bounded metadata and request IDs in protected telemetry.
 		var apiError *inttegro.APIError
 		if errors.As(err, &apiError) {
 			return "", "", &demoError{Code: "api_error", Message: "Inttegro rejected the checkout request."}
 		}
 		return "", "", &demoError{Code: "api_error", Message: "Checkout is temporarily unavailable."}
 	}
+	// INTTEGRO:DECISION [returned-checkout-url] Use the URL in the response;
+	// constructing one from order.ID depends on undocumented routing details.
 	if order.Invoice == nil || order.Invoice.Format == nil || order.Invoice.Format.Web == nil || order.Invoice.Format.Web.URL == "" {
 		return "", "", &demoError{Code: "api_error", Message: "Inttegro did not return a hosted checkout URL."}
 	}
@@ -150,7 +196,12 @@ func checkout(response http.ResponseWriter, request *http.Request) {
 			var orderID, checkoutURL string
 			orderID, checkoutURL, err = createHostedCheckout(request.Context(), input, origin)
 			if err == nil {
+				// INTTEGRO:DECISION [durable-order-correlation] This short-lived
+				// HttpOnly cookie is only a demo aid. Production code persists an
+				// owner-scoped merchant invoice -> Inttegro order mapping.
 				http.SetCookie(response, &http.Cookie{Name: "inttegro_demo_order", Value: orderID, Path: "/", MaxAge: 1800, HttpOnly: true, SameSite: http.SameSiteLaxMode, Secure: request.TLS != nil})
+				// INTTEGRO:DECISION [see-other-redirect] 303 follows the hosted
+				// URL with GET. A 307/308 would preserve and replay this POST.
 				http.Redirect(response, request, checkoutURL, http.StatusSeeOther)
 				return
 			}
@@ -161,11 +212,18 @@ func checkout(response http.ResponseWriter, request *http.Request) {
 	if errors.As(err, &mapped) {
 		safe = mapped
 	}
+	// INTTEGRO:SECURITY [safe-error-boundary] Only our bounded error vocabulary
+	// enters the query string; detailed API diagnostics remain server-side.
 	query := url.Values{"code": {safe.Code}, "message": {safe.Message}}
 	http.Redirect(response, request, "/?"+query.Encode(), http.StatusSeeOther)
 }
 
 func main() {
+	// INTTEGRO:VERIFY [server-side-verification] /complete is a UX return, not
+	// proof of payment. Resolve and look up the owner-scoped order before
+	// fulfillment. Merchant webhooks are not currently available, so use bounded
+	// polling plus a background reconciliation job:
+	// https://studio.inttegro.com/webhooks
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", home)
 	mux.HandleFunc("/checkout", checkout)

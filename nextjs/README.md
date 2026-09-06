@@ -20,3 +20,13 @@ Run the checks with:
 ```bash
 npm run check
 ```
+
+## Understand the integration
+
+Start with [`lib/checkout.ts`](./lib/checkout.ts) for the hosted and native Order
+requests, then read [`app/checkout/route.ts`](./app/checkout/route.ts) for the
+303 browser handoff and
+[`app/mobile/orders/route.ts`](./app/mobile/orders/route.ts) for the mobile trust
+boundary. Source comments link each consequential choice to the shared
+[integration guide](../INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](../integration-decisions.json).

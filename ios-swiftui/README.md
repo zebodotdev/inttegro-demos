@@ -36,3 +36,13 @@ xcodebuild build \
 
 A production app receives only a finalized `orderID` from its merchant backend.
 Payment completion must still be verified on the server.
+
+## Understand the integration
+
+Start with [`DemoBackend.swift`](./InttegroSwiftUIDemo/DemoBackend.swift) for the
+merchant-backend trust boundary, then read
+[`CheckoutView.swift`](./InttegroSwiftUIDemo/CheckoutView.swift) for payment
+sheet configuration, presentation, telemetry, and result semantics. The
+`INTTEGRO:*` comments map choices and alternatives to the shared
+[integration guide](../INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](../integration-decisions.json).

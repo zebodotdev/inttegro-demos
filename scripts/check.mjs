@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const demosRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const manifest = JSON.parse(readFileSync(join(demosRoot, 'manifest.json'), 'utf8'));
+const decisions = JSON.parse(readFileSync(join(demosRoot, 'integration-decisions.json'), 'utf8'));
 
 assert.equal(manifest.schemaVersion, 1);
 assert.equal(manifest.demos.length, 18, 'the roadmap must contain 18 demos');
@@ -32,6 +33,62 @@ for (const demo of v1) {
   const directory = join(demosRoot, demo.id);
   assert(existsSync(directory), `missing V1 directory: ${demo.id}`);
   assert(existsSync(join(directory, 'README.md')), `missing V1 README: ${demo.id}`);
+}
+
+assert(existsSync(join(demosRoot, 'INTEGRATION_GUIDE.md')), 'missing human-readable integration guide');
+assert.equal(decisions.schemaVersion, 1, 'integration decision schema must be version 1');
+assert.deepEqual(
+  decisions.markers,
+  ['FLOW', 'SECURITY', 'DECISION', 'ALTERNATIVE', 'VERIFY', 'OBSERVABILITY', 'DOCS'],
+  'the public source-comment vocabulary must stay stable',
+);
+
+const documentationEntries = Object.entries(decisions.canonicalDocs);
+assert(documentationEntries.length >= 8, 'decision registry must link the canonical documentation set');
+for (const [key, value] of documentationEntries) {
+  assert.match(value, /^https:\/\/studio\.inttegro\.com\/[a-z0-9#/-]+$/, `invalid canonical documentation URL: ${key}`);
+}
+
+const decisionIds = decisions.decisions.map((decision) => decision.id);
+assert.equal(new Set(decisionIds).size, decisionIds.length, 'integration decision IDs must be unique');
+assert(decisionIds.length >= 15, 'decision registry must cover the material integration trade-offs');
+for (const decision of decisions.decisions) {
+  assert.match(decision.id, /^[a-z0-9-]+$/, `invalid decision ID: ${decision.id}`);
+  assert(decision.selected && decision.rationale, `${decision.id} must state the selected option and rationale`);
+  assert(decision.alternatives.length > 0, `${decision.id} must document at least one alternative`);
+  for (const documentationKey of decision.docs) {
+    assert(decisions.canonicalDocs[documentationKey], `${decision.id} references unknown docs key: ${documentationKey}`);
+  }
+}
+
+assert.deepEqual(
+  Object.keys(decisions.sourceEntryPoints).toSorted(),
+  v1.map((demo) => demo.id).toSorted(),
+  'every V1 demo must have documented source entry points',
+);
+
+const knownDecisionIds = new Set(decisionIds);
+const decisionReferencePattern = /INTTEGRO:(?:FLOW|SECURITY|DECISION|ALTERNATIVE|VERIFY|OBSERVABILITY) \[([a-z0-9-]+)\]/g;
+for (const [demoId, sourcePaths] of Object.entries(decisions.sourceEntryPoints)) {
+  let combinedSource = '';
+  for (const sourcePath of sourcePaths) {
+    const absolutePath = join(demosRoot, sourcePath);
+    assert(existsSync(absolutePath), `missing documented source entry point: ${sourcePath}`);
+    const source = readFileSync(absolutePath, 'utf8');
+    combinedSource += `\n${source}`;
+    assert(source.includes('INTTEGRO:'), `${sourcePath} must use the Inttegro comment vocabulary`);
+    assert(source.includes('https://studio.inttegro.com/'), `${sourcePath} must link canonical Inttegro documentation`);
+    for (const match of source.matchAll(decisionReferencePattern)) {
+      assert(knownDecisionIds.has(match[1]), `${sourcePath} references unknown decision ID: ${match[1]}`);
+    }
+  }
+  assert(combinedSource.includes('INTTEGRO:DECISION'), `${demoId} must explain its selected integration decisions`);
+  assert(combinedSource.includes('INTTEGRO:ALTERNATIVE'), `${demoId} must explain a viable integration alternative`);
+}
+
+const guide = readFileSync(join(demosRoot, 'INTEGRATION_GUIDE.md'), 'utf8');
+for (const marker of decisions.markers) {
+  assert(guide.includes(`INTTEGRO:${marker}`), `integration guide must define INTTEGRO:${marker}`);
 }
 
 for (const id of [
@@ -76,11 +133,12 @@ for (const mobileArtwork of [
 
 const skippedDirectories = new Set([
   '.build', '.bundle', '.git', '.gradle', '.kotlin', '.next', '.nuxt', '.output',
-  '.swiftpm', '.venv', 'DerivedData', 'build', 'dist', 'lib', 'node_modules',
+  '.swiftpm', '.venv', 'DerivedData', 'build', 'dist', 'node_modules',
   'target', 'vendor',
 ]);
 const textExtensions = new Set([
-  '.dart', '.json', '.kt', '.kts', '.md', '.php', '.swift', '.ts', '.tsx', '.yaml', '.yml',
+  '.dart', '.go', '.java', '.json', '.kt', '.kts', '.md', '.php', '.py', '.rb',
+  '.swift', '.ts', '.tsx', '.yaml', '.yml',
 ]);
 
 function textFiles(directory) {
@@ -104,4 +162,4 @@ for (const path of textFiles(demosRoot)) {
   assert(!source.includes(staleMobileField), `stale mobile SDK field in ${path}`);
 }
 
-console.log('Demo contract check passed: 13 V1 entries, four intentional stories, original artwork, and Inttegro SDK naming are consistent.');
+console.log('Demo contract check passed: 13 V1 entries, four intentional stories, integration decisions, source commentary, original artwork, and Inttegro SDK naming are consistent.');

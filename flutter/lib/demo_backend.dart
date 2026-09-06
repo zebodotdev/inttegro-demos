@@ -1,6 +1,25 @@
 import 'dart:convert';
 import 'dart:io';
 
+/*
+ * Inttegro mobile integration boundary
+ *
+ * INTTEGRO:FLOW [mobile-backend-boundary] The app asks a trusted merchant
+ * backend to create and finalize an Order, then receives only the order ID that
+ * the Inttegro SDK needs.
+ * INTTEGRO:SECURITY [server-api-key] INTTEGRO_API_KEY must never be passed with
+ * --dart-define, stored in assets, or compiled into a Flutter application.
+ * Client configuration is recoverable. Product, price, customer, and payment
+ * policy remain server-side.
+ * INTTEGRO:ALTERNATIVE [mobile-backend-boundary] An existing authenticated API
+ * gateway or backend-for-frontend can implement the narrow endpoint; the
+ * reference Next.js route is not a requirement.
+ * INTTEGRO:DOCS https://studio.inttegro.com/orders
+ * INTTEGRO:DOCS https://studio.inttegro.com/keys
+ * See ../../INTEGRATION_GUIDE.md and ../../integration-decisions.json for the shared
+ * rationale and machine-readable alternatives.
+ */
+
 final class CheckoutOrderResponse {
   const CheckoutOrderResponse(this.orderId);
 
@@ -24,6 +43,10 @@ final class DemoBackend {
   final Uri baseUri;
 
   Future<CheckoutOrderResponse> createCheckoutOrder(String attemptId) async {
+    // INTTEGRO:SECURITY [mobile-backend-boundary] This demo sends only an opaque
+    // attempt ID. Production must authenticate the user, authorize the cart,
+    // recompute its commercial data, rate-limit abuse, and consider platform
+    // attestation. Never trust a client-selected customer, product, or price.
     if (!baseUri.isAbsolute) {
       throw StateError('Set INTTEGRO_DEMO_BACKEND_URL to an absolute URL.');
     }
@@ -48,6 +71,9 @@ final class DemoBackend {
         );
       }
       final body = await utf8.decoder.bind(response).join();
+      // INTTEGRO:DECISION [mobile-backend-boundary] Decode only the minimal
+      // orderId projection. Merchant credentials and order construction never
+      // cross the backend authorization boundary.
       return CheckoutOrderResponse.fromJson(jsonDecode(body));
     } finally {
       client.close(force: true);

@@ -2,6 +2,23 @@ import Inttegro
 import OSLog
 import SwiftUI
 
+/*
+ Inttegro payment-sheet integration map
+
+ INTTEGRO:FLOW [native-payment-sheet] Create a finalized Order through the
+ merchant backend, configure the Inttegro SDK with its ID and this app's return
+ URL, then present InttegroPaymentSheet.
+ INTTEGRO:SECURITY [server-api-key] The native app receives an order ID, never a
+ merchant API key. See https://studio.inttegro.com/keys.
+ INTTEGRO:ALTERNATIVE [native-payment-sheet] A product that intentionally
+ prefers browser checkout can open the hosted invoice URL in a secure browser
+ surface, while preserving the same server-side verification boundary.
+ INTTEGRO:DOCS https://studio.inttegro.com/sdks
+ INTTEGRO:DOCS https://studio.inttegro.com/payment-methods
+ See ../../INTEGRATION_GUIDE.md and ../../integration-decisions.json for the
+ shared rationale and machine-readable alternatives.
+ */
+
 private let paymentSheetLogger = Logger(
     subsystem: "com.inttegro.demo.swiftui",
     category: "PaymentSheet"
@@ -217,8 +234,15 @@ struct CheckoutView: View {
     @ViewBuilder
     private var paymentSheet: some View {
         if let configuration {
+            // INTTEGRO:DECISION [native-payment-sheet] Inttegro owns the native
+            // payment-method UI and provider transitions. Kora Market retains
+            // its product, cart, loading, cancellation, and result experience.
             InttegroPaymentSheet(
                 configuration: configuration,
+                // INTTEGRO:OBSERVABILITY [application-owned-observability] These
+                // privacy-safe lifecycle events go to the app's own logger. They
+                // are diagnostics, not payment state; do not add customer data,
+                // secrets, or raw provider payloads.
                 telemetryEventHandler: logPaymentSheetEvent,
                 onCompletion: handle
             )
@@ -242,7 +266,14 @@ struct CheckoutView: View {
         Task { @MainActor in
             defer { isCreatingOrder = false }
             do {
+                // INTTEGRO:FLOW [mobile-backend-boundary] The merchant backend
+                // authenticates and constructs the order. The app never creates
+                // an order with an Inttegro API key.
                 let orderID = try await DemoBackend.configured().createCheckoutOrder()
+                // INTTEGRO:DECISION [native-payment-sheet] The order must already
+                // be finalized and checkout-ready. Register this return URL in
+                // the application; it resumes UX after external authorization
+                // but does not prove payment.
                 configuration = try PaymentSheetConfiguration(
                     orderID: orderID,
                     returnURL: URL(string: "inttegro-demo://payment-return")
@@ -256,6 +287,11 @@ struct CheckoutView: View {
     }
 
     private func handle(_ result: PaymentSheetResult) {
+        // INTTEGRO:VERIFY [server-side-verification] This callback controls
+        // immediate UI only. A completed sheet is not fulfillment authority.
+        // The merchant backend must look up the owner-scoped Order and use
+        // bounded polling plus reconciliation because merchant-facing webhooks
+        // are not currently available: https://studio.inttegro.com/webhooks.
         isPaymentSheetPresented = false
         switch result {
         case .completed: outcome = "Payment submitted. We’ll verify it before fulfillment."
@@ -266,6 +302,11 @@ struct CheckoutView: View {
 }
 
 private func logPaymentSheetEvent(_ event: PaymentSheetTelemetryEvent) {
+    // INTTEGRO:OBSERVABILITY [application-owned-observability] Bounded IDs,
+    // operation, status, sequence, and error type are useful for correlation.
+    // Keep customer details, credentials, and request/response bodies out of
+    // logs. Telemetry is not a substitute for authoritative order lookup.
+    // https://studio.inttegro.com/sdk-observability
     paymentSheetLogger.info(
         "flow=\(event.flowID, privacy: .public) event=\(event.name.rawValue, privacy: .public) sequence=\(event.sequence) operation=\(event.operation ?? "none", privacy: .public) status=\(event.httpStatusCode ?? 0) request=\(event.requestID ?? "none", privacy: .public) error=\(event.errorType ?? "none", privacy: .public)"
     )

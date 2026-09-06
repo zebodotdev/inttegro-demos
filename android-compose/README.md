@@ -26,3 +26,14 @@ The repository includes a Gradle wrapper:
 
 A production app receives only a finalized `orderId` created by its backend.
 Fulfillment still relies on authoritative server-side payment status.
+
+## Understand the integration
+
+Start with
+[`DemoBackend.kt`](./app/src/main/java/com/inttegro/demo/compose/DemoBackend.kt)
+for the merchant-backend trust boundary, then read
+[`MainActivity.kt`](./app/src/main/java/com/inttegro/demo/compose/MainActivity.kt)
+for sheet presentation, telemetry, and result semantics. The `INTTEGRO:*`
+comments map choices and alternatives to the shared
+[integration guide](../INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](../integration-decisions.json).

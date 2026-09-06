@@ -79,6 +79,23 @@ import com.inttegro.payments.PaymentSheetTelemetryListener
 import java.util.UUID
 import kotlinx.coroutines.launch
 
+/*
+ * Inttegro payment-sheet integration map
+ *
+ * INTTEGRO:FLOW [native-payment-sheet] Ask the merchant backend for a finalized
+ * Order, configure the Inttegro SDK with its ID and the app return URL, and
+ * render InttegroPaymentSheet in the Compose hierarchy.
+ * INTTEGRO:SECURITY [server-api-key] The app receives an order ID, never a
+ * merchant API key. See https://studio.inttegro.com/keys.
+ * INTTEGRO:ALTERNATIVE [native-payment-sheet] A product that deliberately uses
+ * browser checkout can open the returned hosted URL in a secure browser surface
+ * and keep the same server-side verification requirement.
+ * INTTEGRO:DOCS https://studio.inttegro.com/sdks
+ * INTTEGRO:DOCS https://studio.inttegro.com/payment-methods
+ * See the repository INTEGRATION_GUIDE.md and integration-decisions.json for
+ * complete rationale and machine-readable alternatives.
+ */
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,7 +130,13 @@ private fun KoraMarketScreen() {
             outcome = null
             scope.launch {
                 try {
+                    // INTTEGRO:DECISION [stable-idempotency-key] This UUID names
+                    // one logical attempt. Network retries for that attempt must
+                    // reuse it; production apps persist it with the cart.
+                    // https://studio.inttegro.com/idempotency
                     val attemptId = UUID.randomUUID().toString()
+                    // INTTEGRO:FLOW [mobile-backend-boundary] The trusted backend
+                    // authenticates the customer and owns order construction.
                     checkoutOrderId = DemoBackend(BuildConfig.INTTEGRO_DEMO_BACKEND_URL)
                         .createCheckoutOrder(attemptId)
                     checkoutFlowId = attemptId
@@ -271,6 +294,11 @@ private fun KoraMarketScreen() {
     val activeFlowId = checkoutFlowId
     if (activeOrderId != null && activeFlowId != null) {
         val telemetry = remember(activeOrderId, activeFlowId) {
+            // INTTEGRO:OBSERVABILITY [application-owned-observability] The SDK
+            // emits privacy-safe lifecycle fields to the app's listener. Forward
+            // them to your own pipeline if useful, but never enrich them with
+            // customer data, credentials, or raw provider payloads.
+            // https://studio.inttegro.com/sdk-observability
             PaymentSheetTelemetry(
                 listener = PaymentSheetTelemetryListener { event ->
                     Log.i(
@@ -285,8 +313,14 @@ private fun KoraMarketScreen() {
                 flowId = activeFlowId,
             )
         }
+        // INTTEGRO:DECISION [native-payment-sheet] Inttegro owns payment-method
+        // presentation and provider transitions; Kora owns the surrounding
+        // product, loading, cancellation, and result experience.
         InttegroPaymentSheet(
             configuration = PaymentSheetConfiguration(
+                // The backend returned a finalized checkout-ready Order. The
+                // registered return URL resumes this app after an external step;
+                // it is not evidence that payment succeeded.
                 orderId = activeOrderId,
                 returnUrl = "inttegro-demo://payment-return",
             ),
@@ -296,6 +330,11 @@ private fun KoraMarketScreen() {
                 checkoutFlowId = null
             },
             onResult = { result ->
+                // INTTEGRO:VERIFY [server-side-verification] This result drives
+                // immediate UX only. Before fulfillment, the merchant backend
+                // looks up the owner-scoped Order. Use bounded polling and a
+                // reconciliation job while merchant webhooks are unavailable:
+                // https://studio.inttegro.com/webhooks
                 checkoutOrderId = null
                 checkoutFlowId = null
                 outcome = when (result) {

@@ -1,0 +1,315 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Machine-readable rationale and alternatives for Inttegro demo integration choices.",
+  "commentSyntax": "INTTEGRO:<MARKER> [decision-id] explanation",
+  "markers": [
+    "FLOW",
+    "SECURITY",
+    "DECISION",
+    "ALTERNATIVE",
+    "VERIFY",
+    "OBSERVABILITY",
+    "DOCS"
+  ],
+  "canonicalDocs": {
+    "checkout": "https://studio.inttegro.com/accept-payment-with-inttegro-checkout",
+    "orders": "https://studio.inttegro.com/orders",
+    "idempotency": "https://studio.inttegro.com/idempotency",
+    "keys": "https://studio.inttegro.com/keys",
+    "paymentMethods": "https://studio.inttegro.com/payment-methods",
+    "sdks": "https://studio.inttegro.com/sdks",
+    "observability": "https://studio.inttegro.com/sdk-observability",
+    "webhooks": "https://studio.inttegro.com/webhooks"
+  },
+  "architectures": {
+    "hosted-web": {
+      "summary": "A trusted merchant server creates and finalizes an order, then redirects the browser to the hosted URL returned by Inttegro.",
+      "demos": [
+        "nextjs",
+        "nuxt",
+        "express",
+        "django",
+        "fastapi",
+        "rails",
+        "laravel",
+        "go",
+        "spring-boot"
+      ]
+    },
+    "native-payment-sheet": {
+      "summary": "A trusted merchant backend creates and finalizes an order; the mobile app receives only the order ID and presents the Inttegro SDK payment sheet.",
+      "demos": [
+        "ios-swiftui",
+        "android-compose",
+        "flutter",
+        "react-native-expo"
+      ],
+      "referenceBackend": "nextjs/app/mobile/orders/route.ts"
+    }
+  },
+  "decisions": [
+    {
+      "id": "server-api-key",
+      "appliesTo": ["hosted-web", "native-payment-sheet"],
+      "selected": "Read INTTEGRO_API_KEY only in trusted server code.",
+      "rationale": "A distributable browser or mobile bundle cannot keep a merchant credential secret.",
+      "alternatives": [
+        {
+          "id": "managed-secret-provider",
+          "whenToUse": "Production deployments and key rotation.",
+          "consequences": "Inject the key at runtime from a platform secret manager; never expose it through public environment-variable prefixes."
+        }
+      ],
+      "docs": ["keys", "sdks"]
+    },
+    {
+      "id": "hosted-checkout",
+      "appliesTo": ["hosted-web"],
+      "selected": "Redirect to the hosted invoice URL returned on the finalized order.",
+      "rationale": "Inttegro owns payment entry and provider confirmation while the merchant owns order context and fulfillment.",
+      "alternatives": [
+        {
+          "id": "direct-api-payment",
+          "whenToUse": "The product requires a materially custom payment flow and can own every payment state and recovery path.",
+          "consequences": "More UI, state-machine, compliance, payment-method, recovery, and testing responsibility moves to the merchant."
+        }
+      ],
+      "docs": ["checkout", "orders", "paymentMethods"]
+    },
+    {
+      "id": "stable-idempotency-key",
+      "appliesTo": ["hosted-web", "native-payment-sheet"],
+      "selected": "Derive request_meta.idempotency_key from one logical checkout attempt and reuse it on retry.",
+      "rationale": "A retried order-creation request should not create a second successful order.",
+      "alternatives": [
+        {
+          "id": "durable-business-key",
+          "whenToUse": "Production carts, invoices, and authenticated checkout attempts.",
+          "consequences": "Persist a key based on a stable merchant identifier and keep the payload unchanged for replays."
+        },
+        {
+          "id": "sdk-generated-key",
+          "whenToUse": "Only when the operation will never be retried as the same logical intent.",
+          "consequences": "A new request cannot replay the first result, so timeout recovery can create duplicates."
+        }
+      ],
+      "docs": ["idempotency", "orders"]
+    },
+    {
+      "id": "inline-customer",
+      "appliesTo": ["hosted-web"],
+      "selected": "Send customer_data for a guest checkout.",
+      "rationale": "The demo collects the minimum contact context in the current flow and does not maintain customer accounts.",
+      "alternatives": [
+        {
+          "id": "customer-id",
+          "whenToUse": "The merchant has repeat customers, saved details, or an account-to-Inttegro customer mapping.",
+          "consequences": "Resolve and authorize the Customer on the server and send customer_id instead; never send both representations."
+        }
+      ],
+      "docs": ["orders"]
+    },
+    {
+      "id": "server-customer-id",
+      "appliesTo": ["native-payment-sheet"],
+      "selected": "Resolve the mobile demo customer ID on the backend.",
+      "rationale": "Customer ownership is trusted merchant state and must not be selected by an untrusted app request.",
+      "alternatives": [
+        {
+          "id": "authenticated-customer-mapping",
+          "whenToUse": "Production mobile applications.",
+          "consequences": "Resolve the Inttegro customer from the authenticated merchant principal rather than a global demo environment variable."
+        }
+      ],
+      "docs": ["orders"]
+    },
+    {
+      "id": "inline-product",
+      "appliesTo": ["hosted-web", "native-payment-sheet"],
+      "selected": "Send one inline product with a server-owned price.",
+      "rationale": "Each demo is a self-contained story with one fixed item and no catalog synchronization requirement.",
+      "alternatives": [
+        {
+          "id": "catalog-product-explicit-price",
+          "whenToUse": "The product identity is canonical but the transaction price is calculated by the merchant.",
+          "consequences": "Send product_id and an explicit price; Inttegro snapshots catalog data into the order."
+        },
+        {
+          "id": "catalog-product-price-id",
+          "whenToUse": "Both product and price are maintained in the Inttegro catalog.",
+          "consequences": "Send product_id and price_id and do not mix in inline product fields."
+        }
+      ],
+      "docs": ["orders"]
+    },
+    {
+      "id": "minor-unit-money",
+      "appliesTo": ["hosted-web", "native-payment-sheet"],
+      "selected": "Represent GHS 50.00 as integer value 5000.",
+      "rationale": "Inttegro price values use the currency's smallest unit, avoiding ambiguous decimal serialization.",
+      "alternatives": [
+        {
+          "id": "currency-aware-conversion",
+          "whenToUse": "A production UI accepts decimal prices or supports currencies with different exponents.",
+          "consequences": "Convert using a decimal or money type and currency metadata; do not use binary floating point."
+        }
+      ],
+      "docs": ["orders"]
+    },
+    {
+      "id": "finalize-on-create",
+      "appliesTo": ["hosted-web", "native-payment-sheet"],
+      "selected": "Create the complete order with finalize true.",
+      "rationale": "The demo total and line items are settled before submission, so one call can freeze the order and generate checkout formats.",
+      "alternatives": [
+        {
+          "id": "draft-then-finalize",
+          "whenToUse": "Shipping, tax, inventory, approval, or line items can change before payment.",
+          "consequences": "Create a draft, update it while mutable, and call the finalize operation only after totals are authoritative."
+        }
+      ],
+      "docs": ["orders", "checkout"]
+    },
+    {
+      "id": "configured-public-origin",
+      "appliesTo": ["hosted-web"],
+      "selected": "Use an HTTP(S) public-origin override, with request origin as a local-development fallback.",
+      "rationale": "Inttegro needs externally reachable completion and cancellation URLs, while localhost demos should remain easy to run.",
+      "alternatives": [
+        {
+          "id": "allow-listed-origin",
+          "whenToUse": "Production and any deployment behind a proxy.",
+          "consequences": "Configure a known origin and a precise trusted-proxy chain so untrusted Host headers cannot choose return URLs."
+        }
+      ],
+      "docs": ["orders", "checkout"]
+    },
+    {
+      "id": "returned-checkout-url",
+      "appliesTo": ["hosted-web"],
+      "selected": "Read order.invoice.format.web.url from the create-order response.",
+      "rationale": "The returned URL is the public contract; constructing a URL couples the merchant to undocumented routing details.",
+      "alternatives": [
+        {
+          "id": "send-invoice-link",
+          "whenToUse": "An asynchronous invoice flow sends the hosted link through another supported channel.",
+          "consequences": "Persist the order and use the documented invoice operation or returned format instead of inventing a URL."
+        }
+      ],
+      "docs": ["checkout", "orders"]
+    },
+    {
+      "id": "see-other-redirect",
+      "appliesTo": ["hosted-web"],
+      "selected": "Respond to the merchant form POST with HTTP 303.",
+      "rationale": "The browser follows the hosted checkout URL with GET and does not replay the merchant form body.",
+      "alternatives": [
+        {
+          "id": "client-navigation",
+          "whenToUse": "A client-rendered flow needs to coordinate UI state before navigation.",
+          "consequences": "Return the URL as data and navigate explicitly, while handling disabled JavaScript and retry behavior."
+        }
+      ],
+      "docs": ["checkout"]
+    },
+    {
+      "id": "durable-order-correlation",
+      "appliesTo": ["hosted-web", "native-payment-sheet"],
+      "selected": "Use the returned order ID for correlation; the demo cookie is illustrative only.",
+      "rationale": "The merchant needs a stable mapping from its cart, invoice, customer, or tenant to the Inttegro order.",
+      "alternatives": [
+        {
+          "id": "merchant-database-mapping",
+          "whenToUse": "Every production integration.",
+          "consequences": "Persist merchant ID, Inttegro order ID, owner, idempotency key, and fulfillment state transactionally."
+        }
+      ],
+      "docs": ["orders", "webhooks"]
+    },
+    {
+      "id": "server-side-verification",
+      "appliesTo": ["hosted-web", "native-payment-sheet"],
+      "selected": "Treat redirects and SDK completion callbacks as UX signals, then look up order state on the trusted server before fulfillment.",
+      "rationale": "Client returns can be replayed, skipped, delayed, or observed before the authoritative state settles.",
+      "alternatives": [
+        {
+          "id": "bounded-polling-and-reconciliation",
+          "whenToUse": "Current Inttegro integrations because merchant-facing webhooks are not available.",
+          "consequences": "Poll briefly for immediate UX, reconcile non-terminal orders in a background job, and make fulfillment idempotent."
+        }
+      ],
+      "docs": ["webhooks", "orders"]
+    },
+    {
+      "id": "safe-error-boundary",
+      "appliesTo": ["hosted-web", "native-payment-sheet"],
+      "selected": "Map failures to stable, non-sensitive error codes and messages.",
+      "rationale": "Raw upstream errors and stack traces can contain internal details and are not a stable public contract.",
+      "alternatives": [
+        {
+          "id": "request-id-support-flow",
+          "whenToUse": "Production support and incident diagnosis.",
+          "consequences": "Return or display a safe correlation ID and keep detailed diagnostics in access-controlled server telemetry."
+        }
+      ],
+      "docs": ["observability"]
+    },
+    {
+      "id": "application-owned-observability",
+      "appliesTo": ["hosted-web", "native-payment-sheet"],
+      "selected": "Consume bounded SDK telemetry without customer data, secrets, or raw payloads.",
+      "rationale": "Operational correlation is useful while payment and customer data require strict minimization.",
+      "alternatives": [
+        {
+          "id": "opentelemetry-provider",
+          "whenToUse": "A server application has an existing tracing pipeline.",
+          "consequences": "Configure the application provider at startup; the SDK does not choose an exporter or observability vendor."
+        }
+      ],
+      "docs": ["observability"]
+    },
+    {
+      "id": "mobile-backend-boundary",
+      "appliesTo": ["native-payment-sheet"],
+      "selected": "The app sends only an attempt ID to the merchant backend and receives only an order ID.",
+      "rationale": "Products, prices, customer ownership, allowed payment methods, and credentials remain server-owned.",
+      "alternatives": [
+        {
+          "id": "authenticated-backend-for-frontend",
+          "whenToUse": "Production mobile applications or an existing merchant API gateway.",
+          "consequences": "Authenticate the principal, authorize the cart, add rate limiting and abuse controls, and return a minimal checkout projection."
+        }
+      ],
+      "docs": ["orders", "keys"]
+    },
+    {
+      "id": "native-payment-sheet",
+      "appliesTo": ["native-payment-sheet"],
+      "selected": "Initialize the Inttegro SDK with a finalized order ID and registered return URL, then present its payment sheet.",
+      "rationale": "The SDK owns native payment-method presentation while the app retains its product experience.",
+      "alternatives": [
+        {
+          "id": "hosted-mobile-browser",
+          "whenToUse": "The application intentionally prefers a browser-based checkout or cannot include a native SDK.",
+          "consequences": "Use the hosted URL and a secure browser surface, then preserve the same server-side verification boundary."
+        }
+      ],
+      "docs": ["sdks", "paymentMethods"]
+    }
+  ],
+  "sourceEntryPoints": {
+    "nextjs": ["nextjs/lib/checkout.ts", "nextjs/app/checkout/route.ts", "nextjs/app/mobile/orders/route.ts"],
+    "nuxt": ["nuxt/server/utils/checkout.ts", "nuxt/server/routes/checkout.post.ts"],
+    "express": ["express/src/checkout.ts", "express/src/server.ts"],
+    "django": ["django/checkout/service.py", "django/checkout/views.py"],
+    "fastapi": ["fastapi/app/checkout.py", "fastapi/app/main.py"],
+    "rails": ["rails/app/services/checkout_service.rb", "rails/app/controllers/checkouts_controller.rb"],
+    "laravel": ["laravel/app/Services/CheckoutService.php", "laravel/app/Http/Controllers/CheckoutController.php"],
+    "go": ["go/main.go"],
+    "spring-boot": ["spring-boot/src/main/java/com/inttegro/demo/CheckoutService.java", "spring-boot/src/main/java/com/inttegro/demo/CheckoutController.java"],
+    "ios-swiftui": ["ios-swiftui/InttegroSwiftUIDemo/DemoBackend.swift", "ios-swiftui/InttegroSwiftUIDemo/CheckoutView.swift"],
+    "android-compose": ["android-compose/app/src/main/java/com/inttegro/demo/compose/DemoBackend.kt", "android-compose/app/src/main/java/com/inttegro/demo/compose/MainActivity.kt"],
+    "flutter": ["flutter/lib/demo_backend.dart", "flutter/lib/main.dart"],
+    "react-native-expo": ["react-native-expo/src/demoBackend.ts", "react-native-expo/App.tsx"]
+  }
+}

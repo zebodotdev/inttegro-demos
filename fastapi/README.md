@@ -14,3 +14,11 @@ uvicorn app.main:app --reload --port 3005
 ```
 
 Open <http://localhost:3005>. Run `pytest` for the focused checks.
+
+## Understand the integration
+
+Start with [`app/checkout.py`](./app/checkout.py) for the typed Order request and
+safe error mapping, then read [`app/main.py`](./app/main.py) for the FastAPI
+handoff and verification boundary. The `INTTEGRO:*` comments map choices and
+alternatives to the shared [integration guide](../INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](../integration-decisions.json).

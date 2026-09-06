@@ -18,6 +18,23 @@ import {
 } from 'react-native';
 import { createCheckoutOrder } from './src/demoBackend';
 
+/**
+ * Inttegro payment-sheet integration map
+ *
+ * INTTEGRO:FLOW [native-payment-sheet] Ask the merchant backend for a finalized
+ * Order, initialize the Inttegro SDK with its ID and this app's return URL, then
+ * present the payment sheet.
+ * INTTEGRO:SECURITY [server-api-key] The React Native app receives an order ID,
+ * never a merchant API key. See https://studio.inttegro.com/keys.
+ * INTTEGRO:ALTERNATIVE [native-payment-sheet] A product that deliberately uses
+ * browser checkout can open the returned hosted URL in a secure browser surface
+ * while preserving the same server-side verification boundary.
+ * INTTEGRO:DOCS https://studio.inttegro.com/sdks
+ * INTTEGRO:DOCS https://studio.inttegro.com/payment-methods
+ * See ../INTEGRATION_GUIDE.md and ../integration-decisions.json for the complete
+ * rationale and machine-readable alternatives.
+ */
+
 const finishes = [
   { name: 'Sunrise clay', color: '#b84831' },
   { name: 'Night earth', color: '#302a28' },
@@ -32,6 +49,11 @@ export default function App() {
   const [status, setStatus] = useState<string | null>(null);
 
   useEffect(() => {
+    // INTTEGRO:OBSERVABILITY [application-owned-observability] The SDK emits
+    // privacy-safe lifecycle fields to the app. Forward them to an application-
+    // owned telemetry pipeline if useful, but never add customer data, secrets,
+    // or raw provider payloads. These events are not authoritative payment state.
+    // https://studio.inttegro.com/sdk-observability
     const subscription = addPaymentSheetEventListener((event) => {
       console.info('Inttegro payment sheet', {
         flowId: event.flowId,
@@ -50,11 +72,20 @@ export default function App() {
     if (busy) return;
     setBusy(true);
     try {
+      // INTTEGRO:DECISION [stable-idempotency-key] This ID represents one
+      // logical checkout. Network retries for that attempt must reuse it;
+      // production apps persist it with the authenticated cart.
+      // https://studio.inttegro.com/idempotency
       const order = await createCheckoutOrder(newAttemptId());
+      // INTTEGRO:DECISION [native-payment-sheet] The backend returns a finalized,
+      // checkout-ready Order. Register the return URL in both native hosts. It
+      // resumes UX after an external step, but does not prove payment.
       await initializePaymentSheet({
         orderId: order.orderId,
         returnURL: 'inttegro-demo://payment-return',
       });
+      // Inttegro owns payment-method presentation and provider transitions;
+      // Kora owns the surrounding product, loading, cancellation, and result UI.
       setStatus(describe(await presentPaymentSheet()));
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'Payment is unavailable.');
@@ -119,6 +150,10 @@ function newAttemptId(): string {
 }
 
 function describe(result: PaymentSheetResult): string {
+  // INTTEGRO:VERIFY [server-side-verification] This immediate result controls UI
+  // only. Before fulfillment, the merchant backend must look up the owner-scoped
+  // Order. Use bounded polling plus reconciliation while merchant-facing
+  // webhooks are unavailable: https://studio.inttegro.com/webhooks.
   if (result.status === 'completed') return 'Payment submitted. We’ll verify it before fulfillment.';
   if (result.status === 'canceled') return 'Checkout paused. Your Dawn Brew Set is still in the bag.';
   return `Payment unavailable (${result.error.code}).`;

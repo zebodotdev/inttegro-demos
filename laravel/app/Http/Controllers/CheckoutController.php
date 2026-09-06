@@ -12,6 +12,14 @@ use Illuminate\View\View;
 
 final class CheckoutController extends Controller
 {
+    /*
+     * INTTEGRO:FLOW [hosted-checkout] create() hands the browser from the
+     * merchant storefront to the hosted URL documented at
+     * https://studio.inttegro.com/accept-payment-with-inttegro-checkout.
+     * INTTEGRO:VERIFY [server-side-verification] Returning to /complete is not
+     * payment proof. Resolve an owner-scoped order and look it up server-side;
+     * current reconciliation guidance is https://studio.inttegro.com/webhooks.
+     */
     public function index(Request $request): View
     {
         return view('checkout', [
@@ -31,10 +39,17 @@ final class CheckoutController extends Controller
                 'attempt_id' => ['required', 'regex:/^[A-Za-z0-9_-]{8,100}$/'],
             ]);
             $result = CheckoutService::create($checkout, (string) config('inttegro.public_url'));
+            // INTTEGRO:DECISION [see-other-redirect] 303 follows with GET and
+            // avoids replaying this merchant POST as 307/308 would.
+            // INTTEGRO:DECISION [durable-order-correlation] The HttpOnly cookie
+            // is only a demo aid. Persist the merchant cart, owner, Inttegro
+            // order ID, and idempotency key together in production.
             return redirect()->away($result['checkout_url'], 303)->withCookie(cookie(
                 'inttegro_demo_order', $result['order_id'], 30, '/', null, $request->isSecure(), true, false, 'Lax'
             ));
         } catch (DemoError $error) {
+            // INTTEGRO:SECURITY [safe-error-boundary] Only the bounded demo
+            // vocabulary reaches the browser; upstream diagnostics stay private.
             return redirect()->route('home', ['code' => $error->errorCode, 'message' => $error->getMessage()], 303);
         }
     }
