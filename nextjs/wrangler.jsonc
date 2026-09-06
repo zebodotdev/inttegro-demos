@@ -3,7 +3,12 @@
   "name": "inttegro-demo-nextjs",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-09-06",
-  "compatibility_flags": ["nodejs_compat"],
+  // The application deliberately uses the conventional process.env contract
+  // so the same server-only integration code runs under Next.js locally,
+  // Vercel, and Cloudflare. Make Worker binding propagation explicit instead
+  // of relying on a compatibility-date default; this includes secret bindings
+  // such as INTTEGRO_API_KEY without exposing their values to the browser.
+  "compatibility_flags": ["nodejs_compat", "nodejs_compat_populate_process_env"],
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"

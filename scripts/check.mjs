@@ -162,6 +162,13 @@ assert(
   nuxtWorkerConfig.includes('"no_nodejs_compat", "no_nodejs_compat_v2"'),
   'Nuxt must keep Nitro Node shims isolated from Cloudflare runtime Node shims',
 );
+for (const configPath of ['nextjs/wrangler.jsonc', 'express/wrangler.jsonc']) {
+  const config = readFileSync(join(demosRoot, configPath), 'utf8');
+  assert(
+    config.includes('"nodejs_compat_populate_process_env"'),
+    `${configPath} must map Worker bindings into the process.env contract used by its server runtime`,
+  );
+}
 
 const generatedCatalogue = JSON.parse(readFileSync(join(demosRoot, 'catalog/public/demos.json'), 'utf8'));
 assert.equal(generatedCatalogue.releaseVersion, release.version, 'catalogue must describe the current release');
