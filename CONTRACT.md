@@ -93,6 +93,24 @@ translate the next line of code. The JSON registry is part of the public demo
 contract: paths must exist, decision IDs must be unique, and every referenced
 documentation key must resolve.
 
+## Release and permalink contract
+
+Every implemented V1 demo has a semantic version and immutable annotated tag in
+the current release manifest. A release includes:
+
+- one signed suite tag named `v{version}`;
+- one signed alias named `{demo-id}-v{version}` for every implemented demo;
+- a tracked `releases/v{version}.json` manifest containing the exact demo paths
+  and source entry points; and
+- a single GitHub Release on the suite tag, generated from the corresponding
+  tracked Markdown notes.
+
+All tags for a suite release point to the same commit. Studio permalinks use a
+per-demo tag, repository-relative source path, and explicit line range. They
+must never use `main`, a branch name, or an unversioned source URL. Published
+tags are never moved or reused; corrections require a new patch release. See
+[RELEASING.md](./RELEASING.md) for the complete policy.
+
 Mobile demos instead test configuration validation and the demo-backend request
 boundary, then follow the native device and accessibility matrix in
 [MOBILE.md](./MOBILE.md).

@@ -6,6 +6,8 @@ import { fileURLToPath } from 'node:url';
 const demosRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const manifest = JSON.parse(readFileSync(join(demosRoot, 'manifest.json'), 'utf8'));
 const decisions = JSON.parse(readFileSync(join(demosRoot, 'integration-decisions.json'), 'utf8'));
+const releaseManifestPath = join(demosRoot, manifest.currentRelease.manifest);
+const release = JSON.parse(readFileSync(releaseManifestPath, 'utf8'));
 
 assert.equal(manifest.schemaVersion, 1);
 assert.equal(manifest.demos.length, 18, 'the roadmap must contain 18 demos');
@@ -16,6 +18,50 @@ const v2 = manifest.demos.filter((demo) => demo.release === 'v2');
 assert.equal(v1.length, 13, 'V1 must contain 13 demos');
 assert.equal(v2.length, 5, 'V2 must contain 5 demos');
 assert(v2.every((demo) => demo.status === 'planned'));
+
+assert.equal(release.schemaVersion, 1, 'release manifest schema must be version 1');
+assert.match(release.version, /^\d+\.\d+\.\d+$/, 'release version must use SemVer');
+assert.equal(manifest.currentRelease.version, release.version, 'current release version must resolve to its manifest');
+assert.equal(manifest.currentRelease.suiteTag, release.suiteTag, 'current suite tag must resolve to its manifest');
+assert.equal(release.suiteTag, `v${release.version}`, 'suite tag must match the release version');
+assert.equal(
+  release.repository,
+  'https://github.com/zebodotdev/inttegro-demos',
+  'release repository must remain canonical',
+);
+assert.equal(
+  release.permalinkTemplate,
+  `${release.repository}/blob/{tag}/{file}#L{start}-L{end}`,
+  'Studio permalink template must use an immutable tag and explicit line range',
+);
+assert.equal(
+  release.rawTemplate,
+  'https://raw.githubusercontent.com/zebodotdev/inttegro-demos/{tag}/{file}',
+  'raw source template must use an immutable tag',
+);
+assert(existsSync(join(demosRoot, release.releaseNotes)), 'release notes referenced by the manifest must exist');
+assert.equal(release.demos.length, v1.length, 'current release must include every implemented V1 demo');
+assert.deepEqual(
+  release.demos.map((demo) => demo.id).toSorted(),
+  v1.map((demo) => demo.id).toSorted(),
+  'current release demo IDs must match V1',
+);
+assert.equal(new Set(release.demos.map((demo) => demo.tag)).size, v1.length, 'per-demo release tags must be unique');
+
+for (const demo of release.demos) {
+  assert.equal(demo.version, release.version, `${demo.id} version must match the suite release`);
+  assert.equal(demo.tag, `${demo.id}-v${release.version}`, `${demo.id} tag must be deterministic`);
+  assert.equal(demo.path, demo.id, `${demo.id} release path must match its manifest directory`);
+  assert.deepEqual(
+    demo.entryPoints,
+    decisions.sourceEntryPoints[demo.id],
+    `${demo.id} release entry points must match the integration registry`,
+  );
+  for (const sourcePath of demo.entryPoints) {
+    assert(sourcePath.startsWith(`${demo.path}/`), `${sourcePath} must remain inside ${demo.path}`);
+    assert(existsSync(join(demosRoot, sourcePath)), `release entry point does not exist: ${sourcePath}`);
+  }
+}
 
 const expectedStories = {
   'kora-market': ['nextjs', 'nuxt', 'rails', 'laravel'],
@@ -162,4 +208,4 @@ for (const path of textFiles(demosRoot)) {
   assert(!source.includes(staleMobileField), `stale mobile SDK field in ${path}`);
 }
 
-console.log('Demo contract check passed: 13 V1 entries, four intentional stories, integration decisions, source commentary, original artwork, and Inttegro SDK naming are consistent.');
+console.log('Demo contract check passed: release tags, 13 V1 entries, four intentional stories, integration decisions, source commentary, original artwork, and Inttegro SDK naming are consistent.');
