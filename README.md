@@ -17,7 +17,7 @@ Open <http://localhost:3005>. Run `pytest` for the focused checks.
 
 ## Deploy your own
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-fastapi-v1.1.2)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-fastapi-v1.1.3)
 
 Render builds the released Dockerfile. Railway configuration is also ready; its
 button follows after the public template is registered and smoke-tested.
