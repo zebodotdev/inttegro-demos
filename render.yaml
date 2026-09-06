@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: inttegro-demo-laravel
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: false
+    envVars:
+      - key: INTTEGRO_API_KEY
+        sync: false
+      - key: INTTEGRO_DEMO_PUBLIC_URL
+        sync: false
+      - key: APP_KEY
+        sync: false
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: SESSION_DRIVER
+        value: cookie
