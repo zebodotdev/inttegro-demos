@@ -24,7 +24,7 @@ Render builds the released Dockerfile. Railway uses the same image and
 checked-in health policy; its button follows after the public template is
 registered and smoke-tested. Generate `APP_KEY` in the deployment and keep it
 separate from the Inttegro test API key. See
-[`DEPLOYING.md`](../DEPLOYING.md).
+[`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.2.1/DEPLOYING.md).
 
 ## Understand the integration
 
@@ -33,5 +33,5 @@ for the Order payload and SDK boundary, then read
 [`app/Http/Controllers/CheckoutController.php`](./app/Http/Controllers/CheckoutController.php)
 for validation, correlation, and the 303 handoff. The `INTTEGRO:*` comments map
 choices and alternatives to the shared
-[integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+[integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.2.1/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.2.1/integration-decisions.json).
