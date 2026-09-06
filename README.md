@@ -27,8 +27,8 @@ hosts or runtime font services.
 
 ## Release plan
 
-The current tagged release is **1.0.0**. Use
-[`releases/v1.0.0.json`](./releases/v1.0.0.json) to resolve each demo to its
+The release candidate is **1.1.0**. Use
+[`releases/v1.1.0.json`](./releases/v1.1.0.json) to resolve each demo to its
 immutable Git tag and integration entry points. Studio and external
 documentation must link through those tags rather than `main`; see
 [RELEASING.md](./RELEASING.md) for the versioning, permalink, signature, and
@@ -80,6 +80,22 @@ stable `INTTEGRO:*` markers and decision IDs from that registry.
 
 See [CONTRACT.md](./CONTRACT.md) for the normative acceptance contract and
 [MOBILE.md](./MOBILE.md) for the mobile backend boundary and device checks.
+
+## Deploy your own
+
+The suite includes a public-facing catalogue, checked-in provider manifests,
+and a machine-readable deployment matrix. Start with
+[`DEPLOYING.md`](./DEPLOYING.md) for the reader experience, environment
+contract, provider trade-offs, immutable deployment refs, and verification
+gates. [`deployments.json`](./deployments.json) is the source of truth consumed
+by tools and the generated catalogue.
+
+The public URLs are `demos.inttegro.dev` and
+`{framework}-demo.inttegro.dev`. The domain is active on Cloudflare. Reader
+deployment manifests remain host-neutral; Inttegro-owned custom-domain bindings
+are attached during release operations so a cloned demo never targets an
+Inttegro hostname. All application code also works on localhost and
+provider-assigned preview origins.
 
 ## Configuration
 

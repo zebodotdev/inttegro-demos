@@ -18,6 +18,14 @@ SDK is documented but is not yet available from Maven Central. Once it is
 published, consumers can remove that local-install step without changing the
 demo code or dependency coordinate.
 
+## Deploy your own
+
+Render and Railway manifests plus a multi-stage Dockerfile are included, but no
+public button is shown yet. A reader-owned remote build cannot resolve Inttegro
+Java SDK 5.0.0 until that artifact is published. Publishing a button before that
+gate clears would advertise a broken path. See
+[`DEPLOYING.md`](../DEPLOYING.md) for the release gate.
+
 ## Understand the integration
 
 Start with

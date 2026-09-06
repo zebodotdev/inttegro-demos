@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "nuxt dev --port 3002",
     "build": "nuxt build",
+    "build:cloudflare": "nuxt build --preset cloudflare",
+    "deploy:cloudflare": "wrangler deploy",
     "preview": "nuxt preview",
     "typecheck": "nuxt typecheck",
     "test": "vitest run",
@@ -20,7 +22,18 @@
   "devDependencies": {
     "typescript": "6.0.3",
     "vitest": "^4.1.0",
-    "vue-tsc": "3.3.11"
+    "vue-tsc": "3.3.11",
+    "wrangler": "4.129.0"
   },
-  "engines": { "node": ">=24.11" }
+  "engines": { "node": ">=24.11" },
+  "cloudflare": {
+    "bindings": {
+      "NUXT_INTTEGRO_API_KEY": {
+        "description": "Create a test key in Inttegro Studio. Nuxt reads this only from private runtime configuration."
+      },
+      "NUXT_DEMO_PUBLIC_URL": {
+        "description": "Optional public origin for completion and cancellation URLs, without a trailing slash."
+      }
+    }
+  }
 }

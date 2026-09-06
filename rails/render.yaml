@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: inttegro-demo-rails
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    autoDeploy: false
+    envVars:
+      - key: INTTEGRO_API_KEY
+        sync: false
+      - key: INTTEGRO_DEMO_PUBLIC_URL
+        sync: false
+      - key: SECRET_KEY_BASE
+        generateValue: true

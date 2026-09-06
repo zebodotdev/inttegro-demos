@@ -300,7 +300,7 @@
   "sourceEntryPoints": {
     "nextjs": ["nextjs/lib/checkout.ts", "nextjs/app/checkout/route.ts", "nextjs/app/mobile/orders/route.ts"],
     "nuxt": ["nuxt/server/utils/checkout.ts", "nuxt/server/routes/checkout.post.ts"],
-    "express": ["express/src/checkout.ts", "express/src/server.ts"],
+    "express": ["express/src/checkout.ts", "express/src/app.ts"],
     "django": ["django/checkout/service.py", "django/checkout/views.py"],
     "fastapi": ["fastapi/app/checkout.py", "fastapi/app/main.py"],
     "rails": ["rails/app/services/checkout_service.rb", "rails/app/controllers/checkouts_controller.rb"],

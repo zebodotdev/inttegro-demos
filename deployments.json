@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/zebodotdev/inttegro-demos",
+  "releaseVersion": "1.1.0",
+  "suiteTag": "v1.1.0",
+  "domain": {
+    "status": "active",
+    "provider": "cloudflare",
+    "activatedAt": "2026-09-06",
+    "catalogHost": "demos.inttegro.dev",
+    "demoHostTemplate": "{id}-demo.inttegro.dev",
+    "nativeBackendHost": "mobile-api.inttegro.dev"
+  },
+  "deployRefTemplate": "deploy-{id}-v{version}",
+  "providers": {
+    "cloudflare": {
+      "name": "Cloudflare",
+      "buttonImage": "https://deploy.workers.cloudflare.com/button",
+      "documentation": "https://developers.cloudflare.com/workers/platform/deploy-buttons/"
+    },
+    "vercel": {
+      "name": "Vercel",
+      "buttonImage": "https://vercel.com/button",
+      "documentation": "https://vercel.com/docs/deploy-button"
+    },
+    "render": {
+      "name": "Render",
+      "buttonImage": "https://render.com/images/deploy-to-render-button.svg",
+      "documentation": "https://render.com/docs/deploy-to-render"
+    },
+    "railway": {
+      "name": "Railway",
+      "buttonImage": "https://railway.com/button.svg",
+      "documentation": "https://docs.railway.com/templates/publish-and-share"
+    }
+  },
+  "environment": {
+    "INTTEGRO_API_KEY": {
+      "secret": true,
+      "required": true,
+      "documentation": "https://studio.inttegro.com/keys",
+      "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code."
+    },
+    "INTTEGRO_DEMO_PUBLIC_URL": {
+      "secret": false,
+      "required": true,
+      "description": "The deployed origin used for checkout completion and cancellation URLs, without a trailing slash."
+    },
+    "INTTEGRO_DEMO_CUSTOMER_ID": {
+      "secret": false,
+      "required": true,
+      "default": false,
+      "description": "A test customer ID used only by the companion mobile-order route."
+    }
+  },
+  "demos": [
+    {
+      "id": "nextjs",
+      "additionalEnvironment": ["INTTEGRO_DEMO_CUSTOMER_ID"],
+      "providers": [
+        { "id": "vercel", "recommendation": "recommended", "status": "prepared", "config": "nextjs/vercel.json" },
+        { "id": "cloudflare", "recommendation": "alternative", "status": "prepared", "config": "nextjs/wrangler.jsonc" }
+      ]
+    },
+    {
+      "id": "nuxt",
+      "environmentAliases": { "INTTEGRO_API_KEY": "NUXT_INTTEGRO_API_KEY", "INTTEGRO_DEMO_PUBLIC_URL": "NUXT_DEMO_PUBLIC_URL" },
+      "providers": [
+        { "id": "cloudflare", "recommendation": "recommended", "status": "prepared", "config": "nuxt/wrangler.jsonc" },
+        { "id": "vercel", "recommendation": "alternative", "status": "prepared", "config": "nuxt/vercel.json" }
+      ]
+    },
+    {
+      "id": "express",
+      "providers": [
+        { "id": "railway", "recommendation": "recommended", "status": "template-pending", "config": "express/railway.json" },
+        { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "express/render.yaml" },
+        { "id": "cloudflare", "recommendation": "alternative", "status": "prepared", "config": "express/wrangler.jsonc" }
+      ]
+    },
+    {
+      "id": "django",
+      "additionalEnvironment": ["DJANGO_SECRET_KEY", "DJANGO_ALLOWED_HOSTS"],
+      "providers": [
+        { "id": "railway", "recommendation": "recommended", "status": "template-pending", "config": "django/railway.json" },
+        { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "django/render.yaml" },
+        { "id": "cloudflare", "recommendation": "experimental", "status": "blocked", "reason": "Python Workers supports asynchronous HTTP clients, while Inttegro Python SDK 6.0.0 currently uses synchronous urllib transport." }
+      ]
+    },
+    {
+      "id": "fastapi",
+      "providers": [
+        { "id": "railway", "recommendation": "recommended", "status": "template-pending", "config": "fastapi/railway.json" },
+        { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "fastapi/render.yaml" },
+        { "id": "cloudflare", "recommendation": "experimental", "status": "blocked", "reason": "Python Workers supports asynchronous HTTP clients, while Inttegro Python SDK 6.0.0 currently uses synchronous urllib transport." }
+      ]
+    },
+    {
+      "id": "rails",
+      "additionalEnvironment": ["SECRET_KEY_BASE"],
+      "providers": [
+        { "id": "railway", "recommendation": "recommended", "status": "template-pending", "config": "rails/railway.json" },
+        { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "rails/render.yaml" }
+      ]
+    },
+    {
+      "id": "laravel",
+      "additionalEnvironment": ["APP_KEY"],
+      "providers": [
+        { "id": "railway", "recommendation": "recommended", "status": "template-pending", "config": "laravel/railway.json" },
+        { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "laravel/render.yaml" }
+      ]
+    },
+    {
+      "id": "go",
+      "providers": [
+        { "id": "railway", "recommendation": "recommended", "status": "template-pending", "config": "go/railway.json" },
+        { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "go/render.yaml" }
+      ]
+    },
+    {
+      "id": "spring-boot",
+      "providers": [
+        { "id": "railway", "recommendation": "recommended", "status": "blocked", "config": "spring-boot/railway.json", "reason": "The Java SDK 5.0.0 dependency must be publicly available before a reader-owned remote build can succeed." },
+        { "id": "render", "recommendation": "alternative", "status": "blocked", "config": "spring-boot/render.yaml", "reason": "The Java SDK 5.0.0 dependency must be publicly available before a reader-owned remote build can succeed." }
+      ]
+    },
+    { "id": "ios-swiftui", "mode": "native", "companionBackend": "nextjs", "providers": [] },
+    { "id": "android-compose", "mode": "native", "companionBackend": "nextjs", "providers": [] },
+    { "id": "flutter", "mode": "native", "companionBackend": "nextjs", "providers": [] },
+    { "id": "react-native-expo", "mode": "native", "companionBackend": "nextjs", "providers": [] }
+  ]
+}

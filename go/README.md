@@ -13,6 +13,15 @@ go run .
 
 Open <http://localhost:3003>. Run `go test ./...` for the focused checks.
 
+## Deploy your own
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-go-v1.1.0)
+
+Render builds a small distroless image from the released multi-stage
+Dockerfile. Railway uses the same image and checked-in health policy; its button
+follows after the public template is registered and smoke-tested. See
+[`DEPLOYING.md`](../DEPLOYING.md).
+
 ## Understand the integration
 
 [`main.go`](./main.go) keeps the complete integration deliberately visible:
