@@ -89,9 +89,9 @@ expect their configuration at repository root, so releases also publish one
 generated subtree branch per deployable demo:
 
 ```text
-deploy-nextjs-v1.1.3
-deploy-express-v1.1.3
-deploy-nuxt-v1.1.3
+deploy-nextjs-v1.2.0
+deploy-express-v1.2.0
+deploy-nuxt-v1.2.0
 ...
 ```
 
@@ -104,7 +104,7 @@ or reused. Studio permalinks continue to use the signed per-demo tag.
 Run the branch preparation script only after the suite tag exists:
 
 ```sh
-node scripts/prepare-deploy-refs.mjs v1.1.3
+node scripts/prepare-deploy-refs.mjs v1.2.0
 ```
 
 The script creates local branches but never pushes them. Inspect each branch,

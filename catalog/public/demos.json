@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "https://github.com/zebodotdev/inttegro-demos",
-  "releaseVersion": "1.1.3",
-  "suiteTag": "v1.1.3",
+  "releaseVersion": "1.2.0",
+  "suiteTag": "v1.2.0",
   "domainStatus": "active",
   "demos": [
     {
@@ -14,13 +14,23 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "nextjs-demo.inttegro.dev",
-      "tag": "nextjs-v1.1.3",
-      "deployRef": "deploy-nextjs-v1.1.3",
+      "tag": "nextjs-v1.2.0",
+      "deployRef": "deploy-nextjs-v1.2.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
-          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "description": "A dedicated server-side Inttegro API key. Never expose it to browser or mobile code.",
           "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRODUCT_ID",
+          "description": "The active Inttegro Product selected by this demo. The trusted server looks it up at checkout.",
+          "secret": false
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRICE_ID",
+          "description": "An active Inttegro Price belonging to the configured demo Product.",
+          "secret": false
         },
         {
           "name": "INTTEGRO_DEMO_PUBLIC_URL",
@@ -61,13 +71,23 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "express-demo.inttegro.dev",
-      "tag": "express-v1.1.3",
-      "deployRef": "deploy-express-v1.1.3",
+      "tag": "express-v1.2.0",
+      "deployRef": "deploy-express-v1.2.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
-          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "description": "A dedicated server-side Inttegro API key. Never expose it to browser or mobile code.",
           "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRODUCT_ID",
+          "description": "The active Inttegro Product selected by this demo. The trusted server looks it up at checkout.",
+          "secret": false
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRICE_ID",
+          "description": "An active Inttegro Price belonging to the configured demo Product.",
+          "secret": false
         },
         {
           "name": "INTTEGRO_DEMO_PUBLIC_URL",
@@ -111,13 +131,23 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "nuxt-demo.inttegro.dev",
-      "tag": "nuxt-v1.1.3",
-      "deployRef": "deploy-nuxt-v1.1.3",
+      "tag": "nuxt-v1.2.0",
+      "deployRef": "deploy-nuxt-v1.2.0",
       "environment": [
         {
           "name": "NUXT_INTTEGRO_API_KEY",
-          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "description": "A dedicated server-side Inttegro API key. Never expose it to browser or mobile code.",
           "secret": true
+        },
+        {
+          "name": "NUXT_DEMO_PRODUCT_ID",
+          "description": "The active Inttegro Product selected by this demo. The trusted server looks it up at checkout.",
+          "secret": false
+        },
+        {
+          "name": "NUXT_DEMO_PRICE_ID",
+          "description": "An active Inttegro Price belonging to the configured demo Product.",
+          "secret": false
         },
         {
           "name": "NUXT_DEMO_PUBLIC_URL",
@@ -153,13 +183,23 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "go-demo.inttegro.dev",
-      "tag": "go-v1.1.3",
-      "deployRef": "deploy-go-v1.1.3",
+      "tag": "go-v1.2.0",
+      "deployRef": "deploy-go-v1.2.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
-          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "description": "A dedicated server-side Inttegro API key. Never expose it to browser or mobile code.",
           "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRODUCT_ID",
+          "description": "The active Inttegro Product selected by this demo. The trusted server looks it up at checkout.",
+          "secret": false
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRICE_ID",
+          "description": "An active Inttegro Price belonging to the configured demo Product.",
+          "secret": false
         },
         {
           "name": "INTTEGRO_DEMO_PUBLIC_URL",
@@ -195,13 +235,23 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "django-demo.inttegro.dev",
-      "tag": "django-v1.1.3",
-      "deployRef": "deploy-django-v1.1.3",
+      "tag": "django-v1.2.0",
+      "deployRef": "deploy-django-v1.2.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
-          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "description": "A dedicated server-side Inttegro API key. Never expose it to browser or mobile code.",
           "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRODUCT_ID",
+          "description": "The active Inttegro Product selected by this demo. The trusted server looks it up at checkout.",
+          "secret": false
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRICE_ID",
+          "description": "An active Inttegro Price belonging to the configured demo Product.",
+          "secret": false
         },
         {
           "name": "INTTEGRO_DEMO_PUBLIC_URL",
@@ -255,13 +305,23 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "fastapi-demo.inttegro.dev",
-      "tag": "fastapi-v1.1.3",
-      "deployRef": "deploy-fastapi-v1.1.3",
+      "tag": "fastapi-v1.2.0",
+      "deployRef": "deploy-fastapi-v1.2.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
-          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "description": "A dedicated server-side Inttegro API key. Never expose it to browser or mobile code.",
           "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRODUCT_ID",
+          "description": "The active Inttegro Product selected by this demo. The trusted server looks it up at checkout.",
+          "secret": false
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRICE_ID",
+          "description": "An active Inttegro Price belonging to the configured demo Product.",
+          "secret": false
         },
         {
           "name": "INTTEGRO_DEMO_PUBLIC_URL",
@@ -305,13 +365,23 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "rails-demo.inttegro.dev",
-      "tag": "rails-v1.1.3",
-      "deployRef": "deploy-rails-v1.1.3",
+      "tag": "rails-v1.2.0",
+      "deployRef": "deploy-rails-v1.2.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
-          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "description": "A dedicated server-side Inttegro API key. Never expose it to browser or mobile code.",
           "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRODUCT_ID",
+          "description": "The active Inttegro Product selected by this demo. The trusted server looks it up at checkout.",
+          "secret": false
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRICE_ID",
+          "description": "An active Inttegro Price belonging to the configured demo Product.",
+          "secret": false
         },
         {
           "name": "INTTEGRO_DEMO_PUBLIC_URL",
@@ -352,13 +422,23 @@
       "releaseStatus": "verified",
       "mode": "server",
       "hostname": "laravel-demo.inttegro.dev",
-      "tag": "laravel-v1.1.3",
-      "deployRef": "deploy-laravel-v1.1.3",
+      "tag": "laravel-v1.2.0",
+      "deployRef": "deploy-laravel-v1.2.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
-          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "description": "A dedicated server-side Inttegro API key. Never expose it to browser or mobile code.",
           "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRODUCT_ID",
+          "description": "The active Inttegro Product selected by this demo. The trusted server looks it up at checkout.",
+          "secret": false
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRICE_ID",
+          "description": "An active Inttegro Price belonging to the configured demo Product.",
+          "secret": false
         },
         {
           "name": "INTTEGRO_DEMO_PUBLIC_URL",
@@ -399,13 +479,23 @@
       "releaseStatus": "publication-gated",
       "mode": "server",
       "hostname": "spring-boot-demo.inttegro.dev",
-      "tag": "spring-boot-v1.1.3",
-      "deployRef": "deploy-spring-boot-v1.1.3",
+      "tag": "spring-boot-v1.2.0",
+      "deployRef": "deploy-spring-boot-v1.2.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
-          "description": "A server-side Inttegro test API key. Never expose it to browser or mobile code.",
+          "description": "A dedicated server-side Inttegro API key. Never expose it to browser or mobile code.",
           "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRODUCT_ID",
+          "description": "The active Inttegro Product selected by this demo. The trusted server looks it up at checkout.",
+          "secret": false
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRICE_ID",
+          "description": "An active Inttegro Price belonging to the configured demo Product.",
+          "secret": false
         },
         {
           "name": "INTTEGRO_DEMO_PUBLIC_URL",
@@ -444,8 +534,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "ios-swiftui-demo.inttegro.dev",
-      "tag": "ios-swiftui-v1.1.3",
-      "deployRef": "deploy-ios-swiftui-v1.1.3",
+      "tag": "ios-swiftui-v1.2.0",
+      "deployRef": "deploy-ios-swiftui-v1.2.0",
       "environment": [],
       "providers": []
     },
@@ -459,8 +549,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "android-compose-demo.inttegro.dev",
-      "tag": "android-compose-v1.1.3",
-      "deployRef": "deploy-android-compose-v1.1.3",
+      "tag": "android-compose-v1.2.0",
+      "deployRef": "deploy-android-compose-v1.2.0",
       "environment": [],
       "providers": []
     },
@@ -474,8 +564,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "flutter-demo.inttegro.dev",
-      "tag": "flutter-v1.1.3",
-      "deployRef": "deploy-flutter-v1.1.3",
+      "tag": "flutter-v1.2.0",
+      "deployRef": "deploy-flutter-v1.2.0",
       "environment": [],
       "providers": []
     },
@@ -489,8 +579,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "react-native-expo-demo.inttegro.dev",
-      "tag": "react-native-expo-v1.1.3",
-      "deployRef": "deploy-react-native-expo-v1.1.3",
+      "tag": "react-native-expo-v1.2.0",
+      "deployRef": "deploy-react-native-expo-v1.2.0",
       "environment": [],
       "providers": []
     }

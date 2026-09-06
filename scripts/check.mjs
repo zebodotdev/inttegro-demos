@@ -95,6 +95,9 @@ assert.equal(deployments.domain.demoHostTemplate, '{id}-demo.inttegro.dev');
 assert.equal(deployments.domain.nativeBackendHost, 'mobile-api.inttegro.dev');
 assert.equal(deployments.deployRefTemplate, 'deploy-{id}-v{version}');
 assert.equal(deployments.environment.INTTEGRO_DEMO_CUSTOMER_ID.default, false);
+for (const name of ['INTTEGRO_API_KEY', 'INTTEGRO_DEMO_PRODUCT_ID', 'INTTEGRO_DEMO_PRICE_ID', 'INTTEGRO_DEMO_PUBLIC_URL']) {
+  assert.equal(deployments.environment[name].required, true, `${name} must be required for every server demo`);
+}
 assert.deepEqual(
   deployments.demos.map((demo) => demo.id).toSorted(),
   v1.map((demo) => demo.id).toSorted(),
@@ -174,6 +177,18 @@ assert(
   generatedNext.environment.some((variable) => variable.name === 'INTTEGRO_DEMO_CUSTOMER_ID'),
   'Next.js catalogue deployment requirements must include the mobile demo customer',
 );
+for (const demo of generatedCatalogue.demos.filter((candidate) => candidate.mode === 'server')) {
+  const expectedProductName = demo.id === 'nuxt' ? 'NUXT_DEMO_PRODUCT_ID' : 'INTTEGRO_DEMO_PRODUCT_ID';
+  const expectedPriceName = demo.id === 'nuxt' ? 'NUXT_DEMO_PRICE_ID' : 'INTTEGRO_DEMO_PRICE_ID';
+  assert(
+    demo.environment.some((variable) => variable.name === expectedProductName),
+    `${demo.id} must declare its server-side Product ID`,
+  );
+  assert(
+    demo.environment.some((variable) => variable.name === expectedPriceName),
+    `${demo.id} must declare its server-side Price ID`,
+  );
+}
 for (const demo of generatedCatalogue.demos.filter((candidate) => candidate.mode === 'server' && candidate.id !== 'nextjs')) {
   assert(
     !demo.environment.some((variable) => variable.name === 'INTTEGRO_DEMO_CUSTOMER_ID'),

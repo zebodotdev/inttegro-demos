@@ -125,6 +125,34 @@
       "docs": ["orders"]
     },
     {
+      "id": "catalog-authority",
+      "appliesTo": ["hosted-web", "native-payment-sheet"],
+      "selected": "Read Product and Price IDs from trusted deployment configuration and never from the browser or mobile request.",
+      "rationale": "Product identity, price identity, currency, and amount are merchant-authoritative commercial data.",
+      "alternatives": [
+        {
+          "id": "authenticated-cart-mapping",
+          "whenToUse": "A production application supports multiple products, variants, or carts.",
+          "consequences": "Accept only a merchant cart or SKU reference, authorize it for the caller, then resolve the Inttegro Product and Price IDs on the server."
+        }
+      ],
+      "docs": ["products", "orders"]
+    },
+    {
+      "id": "catalog-lookup",
+      "appliesTo": ["hosted-web", "native-payment-sheet"],
+      "selected": "Look up the configured Product during each checkout and verify its configured Price.",
+      "rationale": "The demo observes catalog publication and price changes immediately and avoids a second cache state that readers must reason about.",
+      "alternatives": [
+        {
+          "id": "bounded-catalog-cache",
+          "whenToUse": "Product lookup volume or latency justifies caching.",
+          "consequences": "Use a short TTL and explicit invalidation for publishing, archiving, price activation, currency changes, and catalog rollouts."
+        }
+      ],
+      "docs": ["products"]
+    },
+    {
       "id": "catalog-snapshot",
       "appliesTo": ["hosted-web", "native-payment-sheet"],
       "selected": "Look up a configured Inttegro Product and Price on the trusted server, validate them, and snapshot their authoritative fields into the Order.",
