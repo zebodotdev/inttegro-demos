@@ -12,3 +12,14 @@ bin/rails server --port 3006
 ```
 
 Open <http://localhost:3006>. Run `bin/rails test` for the focused checks.
+
+## Understand the integration
+
+Start with
+[`app/services/checkout_service.rb`](./app/services/checkout_service.rb) for
+Order creation and safe error mapping, then read
+[`app/controllers/checkouts_controller.rb`](./app/controllers/checkouts_controller.rb)
+for the 303 handoff and correlation boundary. The `INTTEGRO:*` comments map
+choices and alternatives to the shared
+[integration guide](../INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](../integration-decisions.json).
