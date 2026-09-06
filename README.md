@@ -13,7 +13,10 @@ set -a && source .env && set +a
 uvicorn app.main:app --reload --port 3005
 ```
 
-Open <http://localhost:3005>. Run `pytest` for the focused checks.
+Open <http://localhost:3005>. Configure `INTTEGRO_DEMO_PRODUCT_ID` and
+`INTTEGRO_DEMO_PRICE_ID` with the active Afterglow admission Product and Price.
+FastAPI resolves and validates both server-side; the reservation form supplies
+no product or amount. Run `pytest` for the focused checks.
 
 ## Deploy your own
 
