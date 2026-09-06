@@ -1,9 +1,8 @@
 import {
-  Currencies,
   InttegroAPIError,
   InttegroClient,
-  ProductTypes,
   type CreateOrderRequest,
+  type Product,
 } from '@inttegro/inttegro-sdk';
 
 /**
@@ -37,6 +36,14 @@ export type CheckoutInput = {
 
 export type MobileCheckoutInput = {
   attemptId: string;
+};
+
+export type CatalogSelection = {
+  type: Product['type'];
+  name: string;
+  about?: string;
+  reference?: string;
+  price: NonNullable<Product['prices']>[number]['nominal'];
 };
 
 type MobileCreateOrderRequest = CreateOrderRequest & {
@@ -108,7 +115,56 @@ function configuredOrigin(requestOrigin: string): string {
   }
 }
 
-export function buildOrderRequest(input: CheckoutInput, origin: string): CreateOrderRequest {
+export function selectCatalogProduct(product: Product, priceId: string): CatalogSelection {
+  // INTTEGRO:SECURITY [catalog-authority] The browser never submits product or
+  // price data. The trusted server resolves both IDs and validates the selected
+  // price against the Product returned by Inttegro before creating the Order.
+  // This prevents a customer from changing the amount or swapping catalogue
+  // records in an untrusted form or mobile request.
+  if (!product.active) {
+    throw new DemoError('configuration_error', 'The configured demo product is not active.');
+  }
+  const price = product.prices?.find((candidate) => candidate.id === priceId && candidate.active);
+  if (!price || !Number.isSafeInteger(price.nominal.value) || price.nominal.value <= 0) {
+    throw new DemoError('configuration_error', 'The configured demo price is not active for this product.');
+  }
+  return {
+    type: product.type,
+    name: product.name,
+    ...(product.about ? { about: product.about } : {}),
+    ...(product.reference ? { reference: product.reference } : {}),
+    price: price.nominal,
+  };
+}
+
+function configuredCatalogIds(): { productId: string; priceId: string } {
+  const productId = process.env.INTTEGRO_DEMO_PRODUCT_ID?.trim() || '';
+  const priceId = process.env.INTTEGRO_DEMO_PRICE_ID?.trim() || '';
+  if (!/^prod_[A-Za-z0-9]+$/.test(productId) || !/^pr_[A-Za-z0-9]+$/.test(priceId)) {
+    throw new DemoError(
+      'configuration_error',
+      'Set INTTEGRO_DEMO_PRODUCT_ID and INTTEGRO_DEMO_PRICE_ID on the server.',
+    );
+  }
+  return { productId, priceId };
+}
+
+async function loadCatalogSelection(inttegro: InttegroClient): Promise<CatalogSelection> {
+  const { productId, priceId } = configuredCatalogIds();
+  // INTTEGRO:FLOW [catalog-lookup] Fetch the Product at checkout time so the
+  // Order uses current server-authoritative catalogue data. High-volume apps
+  // can cache this read briefly, but must define invalidation for product,
+  // publication, and price changes instead of keeping an unbounded process cache.
+  // https://studio.inttegro.com/products
+  const product = await inttegro.products.lookup({ product_id: productId });
+  return selectCatalogProduct(product, priceId);
+}
+
+export function buildOrderRequest(
+  input: CheckoutInput,
+  origin: string,
+  product: CatalogSelection,
+): CreateOrderRequest {
   return {
     // INTTEGRO:DECISION [stable-idempotency-key] One browser-rendered attempt ID
     // represents one logical order creation. Reuse it for retries. Production
@@ -139,17 +195,16 @@ export function buildOrderRequest(input: CheckoutInput, origin: string): CreateO
       {
         type: 'product',
         product: {
-          // INTTEGRO:DECISION [inline-product] Inline data keeps this single-item
-          // story self-contained. Catalog-backed merchants can send product_id
-          // with an explicit price or price_id; do not mix catalog references
-          // with inline product fields.
-          type: ProductTypes.Physical,
-          name: 'Dawn Brew Set',
+          // INTTEGRO:DECISION [catalog-snapshot] This cross-SDK demo first looks
+          // up an Inttegro Product and its configured Price, then snapshots the
+          // verified fields as an inline Order item. That keeps the example
+          // portable across SDK releases whose typed order models do not yet all
+          // expose the catalog-reference union.
+          // INTTEGRO:ALTERNATIVE [catalog-snapshot] When your SDK exposes it,
+          // send { product_id, price_id, quantity } instead. That is the most
+          // compact catalogue-backed shape; never mix it with inline fields.
+          ...product,
           quantity: 1,
-          // INTTEGRO:DECISION [minor-unit-money] Integer 5000 means GHS 50.00.
-          // Convert variable prices with a currency-aware decimal/money type,
-          // never binary floating-point arithmetic.
-          price: { currency: Currencies.GHS, value: 5000 },
         },
       },
     ],
@@ -159,6 +214,7 @@ export function buildOrderRequest(input: CheckoutInput, origin: string): CreateO
 export function buildMobileOrderRequest(
   input: MobileCheckoutInput,
   customerId: string,
+  product: CatalogSelection,
 ): MobileCreateOrderRequest {
   return {
     // INTTEGRO:DECISION [stable-idempotency-key] A retry of the same native
@@ -180,10 +236,8 @@ export function buildMobileOrderRequest(
       {
         type: 'product',
         product: {
-          type: ProductTypes.Physical,
-          name: 'Dawn Brew Set',
+          ...product,
           quantity: 1,
-          price: { currency: Currencies.GHS, value: 5000 },
         },
       },
     ],
@@ -207,7 +261,8 @@ export async function createHostedCheckout(input: CheckoutInput, requestOrigin: 
   const inttegro = new InttegroClient({ apiKey });
 
   try {
-    const order = await inttegro.orders.create(buildOrderRequest(input, origin));
+    const product = await loadCatalogSelection(inttegro);
+    const order = await inttegro.orders.create(buildOrderRequest(input, origin, product));
 
     // INTTEGRO:DECISION [returned-checkout-url] Use the response's URL. Building
     // a URL from order.id would depend on undocumented Inttegro routing details.
@@ -244,7 +299,8 @@ export async function createMobileCheckout(input: MobileCheckoutInput) {
 
   const inttegro = new InttegroClient({ apiKey });
   try {
-    const order = await inttegro.orders.create(buildMobileOrderRequest(input, customerId));
+    const product = await loadCatalogSelection(inttegro);
+    const order = await inttegro.orders.create(buildMobileOrderRequest(input, customerId, product));
     if (!order.id?.trim()) {
       throw new DemoError('api_error', 'Inttegro did not return a checkout order ID.');
     }

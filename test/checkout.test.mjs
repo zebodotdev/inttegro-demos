@@ -6,7 +6,16 @@ import {
   buildOrderRequest,
   parseCheckoutInput,
   parseMobileCheckoutInput,
+  selectCatalogProduct,
 } from '../lib/checkout.ts';
+
+const catalogSelection = {
+  type: 'physical',
+  name: 'Dawn Brew Set',
+  about: 'Hand-thrown stoneware',
+  reference: 'DEMO-KORA-DAWN-BREW',
+  price: { currency: 'ghs', value: 5000 },
+};
 
 test('rejects invalid customer input', () => {
   const form = new FormData();
@@ -27,6 +36,7 @@ test('builds the Kora Market Dawn Brew Set order', () => {
       attemptId: 'attempt_123',
     },
     'https://demo.example',
+    catalogSelection,
   );
 
   assert.equal(request.request_meta?.idempotency_key, 'demo-attempt_123');
@@ -55,6 +65,7 @@ test('builds a finalized mobile-money-only order on the server', () => {
   const request = buildMobileOrderRequest(
     { attemptId: 'mobile_attempt_123' },
     'cus_demo',
+    catalogSelection,
   );
 
   assert.equal(request.request_meta?.idempotency_key, 'mobile-demo-mobile_attempt_123');
@@ -63,4 +74,32 @@ test('builds a finalized mobile-money-only order on the server', () => {
   assert.deepEqual(request.payment_method_types, ['mobile_money']);
   assert.equal(request.line_items?.[0]?.product?.name, 'Dawn Brew Set');
   assert.equal(request.line_items?.[0]?.product?.price.value, 5000);
+});
+
+test('selects only the configured active catalogue price', () => {
+  const selected = selectCatalogProduct({
+    id: 'prod_demo',
+    type: 'physical',
+    name: 'Dawn Brew Set',
+    active: true,
+    created_at: '2026-09-06T00:00:00Z',
+    prices: [
+      { id: 'pr_old', active: false, nominal: { currency: 'ghs', value: 4000 } },
+      { id: 'pr_demo', active: true, nominal: { currency: 'ghs', value: 5000 } },
+    ],
+  }, 'pr_demo');
+
+  assert.equal(selected.name, 'Dawn Brew Set');
+  assert.deepEqual(selected.price, { currency: 'ghs', value: 5000 });
+  assert.throws(
+    () => selectCatalogProduct({
+      id: 'prod_demo',
+      type: 'physical',
+      name: 'Dawn Brew Set',
+      active: true,
+      created_at: '2026-09-06T00:00:00Z',
+      prices: [],
+    }, 'pr_missing'),
+    /configured demo price/,
+  );
 });
