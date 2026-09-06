@@ -4,12 +4,12 @@ import com.inttegro.ApiException;
 import com.inttegro.Client;
 import com.inttegro.RequestMeta;
 import com.inttegro.customers.CustomerData;
-import com.inttegro.money.Currency;
 import com.inttegro.orders.CheckoutSettings;
 import com.inttegro.orders.Order;
 import com.inttegro.orders.OrderCreateParams;
 import com.inttegro.orders.OrderLineItemParams;
 import com.inttegro.prices.PriceParams;
+import com.inttegro.products.Product;
 import com.inttegro.products.ProductType;
 import java.net.URI;
 
@@ -35,6 +35,7 @@ public class CheckoutService {
      * for the shared rationale and machine-readable alternatives.
      */
     public record CheckoutResult(String orderId, String checkoutUrl) {}
+    public record CatalogSelection(ProductType type, String name, String about, String reference, PriceParams price) {}
 
     public static final class DemoException extends RuntimeException {
         private final String code;
@@ -47,7 +48,32 @@ public class CheckoutService {
         public String code() { return code; }
     }
 
-    static OrderCreateParams buildOrderRequest(CheckoutForm form, String origin) {
+    static CatalogSelection selectCatalogProduct(Product product, String priceId) {
+        // INTTEGRO:SECURITY [catalog-authority] The browser supplies no product,
+        // price, or amount. Resolve them with the server credential and verify
+        // the explicit Price belongs to the configured active Product.
+        if (product == null || !Boolean.TRUE.equals(product.active)) {
+            throw new DemoException("configuration_error", "The configured demo product is not active.");
+        }
+        var price = product.prices == null ? null : product.prices.stream()
+                .filter(candidate -> priceId.equals(candidate.id))
+                .findFirst()
+                .orElse(null);
+        // This SDK version does not expose the price's active flag in a Product
+        // summary. Require an explicit ID match and positive nominal; newer SDKs
+        // should also require the returned Price to be active.
+        if (price == null || price.nominal == null || price.nominal.value == null || price.nominal.value <= 0) {
+            throw new DemoException("configuration_error", "The configured demo price is not available for this product.");
+        }
+        return new CatalogSelection(
+                product.type,
+                product.name,
+                product.about,
+                product.reference,
+                PriceParams.of(price.nominal.currency, price.nominal.value));
+    }
+
+    static OrderCreateParams buildOrderRequest(CheckoutForm form, String origin, CatalogSelection product) {
         return OrderCreateParams.builder()
                 // INTTEGRO:DECISION [stable-idempotency-key] Reuse this key for
                 // retries of one logical invoice payment. Production systems
@@ -66,17 +92,18 @@ public class CheckoutService {
                 .finalizeOrder(true)
                 .checkoutSettings(CheckoutSettings.builder().redirectUrl(origin + "/complete").cancelUrl(origin + "/cancel").build())
                 .lineItem(OrderLineItemParams.product(product -> product
-                        // INTTEGRO:DECISION [inline-product] Inline data keeps the
-                        // demo independent of a catalog. Catalog merchants can
-                        // use productId plus an explicit price or priceId; do not
-                        // mix the catalog and inline shapes.
-                        .type(ProductType.SERVICE)
-                        .name("Invoice INV-2048")
+                        // INTTEGRO:DECISION [catalog-snapshot] Resolve the Product
+                        // and Price, then snapshot the verified fields into the
+                        // Order for compatibility across SDK versions.
+                        // INTTEGRO:ALTERNATIVE [catalog-snapshot] When the SDK
+                        // exposes the typed catalogue union, send product_id +
+                        // price_id + quantity and omit the inline fields.
+                        .type(product.type())
+                        .name(product.name())
+                        .about(product.about())
+                        .reference(product.reference())
                         .quantity(1)
-                        // INTTEGRO:DECISION [minor-unit-money] Integer 5000 is
-                        // GHS 50.00. Use a currency-aware decimal/money type to
-                        // convert variable amounts.
-                        .price(PriceParams.of(Currency.GHS, 5000))))
+                        .price(product.price())))
                 .build();
     }
 
@@ -87,13 +114,24 @@ public class CheckoutService {
         if (apiKey.isEmpty()) {
             throw new DemoException("configuration_error", "Set INTTEGRO_API_KEY on the server.");
         }
+        String productId = System.getenv().getOrDefault("INTTEGRO_DEMO_PRODUCT_ID", "").trim();
+        String priceId = System.getenv().getOrDefault("INTTEGRO_DEMO_PRICE_ID", "").trim();
+        if (!productId.matches("^prod_[A-Za-z0-9]+$") || !priceId.matches("^pr_[A-Za-z0-9]+$")) {
+            throw new DemoException("configuration_error", "Set INTTEGRO_DEMO_PRODUCT_ID and INTTEGRO_DEMO_PRICE_ID on the server.");
+        }
         String publicOrigin = validatedOrigin(origin);
         try {
             // INTTEGRO:ALTERNATIVE [server-api-key] A production Spring app can
             // inject a singleton Client for transport reuse, fail-fast config,
             // and application-owned OpenTelemetry. Per-call creation is concise
             // here. https://studio.inttegro.com/sdk-observability
-            Order order = new Client(apiKey).orders().create(buildOrderRequest(form, publicOrigin));
+            Client client = new Client(apiKey);
+            // INTTEGRO:FLOW [catalog-lookup] Resolve at checkout time so product
+            // publication and price changes take effect. High-volume services
+            // can use a short cache with explicit invalidation.
+            // https://studio.inttegro.com/products
+            CatalogSelection product = selectCatalogProduct(client.products().lookup(productId), priceId);
+            Order order = client.orders().create(buildOrderRequest(form, publicOrigin, product));
             // INTTEGRO:DECISION [returned-checkout-url] Use the response field.
             // Constructing a URL from order.id relies on undocumented routing.
             if (order.invoice == null || order.invoice.format == null || order.invoice.format.web == null || order.invoice.format.web.url == null) {
