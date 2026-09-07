@@ -28,7 +28,7 @@ HTTPS origin before exposing the container publicly.
 
 ## Deploy your own
 
-[![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
+[![Run with Docker](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.4.0/assets/providers/docker-button.svg)](#run-with-docker)
 [![Deploy to Cloud Run](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-django-v1.4.0)
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/0h-Ilj?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=django)
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-django-v1.4.0)
@@ -41,7 +41,7 @@ host-only `DJANGO_ALLOWED_HOSTS` value. The proxy must overwrite
 `X-Forwarded-Proto` before Django is allowed to trust it.
 Cloudflare Python Workers is deliberately not offered yet: Python Workers
 requires an asynchronous outbound HTTP path, while Inttegro Python SDK 6.0.0
-currently uses synchronous `urllib`. See [`DEPLOYING.md`](../DEPLOYING.md) for
+currently uses synchronous `urllib`. See [`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.4.0/DEPLOYING.md) for
 the compatibility decision.
 
 ## Understand the integration
@@ -50,5 +50,5 @@ Start with [`checkout/service.py`](./checkout/service.py) for the typed Order
 request and safe error mapping, then read
 [`checkout/views.py`](./checkout/views.py) for the 303 handoff and correlation
 boundary. The `INTTEGRO:*` comments map choices and alternatives to the shared
-[integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+[integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.4.0/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.4.0/integration-decisions.json).
