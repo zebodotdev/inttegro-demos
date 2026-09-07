@@ -16,7 +16,9 @@ python manage.py runserver 3004
 Configure `INTTEGRO_DEMO_PRODUCT_ID` and `INTTEGRO_DEMO_PRICE_ID` with the
 active Afterglow admission Product and Price. Django looks them up and validates
 their relationship server-side; the reservation form supplies no product or
-amount. Run `python manage.py test` for the focused checks.
+amount. The checkout view runs under ASGI, awaits `AsyncInttegroClient`, and
+reuses one HTTP connection pool per process or Worker isolate. Run
+`python manage.py test` for the focused checks.
 
 ## Run with Docker
 
@@ -39,16 +41,29 @@ secret, and configures its public and health-check hostnames. On Render, set
 `https://inttegro-demo-django.onrender.com`; this remains separate from the
 host-only `DJANGO_ALLOWED_HOSTS` value. The proxy must overwrite
 `X-Forwarded-Proto` before Django is allowed to trust it.
-Cloudflare Python Workers is deliberately not offered yet: Python Workers
-requires an asynchronous outbound HTTP path, while Inttegro Python SDK 6.0.0
-currently uses synchronous `urllib`. See [`DEPLOYING.md`](../DEPLOYING.md) for
-the compatibility decision.
+
+Cloudflare uses Django's ASGI application and serves the collected `/static/*`
+files through Workers Static Assets. Set `DJANGO_ALLOWED_HOSTS` to the assigned
+hostname and `DJANGO_CSRF_TRUSTED_ORIGINS` plus
+`INTTEGRO_DEMO_PUBLIC_URL` to its exact HTTPS origin. Run
+`npm run dev:cloudflare` for the Worker runtime locally. Inttegro Python SDK
+6.3.0 or newer is required because its outbound requests are asynchronous. The
+one-click action is activated only after that SDK and the immutable 1.5.0
+deployment branch exist publicly.
+
+Python Workers do not provide OS threads, while Django's ASGI handler delegates
+small synchronous framework hooks to `asgiref`'s thread pool. This demo has no
+ORM or blocking synchronous I/O, so [`src/worker_compat.py`](./src/worker_compat.py)
+runs only those hooks inline at the Worker boundary. Do not reuse that shim in a
+database-backed application: follow Cloudflare's WSGI and `django-cf` guidance,
+or use the unmodified ASGI application in a container. See
+[`DEPLOYING.md`](../DEPLOYING.md) for the compatibility decision.
 
 ## Understand the integration
 
-Start with [`checkout/service.py`](./checkout/service.py) for the typed Order
+Start with [`src/checkout/service.py`](./src/checkout/service.py) for the typed Order
 request and safe error mapping, then read
-[`checkout/views.py`](./checkout/views.py) for the 303 handoff and correlation
+[`src/checkout/views.py`](./src/checkout/views.py) for the 303 handoff and correlation
 boundary. The `INTTEGRO:*` comments map choices and alternatives to the shared
 [integration guide](../INTEGRATION_GUIDE.md) and
 [machine-readable decision registry](../integration-decisions.json).

@@ -1,8 +1,18 @@
+import asyncio
+from types import SimpleNamespace
+
 import pytest
 import inttegro
 from inttegro import Currency, ProductType
 
-from app.checkout import CatalogSelection, CheckoutInput, DemoError, build_order_request, parse_checkout_input
+from app.checkout import (
+    CatalogSelection,
+    CheckoutInput,
+    DemoError,
+    build_order_request,
+    create_hosted_checkout,
+    parse_checkout_input,
+)
 
 
 def test_rejects_invalid_email():
@@ -30,3 +40,52 @@ def test_builds_shared_order_request():
     assert request.line_items[0].product.name == "Afterglow Sessions — Courtyard Admission"
     assert request.line_items[0].product.type.value == "digital"
     assert request.line_items[0].product.price.value == 5000
+
+
+def test_async_checkout_awaits_catalog_and_order_resources():
+    calls = []
+
+    class Products:
+        async def lookup(self, product_id):
+            calls.append(("products.lookup", product_id))
+            return SimpleNamespace(
+                active=True,
+                type=ProductType.DIGITAL,
+                name="Afterglow Sessions — Courtyard Admission",
+                about="An evening of music and conversation.",
+                reference="DEMO-AFTERGLOW-COURTYARD",
+                prices=[
+                    SimpleNamespace(
+                        id="pr_demo123",
+                        active=True,
+                        nominal=SimpleNamespace(currency=Currency.GHS, value=5000),
+                    )
+                ],
+            )
+
+    class Orders:
+        async def create(self, request):
+            calls.append(("orders.create", request.number))
+            return SimpleNamespace(
+                id="or_demo123",
+                invoice=SimpleNamespace(
+                    format=SimpleNamespace(web=SimpleNamespace(url="https://pages.inttegro.com/invoices/or_demo123"))
+                ),
+            )
+
+    client = SimpleNamespace(products=Products(), orders=Orders())
+    result = asyncio.run(
+        create_hosted_checkout(
+            CheckoutInput("Akua", "akua@example.com", "+233", "attempt_123"),
+            "https://demo.example",
+            client,
+            "prod_demo123",
+            "pr_demo123",
+        )
+    )
+
+    assert result == ("or_demo123", "https://pages.inttegro.com/invoices/or_demo123")
+    assert calls == [
+        ("products.lookup", "prod_demo123"),
+        ("orders.create", "AFTERGLOW-ATTEMPT-123"),
+    ]

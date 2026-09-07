@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 import os
 import sys
+from pathlib import Path
+
+# Keep deploy-only files and generated virtual environments outside the Worker
+# module root while preserving Django's conventional root-level manage.py.
+sys.path.insert(0, str(Path(__file__).resolve().parent / "src"))
 
 
 def main() -> None:

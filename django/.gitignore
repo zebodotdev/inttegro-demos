@@ -1,0 +1,10 @@
+.dev.vars
+.env
+.venv/
+.venv-workers/
+.wrangler/
+python_modules/
+public/static/*
+!public/static/.gitkeep
+__pycache__/
+*.py[cod]
