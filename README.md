@@ -19,12 +19,12 @@ the focused checks.
 
 ## Deploy your own
 
+[![Deploy to Cloud Run](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-go-v1.3.0)
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/ABT6ae?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=go)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-go-v1.2.3)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-go-v1.3.0)
 
-Render builds a small distroless image from the released multi-stage
-Dockerfile. Railway uses the same image and checked-in health policy, pinned to
-this release's deployment branch and exact commit. See
+Cloud Run, Railway, and Render build a small distroless image from the released
+multi-stage Dockerfile. The deployment links target immutable release refs. See
 [`DEPLOYING.md`](../DEPLOYING.md).
 
 ## Understand the integration
