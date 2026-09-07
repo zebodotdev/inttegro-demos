@@ -56,10 +56,11 @@ contract, and create a production Worker build.
 
 ## Deploy your own
 
-RedwoodSDK is Cloudflare-native. Its host-neutral Worker configuration is ready
-for release 1.5.0; the public one-click action is deliberately withheld until
-the immutable app-only deployment branch exists. At release, Cloudflare asks
-the reader for the required bindings without placing credentials in Git.
+[![Deploy to Cloudflare](../assets/providers/cloudflare-button.svg)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-redwoodsdk-v1.5.0)
+
+RedwoodSDK is Cloudflare-native. The button starts from the immutable 1.5.0
+deployment branch. Cloudflare asks the reader for the required bindings without
+placing credentials in Git.
 
 ## Production boundaries
 
