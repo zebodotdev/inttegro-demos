@@ -19,11 +19,12 @@ the focused checks.
 
 ## Deploy your own
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/ABT6ae?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=go)
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-go-v1.2.3)
 
 Render builds a small distroless image from the released multi-stage
-Dockerfile. Railway uses the same image and checked-in health policy; its button
-follows after the public template is registered and smoke-tested. See
+Dockerfile. Railway uses the same image and checked-in health policy, pinned to
+this release's deployment branch and exact commit. See
 [`DEPLOYING.md`](../DEPLOYING.md).
 
 ## Understand the integration
