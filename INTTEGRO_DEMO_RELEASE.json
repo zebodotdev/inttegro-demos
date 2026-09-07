@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "demo": "spring-boot",
+  "version": "1.4.1",
+  "sourceSuiteTag": "v1.4.1",
+  "sourceDemoTag": "spring-boot-v1.4.1",
+  "sourceCommit": "70e0f83393cac952f6ccd0df52ae813dc4d73e6b",
+  "sourceSubtreeCommit": "28480f44b400d41d17b2639600a80fa86996cd02"
+}
