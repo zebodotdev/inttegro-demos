@@ -32,7 +32,7 @@ Use `docker compose down` to stop it. A public deployment must replace
 
 ## Deploy your own
 
-[![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
+[![Run with Docker](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.4.0/assets/providers/docker-button.svg)](#run-with-docker)
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-nuxt-v1.4.0)
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-nuxt-v1.4.0&project-name=inttegro-demo-nuxt&repository-name=inttegro-demo-nuxt&env=NUXT_INTTEGRO_API_KEY%2CNUXT_DEMO_PRODUCT_ID%2CNUXT_DEMO_PRICE_ID%2CNUXT_DEMO_PUBLIC_URL&envDescription=Add%20a%20dedicated%20Inttegro%20API%20key%2C%20active%20Product%20and%20Price%20IDs%2C%20and%20the%20public%20origin.&envLink=https%3A%2F%2Fstudio.inttegro.com%2Fkeys)
 
@@ -42,7 +42,7 @@ instead of layering Cloudflare's runtime shims over them; this avoids a startup
 conflict around `node:buffer`. Vercel keeps Nuxt's provider-aware production
 build. Both buttons use an immutable deployment ref derived from
 the published `nuxt-v1.4.0` deployment ref. See
-[`DEPLOYING.md`](../DEPLOYING.md) for readiness
+[`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.4.0/DEPLOYING.md) for readiness
 and trade-offs.
 
 ## Understand the integration
@@ -51,5 +51,5 @@ Start with [`server/utils/checkout.ts`](./server/utils/checkout.ts) for Order
 construction and error mapping, then read
 [`server/routes/checkout.post.ts`](./server/routes/checkout.post.ts) for cookie
 correlation and the 303 handoff. The `INTTEGRO:*` comments map choices and
-alternatives to the shared [integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+alternatives to the shared [integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.4.0/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.4.0/integration-decisions.json).
