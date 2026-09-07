@@ -26,19 +26,19 @@ HTTPS origin before exposing the container publicly.
 
 ## Deploy your own
 
-[![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
+[![Run with Docker](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.4.0/assets/providers/docker-button.svg)](#run-with-docker)
 [![Deploy to Cloud Run](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-go-v1.4.0)
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/ABT6ae?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=go)
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-go-v1.4.0)
 
 Cloud Run, Railway, and Render build a small distroless image from the released
 multi-stage Dockerfile. The deployment links target immutable release refs. See
-[`DEPLOYING.md`](../DEPLOYING.md).
+[`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.4.0/DEPLOYING.md).
 
 ## Understand the integration
 
 [`main.go`](./main.go) keeps the complete integration deliberately visible:
 input validation, Order construction, hosted URL selection, safe errors,
 correlation, and the 303 handoff. Its `INTTEGRO:*` comments map choices and
-alternatives to the shared [integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+alternatives to the shared [integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.4.0/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.4.0/integration-decisions.json).
