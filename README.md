@@ -18,11 +18,20 @@ Open <http://localhost:3005>. Configure `INTTEGRO_DEMO_PRODUCT_ID` and
 FastAPI resolves and validates both server-side; the reservation form supplies
 no product or amount. Run `pytest` for the focused checks.
 
+## Run with Docker
+
+After configuring `.env`, run `docker compose up --build --wait`. Compose
+starts the production image at <http://localhost:3005> and monitors
+`GET /health`. Use
+`docker compose down` to stop it. Set `INTTEGRO_DEMO_PUBLIC_URL` to the exact
+HTTPS origin before exposing the container publicly.
+
 ## Deploy your own
 
-[![Deploy to Cloud Run](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-fastapi-v1.3.0)
+[![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
+[![Deploy to Cloud Run](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-fastapi-v1.4.0)
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/wk2B6a?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=fastapi)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-fastapi-v1.3.0)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-fastapi-v1.4.0)
 
 Cloud Run, Railway, and Render build the released Dockerfile. The Railway template is
 pinned to this release's deployment branch and exact commit.
