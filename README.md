@@ -25,7 +25,7 @@ product or amount. Run `composer test` for the focused checks.
 Cloud Run, Railway, and Render build the released Dockerfile. The Railway template pins the
 release commit and generates `APP_KEY` in the deployment, separate from the
 Inttegro test API key. See
-[`DEPLOYING.md`](../DEPLOYING.md).
+[`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.3.0/DEPLOYING.md).
 
 ## Understand the integration
 
@@ -34,5 +34,5 @@ for the Order payload and SDK boundary, then read
 [`app/Http/Controllers/CheckoutController.php`](./app/Http/Controllers/CheckoutController.php)
 for validation, correlation, and the 303 handoff. The `INTTEGRO:*` comments map
 choices and alternatives to the shared
-[integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+[integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.3.0/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.3.0/integration-decisions.json).
