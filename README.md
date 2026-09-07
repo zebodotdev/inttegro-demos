@@ -19,14 +19,14 @@ focused unit tests.
 
 ## Deploy your own
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/MJF7nD?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=express)
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-express-v1.2.3)
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-express-v1.2.3)
 
 Cloudflare uses a separate Node HTTP adapter entry point; the ordinary Express
-application and Inttegro integration remain unchanged. Render builds the
-released Dockerfile. Railway configuration is included, and its button will be
-added after the public template is registered and smoke-tested. See
-[`DEPLOYING.md`](../DEPLOYING.md).
+application and Inttegro integration remain unchanged. Railway and Render build
+the released Dockerfile. The Railway template is pinned to this release's
+deployment branch and exact commit. See [`DEPLOYING.md`](../DEPLOYING.md).
 
 ## Understand the integration
 
