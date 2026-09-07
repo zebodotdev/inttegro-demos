@@ -8,6 +8,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const requestedTag = process.argv[2];
 const deployments = JSON.parse(readFileSync(join(root, 'deployments.json'), 'utf8'));
 const expectedTag = deployments.suiteTag;
+const providerButtonIds = ['cloud-run', 'cloudflare', 'docker', 'railway', 'render', 'vercel'];
 
 if (!requestedTag || requestedTag !== expectedTag) {
   console.error(`Usage: node scripts/prepare-deploy-refs.mjs ${expectedTag}`);
@@ -93,11 +94,16 @@ try {
     const taggedReadme = git(['show', `${requestedTag}:${demo.id}/README.md`]);
     const suiteDocumentRoot = `${deployments.repository}/blob/${requestedTag}`;
     const suiteAssetRoot = `${deployments.repository.replace('https://github.com/', 'https://raw.githubusercontent.com/')}/${requestedTag}`;
-    const portableReadme = taggedReadme
+    let portableReadme = taggedReadme
       .replaceAll('../DEPLOYING.md', `${suiteDocumentRoot}/DEPLOYING.md`)
       .replaceAll('../INTEGRATION_GUIDE.md', `${suiteDocumentRoot}/INTEGRATION_GUIDE.md`)
-      .replaceAll('../integration-decisions.json', `${suiteDocumentRoot}/integration-decisions.json`)
-      .replaceAll('../assets/providers/docker-button.svg', `${suiteAssetRoot}/assets/providers/docker-button.svg`);
+      .replaceAll('../integration-decisions.json', `${suiteDocumentRoot}/integration-decisions.json`);
+    for (const providerId of providerButtonIds) {
+      portableReadme = portableReadme.replaceAll(
+        `../assets/providers/${providerId}-button.svg`,
+        `${suiteAssetRoot}/assets/providers/${providerId}-button.svg`,
+      );
+    }
     const readmePath = join(temporaryDirectory, `${demo.id}.README.md`);
     writeFileSync(readmePath, `${portableReadme}\n`);
 

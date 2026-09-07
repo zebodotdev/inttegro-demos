@@ -27,8 +27,8 @@ hosts or runtime font services.
 
 ## Current release
 
-The current release is **1.4.0**. Use
-[`releases/v1.4.0.json`](./releases/v1.4.0.json) to resolve each demo to its
+The current release is **1.4.1**. Use
+[`releases/v1.4.1.json`](./releases/v1.4.1.json) to resolve each demo to its
 immutable Git tag and integration entry points. Studio and external
 documentation must link through those tags rather than `main`; see
 [RELEASING.md](./RELEASING.md) for the versioning, permalink, signature, and

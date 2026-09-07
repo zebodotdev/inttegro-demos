@@ -107,12 +107,28 @@ assert.deepEqual(
 const providerStatuses = new Set(['prepared', 'verified', 'blocked']);
 const providerRecommendations = new Set(['recommended', 'alternative', 'experimental']);
 const providerIds = new Set(Object.keys(deployments.providers));
+const providerButtonAssets = {
+  'cloud-run': 'cloud-run-button.svg',
+  cloudflare: 'cloudflare-button.svg',
+  docker: 'docker-button.svg',
+  railway: 'railway-button.svg',
+  render: 'render-button.svg',
+  vercel: 'vercel-button.svg',
+};
 for (const provider of Object.values(deployments.providers)) {
   assert.match(provider.documentation, /^https:\/\//, `${provider.name} must link its canonical deployment documentation`);
   assert.match(provider.icon, /^\/assets\/providers\/[a-z-]+\.svg$/, `${provider.name} must define its provider icon`);
   assert(existsSync(join(demosRoot, provider.icon.slice(1))), `${provider.name} provider icon must exist`);
   if (provider.buttonImage) {
-    assert.match(provider.buttonImage, /^https:\/\//, `${provider.name} button image must use HTTPS`);
+    assert.match(
+      provider.buttonImage,
+      /^\/assets\/providers\/[a-z-]+-button\.svg$/,
+      `${provider.name} button image must use a shared repository asset`,
+    );
+    assert(
+      existsSync(join(demosRoot, provider.buttonImage.slice(1))),
+      `${provider.name} button image must exist`,
+    );
   }
 }
 
@@ -397,6 +413,32 @@ for (const id of ['nextjs', 'nuxt', 'express']) {
   );
 }
 
+for (const demo of deployments.demos.filter((candidate) => candidate.mode === 'server')) {
+  const readme = readFileSync(join(demosRoot, demo.id, 'README.md'), 'utf8');
+  const launchableProviders = demo.providers.filter((candidate) => candidate.status !== 'blocked');
+  for (const provider of launchableProviders) {
+    const buttonAsset = providerButtonAssets[provider.id];
+    if (!buttonAsset) continue;
+    assert(
+      readme.includes(`../assets/providers/${buttonAsset}`),
+      `${demo.id}/${provider.id} must use the shared provider button`,
+    );
+  }
+  const buttonOrder = launchableProviders
+    .filter((provider) => providerButtonAssets[provider.id])
+    .map((provider) => ({
+      id: provider.id,
+      offset: readme.indexOf(`../assets/providers/${providerButtonAssets[provider.id]}`),
+    }))
+    .toSorted((left, right) => left.offset - right.offset)
+    .map((provider) => provider.id);
+  assert.deepEqual(
+    buttonOrder,
+    launchableProviders.filter((provider) => providerButtonAssets[provider.id]).map((provider) => provider.id),
+    `${demo.id} README buttons must follow the active provider order`,
+  );
+}
+
 const railwayTemplateIds = {
   express: 'MJF7nD',
   django: '0h-Ilj',
@@ -431,6 +473,17 @@ for (const id of ['ios-swiftui', 'android-compose', 'flutter', 'react-native-exp
     readme.includes('../assets/providers/docker-button.svg'),
     `${id} must present the Docker companion-backend action with its logo`,
   );
+  for (const buttonAsset of ['cloudflare-button.svg', 'vercel-button.svg']) {
+    assert(
+      readme.includes(`../assets/providers/${buttonAsset}`),
+      `${id} must use the shared ${buttonAsset.replace('-button.svg', '')} backend button`,
+    );
+  }
+  assert(
+    readme.indexOf('cloudflare-button.svg') < readme.indexOf('docker-button.svg')
+      && readme.indexOf('docker-button.svg') < readme.indexOf('vercel-button.svg'),
+    `${id} companion-backend buttons must be alphabetical`,
+  );
 }
 
 const deployRefScript = readFileSync(join(demosRoot, 'scripts/prepare-deploy-refs.mjs'), 'utf8');
@@ -440,7 +493,7 @@ for (const requiredReleaseGuard of [
   "typeof output === 'string' ? output.trim() : ''",
   "`${requestedTag}:LICENSE`",
   ".replaceAll('../DEPLOYING.md'",
-  ".replaceAll('../assets/providers/docker-button.svg'",
+  'for (const providerId of providerButtonIds)',
 ]) {
   assert(
     deployRefScript.includes(requiredReleaseGuard),
@@ -517,7 +570,12 @@ for (const asset of [
   'assets/ledgerline-studio.jpg',
   'assets/favicon.svg',
   'assets/providers/docker.svg',
+  'assets/providers/cloud-run-button.svg',
+  'assets/providers/cloudflare-button.svg',
   'assets/providers/docker-button.svg',
+  'assets/providers/railway-button.svg',
+  'assets/providers/render-button.svg',
+  'assets/providers/vercel-button.svg',
 ]) {
   assert(existsSync(join(demosRoot, asset)), `missing original demo artwork: ${asset}`);
 }

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "https://github.com/zebodotdev/inttegro-demos",
-  "releaseVersion": "1.4.0",
-  "suiteTag": "v1.4.0",
+  "releaseVersion": "1.4.1",
+  "suiteTag": "v1.4.1",
   "domain": {
     "status": "active",
     "provider": "cloudflare",
@@ -16,31 +16,31 @@
     "cloudflare": {
       "name": "Cloudflare",
       "icon": "/assets/providers/cloudflare.svg",
-      "buttonImage": "https://deploy.workers.cloudflare.com/button",
+      "buttonImage": "/assets/providers/cloudflare-button.svg",
       "documentation": "https://developers.cloudflare.com/workers/platform/deploy-buttons/"
     },
     "vercel": {
       "name": "Vercel",
       "icon": "/assets/providers/vercel.svg",
-      "buttonImage": "https://vercel.com/button",
+      "buttonImage": "/assets/providers/vercel-button.svg",
       "documentation": "https://vercel.com/docs/deploy-button"
     },
     "render": {
       "name": "Render",
       "icon": "/assets/providers/render.svg",
-      "buttonImage": "https://render.com/images/deploy-to-render-button.svg",
+      "buttonImage": "/assets/providers/render-button.svg",
       "documentation": "https://render.com/docs/deploy-to-render"
     },
     "railway": {
       "name": "Railway",
       "icon": "/assets/providers/railway.svg",
-      "buttonImage": "https://railway.com/button.svg",
+      "buttonImage": "/assets/providers/railway-button.svg",
       "documentation": "https://docs.railway.com/templates/publish-and-share"
     },
     "cloud-run": {
       "name": "Cloud Run",
       "icon": "/assets/providers/cloud-run.svg",
-      "buttonImage": "https://deploy.cloud.run/button.svg",
+      "buttonImage": "/assets/providers/cloud-run-button.svg",
       "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
     },
     "app-runner": {
@@ -51,6 +51,7 @@
     "docker": {
       "name": "Docker",
       "icon": "/assets/providers/docker.svg",
+      "buttonImage": "/assets/providers/docker-button.svg",
       "documentation": "https://docs.docker.com/compose/gettingstarted/"
     }
   },

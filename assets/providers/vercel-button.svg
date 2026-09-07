@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="184" height="32" viewBox="0 0 184 32" role="img" aria-labelledby="title">
+  <title id="title">Deploy with Vercel</title>
+  <rect x=".5" y=".5" width="183" height="31" rx="6" fill="#fff" stroke="#d0d7de"/>
+  <g transform="translate(8 7) scale(.75)">
+    <path fill="#000" d="m12 1.608 12 20.784H0Z"/>
+  </g>
+  <text x="40" y="20.5" fill="#111827" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="13" font-weight="600">Deploy with Vercel</text>
+</svg>
