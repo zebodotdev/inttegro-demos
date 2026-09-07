@@ -16,17 +16,32 @@ Prices. The Nitro route resolves both server-side, verifies their relationship,
 and never accepts product or amount data from the browser. Run `npm run check`
 for type checking and tests.
 
+## Run with Docker
+
+After configuring `.env`, build and start the production image with one
+command:
+
+```bash
+docker compose up --build --wait
+```
+
+The Compose service exposes <http://localhost:3002>, checks `GET /health`, and
+passes the environment file only to the running container—not the image build.
+Use `docker compose down` to stop it. A public deployment must replace
+`NUXT_DEMO_PUBLIC_URL` with its HTTPS origin.
+
 ## Deploy your own
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-nuxt-v1.3.0)
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-nuxt-v1.3.0&project-name=inttegro-demo-nuxt&repository-name=inttegro-demo-nuxt&env=NUXT_INTTEGRO_API_KEY%2CNUXT_DEMO_PRODUCT_ID%2CNUXT_DEMO_PRICE_ID%2CNUXT_DEMO_PUBLIC_URL&envDescription=Add%20a%20dedicated%20Inttegro%20API%20key%2C%20active%20Product%20and%20Price%20IDs%2C%20and%20the%20public%20origin.&envLink=https%3A%2F%2Fstudio.inttegro.com%2Fkeys)
+[![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-nuxt-v1.4.0)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-nuxt-v1.4.0&project-name=inttegro-demo-nuxt&repository-name=inttegro-demo-nuxt&env=NUXT_INTTEGRO_API_KEY%2CNUXT_DEMO_PRODUCT_ID%2CNUXT_DEMO_PRICE_ID%2CNUXT_DEMO_PUBLIC_URL&envDescription=Add%20a%20dedicated%20Inttegro%20API%20key%2C%20active%20Product%20and%20Price%20IDs%2C%20and%20the%20public%20origin.&envLink=https%3A%2F%2Fstudio.inttegro.com%2Fkeys)
 
 Cloudflare is the recommended target and builds through Nitro's Cloudflare
 preset. Its Worker configuration keeps Nitro's generated Node shims in charge
 instead of layering Cloudflare's runtime shims over them; this avoids a startup
 conflict around `node:buffer`. Vercel keeps Nuxt's provider-aware production
 build. Both buttons use an immutable deployment ref derived from
-the published `nuxt-v1.3.0` deployment ref. See
+the published `nuxt-v1.4.0` deployment ref. See
 [`DEPLOYING.md`](../DEPLOYING.md) for readiness
 and trade-offs.
 
