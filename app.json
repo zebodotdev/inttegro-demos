@@ -1,0 +1,53 @@
+{
+  "name": "inttegro-demo-laravel",
+  "env": {
+    "INTTEGRO_API_KEY": {
+      "description": "A dedicated Inttegro server API key. Cloud Run exposes it only to server code; use Secret Manager for production workloads.",
+      "order": 1
+    },
+    "INTTEGRO_DEMO_PRODUCT_ID": {
+      "description": "The active Kora Market Product ID.",
+      "order": 2
+    },
+    "INTTEGRO_DEMO_PRICE_ID": {
+      "description": "An active Price ID belonging to the configured Product.",
+      "order": 3
+    },
+    "APP_KEY": {
+      "description": "Required. Generate with `php artisan key:generate --show`; do not reuse the Inttegro API key.",
+      "order": 4
+    },
+    "APP_ENV": {
+      "description": "Run Laravel with production defaults.",
+      "value": "production",
+      "required": false,
+      "order": 5
+    },
+    "APP_DEBUG": {
+      "description": "Prevent detailed exception output from reaching visitors.",
+      "value": "false",
+      "required": false,
+      "order": 6
+    },
+    "SESSION_DRIVER": {
+      "description": "Use encrypted cookies so the demo needs no database.",
+      "value": "cookie",
+      "required": false,
+      "order": 7
+    }
+  },
+  "options": {
+    "allow-unauthenticated": true,
+    "memory": "512Mi",
+    "cpu": "1",
+    "concurrency": 40,
+    "max-instances": 3
+  },
+  "hooks": {
+    "postcreate": {
+      "commands": [
+        "gcloud run services update \"$K_SERVICE\" --project \"$GOOGLE_CLOUD_PROJECT\" --region \"$GOOGLE_CLOUD_REGION\" --update-env-vars \"INTTEGRO_DEMO_PUBLIC_URL=$SERVICE_URL,APP_URL=$SERVICE_URL\""
+      ]
+    }
+  }
+}
