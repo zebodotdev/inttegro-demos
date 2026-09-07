@@ -65,13 +65,13 @@ The container exposes `GET /health`. Use `docker compose down` when finished.
 
 ## Deploy your own
 
+[![Deploy to Cloud Run](../assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-nestjs-v1.5.0)
 [![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
+[![Deploy to Render](../assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-nestjs-v1.5.0)
 
-Cloud Run, Railway, and Render configuration is checked in for release 1.5.0.
-Their public one-click actions are deliberately withheld until the immutable
-deployment branches exist; Railway also needs a published and verified template
-ID. This prevents a release-ready demo from presenting a button that cannot yet
-complete.
+Cloud Run and Render start from the immutable 1.5.0 deployment branch. Railway
+configuration is also checked in, but its button remains unavailable until a
+public template ID has been published and verified.
 
 ## Production boundaries
 

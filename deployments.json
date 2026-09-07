@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "https://github.com/zebodotdev/inttegro-demos",
-  "releaseVersion": "1.4.1",
-  "suiteTag": "v1.4.1",
+  "releaseVersion": "1.5.0",
+  "suiteTag": "v1.5.0",
   "domain": {
     "status": "active",
     "provider": "cloudflare",
@@ -101,6 +101,8 @@
         { "id": "docker", "recommendation": "alternative", "status": "prepared", "config": "nextjs/compose.yaml" },
         { "id": "vercel", "recommendation": "recommended", "status": "prepared", "config": "nextjs/vercel.json" },
         { "id": "cloudflare", "recommendation": "alternative", "status": "verified", "config": "nextjs/wrangler.jsonc" },
+        { "id": "railway", "recommendation": "alternative", "status": "blocked", "reason": "This release does not include a published Railway template for Next.js." },
+        { "id": "render", "recommendation": "alternative", "status": "blocked", "reason": "This release does not include a tested Render Blueprint for Next.js." },
         { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "reason": "This release does not include a tested Cloud Run app.json contract for Next.js." },
         { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." }
       ]
@@ -118,6 +120,8 @@
         { "id": "docker", "recommendation": "alternative", "status": "prepared", "config": "nuxt/compose.yaml" },
         { "id": "cloudflare", "recommendation": "recommended", "status": "verified", "config": "nuxt/wrangler.jsonc" },
         { "id": "vercel", "recommendation": "alternative", "status": "prepared", "config": "nuxt/vercel.json" },
+        { "id": "railway", "recommendation": "alternative", "status": "blocked", "reason": "This release does not include a published Railway template for Nuxt." },
+        { "id": "render", "recommendation": "alternative", "status": "blocked", "reason": "This release does not include a tested Render Blueprint for Nuxt." },
         { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "reason": "This release does not include a tested Cloud Run app.json contract for Nuxt." },
         { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." }
       ]
@@ -130,6 +134,7 @@
         { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "express/railway.json", "templateId": "MJF7nD" },
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "express/render.yaml" },
         { "id": "cloudflare", "recommendation": "alternative", "status": "verified", "config": "express/wrangler.jsonc" },
+        { "id": "vercel", "recommendation": "alternative", "status": "blocked", "reason": "This release does not include a framework-native Vercel contract for Express." },
         { "id": "cloud-run", "recommendation": "alternative", "status": "prepared", "config": "express/app.json" },
         { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." }
       ]
@@ -144,7 +149,8 @@
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "django/render.yaml" },
         { "id": "cloud-run", "recommendation": "alternative", "status": "prepared", "config": "django/app.json" },
         { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." },
-        { "id": "cloudflare", "recommendation": "experimental", "status": "blocked", "reason": "Python Workers supports asynchronous HTTP clients, while Inttegro Python SDK 6.0.0 currently uses synchronous urllib transport." }
+        { "id": "cloudflare", "recommendation": "alternative", "status": "prepared", "config": "django/wrangler.jsonc" },
+        { "id": "vercel", "recommendation": "alternative", "status": "blocked", "reason": "Django is not packaged for Vercel's Python runtime in this release." }
       ]
     },
     {
@@ -156,7 +162,8 @@
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "fastapi/render.yaml" },
         { "id": "cloud-run", "recommendation": "alternative", "status": "prepared", "config": "fastapi/app.json" },
         { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." },
-        { "id": "cloudflare", "recommendation": "experimental", "status": "blocked", "reason": "Python Workers supports asynchronous HTTP clients, while Inttegro Python SDK 6.0.0 currently uses synchronous urllib transport." }
+        { "id": "cloudflare", "recommendation": "alternative", "status": "prepared", "config": "fastapi/wrangler.jsonc" },
+        { "id": "vercel", "recommendation": "alternative", "status": "blocked", "reason": "FastAPI is not packaged for Vercel's Python runtime in this release." }
       ]
     },
     {
@@ -167,6 +174,8 @@
         { "id": "docker", "recommendation": "alternative", "status": "prepared", "config": "rails/compose.yaml" },
         { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "rails/railway.json", "templateId": "CssQzr" },
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "rails/render.yaml" },
+        { "id": "cloudflare", "recommendation": "alternative", "status": "blocked", "reason": "Rails requires a Ruby application runtime that Cloudflare Workers does not provide." },
+        { "id": "vercel", "recommendation": "alternative", "status": "blocked", "reason": "Rails is not packaged for Vercel's serverless runtime in this release." },
         { "id": "cloud-run", "recommendation": "alternative", "status": "prepared", "config": "rails/app.json" },
         { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." }
       ]
@@ -179,6 +188,8 @@
         { "id": "docker", "recommendation": "alternative", "status": "prepared", "config": "laravel/compose.yaml" },
         { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "laravel/railway.json", "templateId": "p5qiP5" },
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "laravel/render.yaml" },
+        { "id": "cloudflare", "recommendation": "alternative", "status": "blocked", "reason": "Laravel requires a PHP application runtime that Cloudflare Workers does not provide." },
+        { "id": "vercel", "recommendation": "alternative", "status": "blocked", "reason": "Laravel is not packaged for Vercel's serverless runtime in this release." },
         { "id": "cloud-run", "recommendation": "alternative", "status": "prepared", "config": "laravel/app.json" },
         { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." }
       ]
@@ -190,6 +201,8 @@
         { "id": "docker", "recommendation": "alternative", "status": "prepared", "config": "go/compose.yaml" },
         { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "go/railway.json", "templateId": "ABT6ae" },
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "go/render.yaml" },
+        { "id": "cloudflare", "recommendation": "alternative", "status": "blocked", "reason": "This release does not include a WebAssembly or Worker adapter for the net/http application." },
+        { "id": "vercel", "recommendation": "alternative", "status": "blocked", "reason": "This release preserves the long-running net/http service rather than repackaging it as a Vercel function." },
         { "id": "cloud-run", "recommendation": "alternative", "status": "prepared", "config": "go/app.json" },
         { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." }
       ]
@@ -200,8 +213,34 @@
         { "id": "docker", "recommendation": "alternative", "status": "blocked", "reason": "The Java SDK 5.0.0 dependency must be publicly available before the Docker image can build." },
         { "id": "railway", "recommendation": "recommended", "status": "blocked", "config": "spring-boot/railway.json", "reason": "The Java SDK 5.0.0 dependency must be publicly available before a reader-owned remote build can succeed." },
         { "id": "render", "recommendation": "alternative", "status": "blocked", "config": "spring-boot/render.yaml", "reason": "The Java SDK 5.0.0 dependency must be publicly available before a reader-owned remote build can succeed." },
+        { "id": "cloudflare", "recommendation": "alternative", "status": "blocked", "reason": "Spring Boot requires a JVM application runtime that Cloudflare Workers does not provide." },
+        { "id": "vercel", "recommendation": "alternative", "status": "blocked", "reason": "Spring Boot is not packaged for Vercel's serverless runtime in this release." },
         { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "reason": "The Java SDK 5.0.0 dependency must be publicly available before a Cloud Run source build can succeed." },
         { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers; the Java SDK is also not public." }
+      ]
+    },
+    {
+      "id": "nestjs",
+      "providers": [
+        { "id": "docker", "recommendation": "alternative", "status": "prepared", "config": "nestjs/compose.yaml" },
+        { "id": "render", "recommendation": "recommended", "status": "prepared", "config": "nestjs/render.yaml" },
+        { "id": "cloud-run", "recommendation": "alternative", "status": "prepared", "config": "nestjs/app.json" },
+        { "id": "railway", "recommendation": "alternative", "status": "blocked", "config": "nestjs/railway.json", "reason": "The checked-in Railway configuration is ready, but a public one-click template has not been published yet." },
+        { "id": "cloudflare", "recommendation": "alternative", "status": "blocked", "reason": "This NestJS application does not include a Cloudflare Worker HTTP adapter." },
+        { "id": "vercel", "recommendation": "alternative", "status": "blocked", "reason": "This release preserves NestJS as a portable Node service instead of a Vercel function." },
+        { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." }
+      ]
+    },
+    {
+      "id": "redwoodsdk",
+      "providers": [
+        { "id": "cloudflare", "recommendation": "recommended", "status": "prepared", "config": "redwoodsdk/wrangler.jsonc" },
+        { "id": "docker", "recommendation": "alternative", "status": "blocked", "reason": "RedwoodSDK targets the Cloudflare Workers runtime directly; a generic Node container would not preserve that contract." },
+        { "id": "vercel", "recommendation": "alternative", "status": "blocked", "reason": "RedwoodSDK is Cloudflare-native and is not packaged for Vercel in this release." },
+        { "id": "render", "recommendation": "alternative", "status": "blocked", "reason": "RedwoodSDK is Cloudflare-native and does not include a Render container service." },
+        { "id": "railway", "recommendation": "alternative", "status": "blocked", "reason": "RedwoodSDK is Cloudflare-native and does not include a Railway service template." },
+        { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "reason": "RedwoodSDK is Cloudflare-native and does not include a Cloud Run container contract." },
+        { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "RedwoodSDK is Cloudflare-native; this release also has no public ECR image." }
       ]
     },
     { "id": "ios-swiftui", "mode": "native", "companionBackend": "nextjs", "providers": [] },

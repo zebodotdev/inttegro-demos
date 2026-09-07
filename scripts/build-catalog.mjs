@@ -17,6 +17,14 @@ const storyLabels = {
   'afterglow-sessions': 'Afterglow Sessions',
   ledgerline: 'Ledgerline',
   'kora-market-mobile': 'Kora Market mobile',
+  openfield: 'Openfield',
+};
+const storyAssets = {
+  'kora-market': 'kora-dawn-brew.jpg',
+  'afterglow-sessions': 'accra-afterglow.jpg',
+  ledgerline: 'ledgerline-studio.jpg',
+  'kora-market-mobile': 'kora-dawn-brew.jpg',
+  openfield: 'openfield-garden.jpg',
 };
 
 const providerIsActive = (provider) => provider.status === 'prepared' || provider.status === 'verified';
@@ -42,7 +50,9 @@ const environmentFor = (demo) => {
   });
 };
 
-const demos = manifest.demos.filter((demo) => demo.release === 'v1').map((demo) => {
+const demos = release.demos.map((releasedDemo) => {
+  const demo = manifest.demos.find((candidate) => candidate.id === releasedDemo.id);
+  if (!demo) throw new Error(`Release references an unknown demo: ${releasedDemo.id}`);
   const deployment = deploymentById.get(demo.id);
   const released = releaseById.get(demo.id);
   if (!deployment || !released) throw new Error(`Missing release or deployment metadata for ${demo.id}`);
@@ -73,7 +83,9 @@ const demos = manifest.demos.filter((demo) => demo.release === 'v1').map((demo) 
 
 mkdirSync(assetDirectory, { recursive: true });
 mkdirSync(providerAssetDirectory, { recursive: true });
-for (const asset of ['kora-dawn-brew.jpg', 'accra-afterglow.jpg', 'ledgerline-studio.jpg', 'favicon.svg']) {
+const releaseAssets = new Set(['favicon.svg', ...demos.map((demo) => storyAssets[demo.story])]);
+for (const asset of releaseAssets) {
+  if (!asset) throw new Error('A released demo is missing its story artwork mapping');
   copyFileSync(join(root, 'assets', asset), join(assetDirectory, asset));
 }
 for (const provider of Object.values(deployments.providers)) {

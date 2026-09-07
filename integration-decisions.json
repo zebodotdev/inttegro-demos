@@ -34,7 +34,9 @@
         "rails",
         "laravel",
         "go",
-        "spring-boot"
+        "spring-boot",
+        "nestjs",
+        "redwoodsdk"
       ]
     },
     "native-payment-sheet": {
@@ -308,6 +310,62 @@
       "docs": ["observability"]
     },
     {
+      "id": "async-client",
+      "appliesTo": ["hosted-web"],
+      "selected": "Use AsyncInttegroClient whenever the framework executes checkout work on an event loop.",
+      "rationale": "Awaitable SDK I/O preserves framework concurrency and is compatible with runtimes such as Cloudflare Python Workers that do not provide blocking outbound sockets.",
+      "alternatives": [
+        {
+          "id": "sync-client-at-sync-boundary",
+          "whenToUse": "A synchronous framework, script, management command, or worker owns the call stack.",
+          "consequences": "Use InttegroClient directly; do not call the synchronous client from an async handler unless the runtime provides and permits a bounded thread offload."
+        }
+      ],
+      "docs": ["sdks", "observability"]
+    },
+    {
+      "id": "connection-pooling",
+      "appliesTo": ["hosted-web"],
+      "selected": "Reuse one async client for the lifetime of the server process or isolate, then close it during framework shutdown.",
+      "rationale": "A long-lived transport can reuse connections and keeps lifecycle ownership visible at the application boundary.",
+      "alternatives": [
+        {
+          "id": "request-scoped-client",
+          "whenToUse": "Strict tenant isolation or request-specific transport configuration outweighs connection reuse.",
+          "consequences": "Construct and close the client inside the request lifetime so sockets are released deterministically."
+        }
+      ],
+      "docs": ["sdks", "observability"]
+    },
+    {
+      "id": "framework-adapter",
+      "appliesTo": ["hosted-web"],
+      "selected": "Keep framework routes and integration services unchanged while a narrow runtime adapter translates the deployment platform's request boundary.",
+      "rationale": "One checkout implementation is easier to audit and test than a second provider-specific handler with independent payment behavior.",
+      "alternatives": [
+        {
+          "id": "provider-specific-application",
+          "whenToUse": "The target runtime cannot execute the framework contract or the provider version intentionally offers different product behavior.",
+          "consequences": "Treat it as a separate application, duplicate the security and contract tests, and document the behavioral differences explicitly."
+        }
+      ],
+      "docs": ["checkout", "sdks"]
+    },
+    {
+      "id": "worker-bindings",
+      "appliesTo": ["hosted-web"],
+      "selected": "Read Cloudflare bindings at the Worker boundary and apply framework security settings before application initialization.",
+      "rationale": "Python Worker bindings are not ordinary process environment variables, while frameworks such as Django freeze important settings during import.",
+      "alternatives": [
+        {
+          "id": "platform-secret-injection",
+          "whenToUse": "A container or process platform injects secrets into the environment before starting the application.",
+          "consequences": "Read the values through the framework's normal configuration path and validate them before accepting traffic."
+        }
+      ],
+      "docs": ["keys", "sdks"]
+    },
+    {
       "id": "application-owned-observability",
       "appliesTo": ["hosted-web", "native-payment-sheet"],
       "selected": "Consume bounded SDK telemetry without customer data, secrets, or raw payloads.",
@@ -354,8 +412,8 @@
     "nextjs": ["nextjs/lib/checkout.ts", "nextjs/app/checkout/route.ts", "nextjs/app/mobile/orders/route.ts"],
     "nuxt": ["nuxt/server/utils/checkout.ts", "nuxt/server/routes/checkout.post.ts"],
     "express": ["express/src/checkout.ts", "express/src/app.ts"],
-    "django": ["django/checkout/service.py", "django/checkout/views.py"],
-    "fastapi": ["fastapi/app/checkout.py", "fastapi/app/main.py"],
+    "django": ["django/src/checkout/service.py", "django/src/checkout/views.py", "django/src/worker.py"],
+    "fastapi": ["fastapi/src/app/checkout.py", "fastapi/src/app/main.py", "fastapi/src/worker.py"],
     "rails": ["rails/app/services/checkout_service.rb", "rails/app/controllers/checkouts_controller.rb"],
     "laravel": ["laravel/app/Services/CheckoutService.php", "laravel/app/Http/Controllers/CheckoutController.php"],
     "go": ["go/main.go"],
@@ -363,6 +421,8 @@
     "ios-swiftui": ["ios-swiftui/InttegroSwiftUIDemo/DemoBackend.swift", "ios-swiftui/InttegroSwiftUIDemo/CheckoutView.swift"],
     "android-compose": ["android-compose/app/src/main/java/com/inttegro/demo/compose/DemoBackend.kt", "android-compose/app/src/main/java/com/inttegro/demo/compose/MainActivity.kt"],
     "flutter": ["flutter/lib/demo_backend.dart", "flutter/lib/main.dart"],
-    "react-native-expo": ["react-native-expo/src/demoBackend.ts", "react-native-expo/App.tsx"]
+    "react-native-expo": ["react-native-expo/src/demoBackend.ts", "react-native-expo/App.tsx"],
+    "nestjs": ["nestjs/src/checkout.service.ts", "nestjs/src/campaign.controller.ts"],
+    "redwoodsdk": ["redwoodsdk/src/checkout.ts", "redwoodsdk/src/worker.tsx"]
   }
 }

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "currentRelease": {
-    "version": "1.4.1",
-    "suiteTag": "v1.4.1",
-    "manifest": "releases/v1.4.1.json"
+    "version": "1.5.0",
+    "suiteTag": "v1.5.0",
+    "manifest": "releases/v1.5.0.json"
   },
   "demos": [
     { "id": "nextjs", "release": "v1", "status": "verified", "story": "kora-market", "technology": "Next.js", "language": "TypeScript" },
@@ -19,8 +19,9 @@
     { "id": "android-compose", "release": "v1", "status": "preview", "story": "kora-market-mobile", "technology": "Jetpack Compose", "language": "Kotlin" },
     { "id": "flutter", "release": "v1", "status": "native-gated", "story": "kora-market-mobile", "technology": "Flutter", "language": "Dart" },
     { "id": "react-native-expo", "release": "v1", "status": "native-gated", "story": "kora-market-mobile", "technology": "React Native + Expo", "language": "TypeScript" },
+    { "id": "nestjs", "release": "v2", "status": "verified", "story": "openfield", "technology": "NestJS", "language": "TypeScript" },
+    { "id": "redwoodsdk", "release": "v2", "status": "verified", "story": "openfield", "technology": "RedwoodSDK", "language": "TypeScript" },
     { "id": "aspnet-core", "release": "v2", "status": "planned", "technology": "ASP.NET Core", "language": "C#" },
-    { "id": "nestjs", "release": "v2", "status": "planned", "technology": "NestJS", "language": "TypeScript" },
     { "id": "react-vite", "release": "v2", "status": "planned", "technology": "React + Vite", "language": "TypeScript" },
     { "id": "angular", "release": "v2", "status": "planned", "technology": "Angular", "language": "TypeScript" },
     { "id": "sveltekit", "release": "v2", "status": "planned", "technology": "SvelteKit", "language": "TypeScript" }

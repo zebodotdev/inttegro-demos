@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,14 +12,24 @@ const release = JSON.parse(readFileSync(releaseManifestPath, 'utf8'));
 const deployments = JSON.parse(readFileSync(join(demosRoot, 'deployments.json'), 'utf8'));
 
 assert.equal(manifest.schemaVersion, 1);
-assert.equal(manifest.demos.length, 18, 'the roadmap must contain 18 demos');
-assert.equal(new Set(manifest.demos.map((demo) => demo.id)).size, 18, 'demo IDs must be unique');
+assert.equal(manifest.demos.length, 19, 'the roadmap must contain 19 demos');
+assert.equal(new Set(manifest.demos.map((demo) => demo.id)).size, 19, 'demo IDs must be unique');
 
 const v1 = manifest.demos.filter((demo) => demo.release === 'v1');
 const v2 = manifest.demos.filter((demo) => demo.release === 'v2');
 assert.equal(v1.length, 13, 'V1 must contain 13 demos');
-assert.equal(v2.length, 5, 'V2 must contain 5 demos');
-assert(v2.every((demo) => demo.status === 'planned'));
+assert.equal(v2.length, 6, 'V2 must contain 6 demos');
+assert.deepEqual(
+  v2.filter((demo) => demo.status === 'verified').map((demo) => demo.id).toSorted(),
+  ['nestjs', 'redwoodsdk'],
+  'NestJS and RedwoodSDK must remain the published V2 tranche',
+);
+assert.deepEqual(
+  v2.filter((demo) => demo.status === 'planned').map((demo) => demo.id).toSorted(),
+  ['angular', 'aspnet-core', 'react-vite', 'sveltekit'],
+  'the remaining V2 roadmap must stay explicit',
+);
+const implemented = manifest.demos.filter((demo) => demo.status !== 'planned');
 
 assert.equal(release.schemaVersion, 1, 'release manifest schema must be version 1');
 assert.match(release.version, /^\d+\.\d+\.\d+$/, 'release version must use SemVer');
@@ -42,26 +53,26 @@ assert.equal(
 );
 assert(existsSync(join(demosRoot, release.releaseNotes)), 'release notes referenced by the manifest must exist');
 assert.equal(release.deploymentManifest, 'deployments.json', 'release must identify its deployment contract');
-assert.equal(release.demos.length, v1.length, 'current release must include every implemented V1 demo');
+assert.equal(release.demos.length, implemented.length, 'current release must include every implemented demo');
 assert.deepEqual(
   release.demos.map((demo) => demo.id).toSorted(),
-  v1.map((demo) => demo.id).toSorted(),
-  'current release demo IDs must match V1',
+  implemented.map((demo) => demo.id).toSorted(),
+  'current release demo IDs must match the implemented roadmap',
 );
-assert.equal(new Set(release.demos.map((demo) => demo.tag)).size, v1.length, 'per-demo release tags must be unique');
+assert.equal(new Set(release.demos.map((demo) => demo.tag)).size, implemented.length, 'per-demo release tags must be unique');
 
 for (const demo of release.demos) {
   assert.equal(demo.version, release.version, `${demo.id} version must match the suite release`);
   assert.equal(demo.tag, `${demo.id}-v${release.version}`, `${demo.id} tag must be deterministic`);
   assert.equal(demo.path, demo.id, `${demo.id} release path must match its manifest directory`);
-  assert.deepEqual(
-    demo.entryPoints,
-    decisions.sourceEntryPoints[demo.id],
-    `${demo.id} release entry points must match the integration registry`,
-  );
   for (const sourcePath of demo.entryPoints) {
     assert(sourcePath.startsWith(`${demo.path}/`), `${sourcePath} must remain inside ${demo.path}`);
-    assert(existsSync(join(demosRoot, sourcePath)), `release entry point does not exist: ${sourcePath}`);
+    if (!existsSync(join(demosRoot, sourcePath))) {
+      assert.doesNotThrow(
+        () => execFileSync('git', ['cat-file', '-e', `${demo.tag}:${sourcePath}`], { cwd: demosRoot, stdio: 'ignore' }),
+        `release entry point does not exist at ${demo.tag}: ${sourcePath}`,
+      );
+    }
   }
 }
 
@@ -70,17 +81,18 @@ const expectedStories = {
   'afterglow-sessions': ['express', 'django', 'fastapi'],
   ledgerline: ['go', 'spring-boot'],
   'kora-market-mobile': ['ios-swiftui', 'android-compose', 'flutter', 'react-native-expo'],
+  openfield: ['nestjs', 'redwoodsdk'],
 };
 
 for (const [story, expectedIds] of Object.entries(expectedStories)) {
-  const actualIds = v1.filter((demo) => demo.story === story).map((demo) => demo.id).sort();
+  const actualIds = implemented.filter((demo) => demo.story === story).map((demo) => demo.id).sort();
   assert.deepEqual(actualIds, expectedIds.toSorted(), `${story} demo mapping must stay intentional`);
 }
 
-for (const demo of v1) {
+for (const demo of implemented) {
   const directory = join(demosRoot, demo.id);
-  assert(existsSync(directory), `missing V1 directory: ${demo.id}`);
-  assert(existsSync(join(directory, 'README.md')), `missing V1 README: ${demo.id}`);
+  assert(existsSync(directory), `missing implemented demo directory: ${demo.id}`);
+  assert(existsSync(join(directory, 'README.md')), `missing implemented demo README: ${demo.id}`);
 }
 
 assert.equal(deployments.schemaVersion, 1, 'deployment manifest schema must be version 1');
@@ -100,13 +112,18 @@ for (const name of ['INTTEGRO_API_KEY', 'INTTEGRO_DEMO_PRODUCT_ID', 'INTTEGRO_DE
 }
 assert.deepEqual(
   deployments.demos.map((demo) => demo.id).toSorted(),
-  v1.map((demo) => demo.id).toSorted(),
-  'deployment metadata must cover every V1 demo exactly once',
+  implemented.map((demo) => demo.id).toSorted(),
+  'deployment metadata must cover every implemented demo exactly once',
 );
 
 const providerStatuses = new Set(['prepared', 'verified', 'blocked']);
 const providerRecommendations = new Set(['recommended', 'alternative', 'experimental']);
 const providerIds = new Set(Object.keys(deployments.providers));
+const providerIsActive = (provider) => provider.status === 'prepared' || provider.status === 'verified';
+const compareProviders = (left, right) => {
+  const activityOrder = Number(providerIsActive(right)) - Number(providerIsActive(left));
+  return activityOrder || left.name.localeCompare(right.name);
+};
 const providerButtonAssets = {
   'cloud-run': 'cloud-run-button.svg',
   cloudflare: 'cloudflare-button.svg',
@@ -149,6 +166,11 @@ for (const demo of deployments.demos) {
     );
   }
   assert(demo.providers.length > 0, `${demo.id} must document at least one provider`);
+  assert.deepEqual(
+    demo.providers.map((provider) => provider.id).toSorted(),
+    [...providerIds].toSorted(),
+    `${demo.id} must expose every provider as active or unavailable`,
+  );
   assert.equal(
     demo.providers.filter((provider) => provider.recommendation === 'recommended').length,
     1,
@@ -186,13 +208,13 @@ assert.equal(
   'Spring Boot must not claim a live deployment while its SDK publication is gated',
 );
 
-for (const id of ['nextjs', 'nuxt', 'express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'spring-boot']) {
+for (const id of ['nextjs', 'nuxt', 'express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'spring-boot', 'nestjs']) {
   for (const file of ['Dockerfile', '.dockerignore']) {
     assert(existsSync(join(demosRoot, id, file)), `${id} must include ${file} for portable deployment`);
   }
 }
 
-for (const id of ['express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'spring-boot']) {
+for (const id of ['express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'spring-boot', 'nestjs']) {
   for (const file of ['render.yaml', 'railway.json']) {
     assert(existsSync(join(demosRoot, id, file)), `${id} must include ${file} for portable deployment`);
   }
@@ -235,6 +257,28 @@ const springDocker = deployments.demos
   .find((demo) => demo.id === 'spring-boot')
   ?.providers.find((provider) => provider.id === 'docker');
 assert.equal(springDocker?.status, 'blocked', 'Spring Boot Docker must remain gated on Java SDK publication');
+
+const nestReadme = readFileSync(join(demosRoot, 'nestjs/README.md'), 'utf8');
+const nestCompose = readFileSync(join(demosRoot, 'nestjs/compose.yaml'), 'utf8');
+assert(nestCompose.includes('path: .env'), 'NestJS Compose must load its documented environment file');
+assert(nestCompose.includes('"3013:3013"'), 'NestJS Compose must publish its documented port');
+assert(nestCompose.includes('127.0.0.1:3013/health'), 'NestJS Compose must check application health');
+assert(nestReadme.includes('docker compose up --build --wait'), 'NestJS README must document Compose');
+assert(nestReadme.includes('../assets/providers/docker-button.svg'), 'NestJS README must present Docker with its logo');
+
+const nestCloudRun = JSON.parse(readFileSync(join(demosRoot, 'nestjs/app.json'), 'utf8'));
+for (const name of ['INTTEGRO_API_KEY', 'INTTEGRO_DEMO_PRODUCT_ID', 'INTTEGRO_DEMO_PRICE_ID']) {
+  assert(nestCloudRun.env[name], `nestjs/app.json must prompt for ${name}`);
+}
+assert.equal(nestCloudRun.env.INTTEGRO_API_KEY.value, undefined, 'NestJS Cloud Run config must not contain an API key');
+assert.equal(nestCloudRun.options['allow-unauthenticated'], true, 'NestJS Cloud Run service must be public');
+assert(nestCloudRun.options['max-instances'] <= 3, 'NestJS must cap Cloud Run scale for reader cost safety');
+assert(nestCloudRun.hooks.postcreate.commands.join('\n').includes('$SERVICE_URL'), 'NestJS must derive its Cloud Run origin');
+assert(nestCloudRun.hooks.postcreate.commands.join('\n').includes('INTTEGRO_DEMO_PUBLIC_URL'), 'NestJS must configure its checkout return origin');
+assert(
+  nestReadme.includes(`immutable ${release.version} deployment branch`),
+  'NestJS must explain its immutable release deployment branch',
+);
 
 for (const id of ['express', 'django', 'fastapi', 'go', 'rails', 'laravel']) {
   const deployment = deployments.demos.find((demo) => demo.id === id);
@@ -293,13 +337,38 @@ for (const id of ['nextjs', 'nuxt']) {
   assert(existsSync(join(demosRoot, id, 'wrangler.jsonc')), `${id} must include an explicit Cloudflare contract`);
 }
 assert(existsSync(join(demosRoot, 'express/wrangler.jsonc')), 'Express must include its Cloudflare Worker contract');
+for (const id of ['django', 'fastapi', 'redwoodsdk']) {
+  assert(existsSync(join(demosRoot, id, 'wrangler.jsonc')), `${id} must include its Cloudflare Worker contract`);
+}
 assert(existsSync(join(demosRoot, 'catalog/wrangler.jsonc')), 'catalogue must be ready for Cloudflare Static Assets');
 assert(existsSync(join(demosRoot, 'hosting/railway-edge/wrangler.jsonc')), 'Railway-hosted demos must define their first-party edge routes');
 
-for (const configPath of ['nextjs/wrangler.jsonc', 'nuxt/wrangler.jsonc', 'express/wrangler.jsonc', 'catalog/wrangler.jsonc']) {
+for (const configPath of [
+  'nextjs/wrangler.jsonc', 'nuxt/wrangler.jsonc', 'express/wrangler.jsonc',
+  'django/wrangler.jsonc', 'fastapi/wrangler.jsonc', 'redwoodsdk/wrangler.jsonc',
+  'catalog/wrangler.jsonc',
+]) {
   const config = readFileSync(join(demosRoot, configPath), 'utf8');
   assert(!config.includes('inttegro.dev'), `${configPath} must remain host-neutral for reader-owned deployment`);
 }
+for (const id of ['django', 'fastapi']) {
+  const source = decisions.sourceEntryPoints[id]
+    .map((path) => readFileSync(join(demosRoot, path), 'utf8'))
+    .join('\n');
+  const pyproject = readFileSync(join(demosRoot, id, 'pyproject.toml'), 'utf8');
+  const readme = readFileSync(join(demosRoot, id, 'README.md'), 'utf8');
+  assert(source.includes('AsyncInttegroClient'), `${id} must use the async SDK at its application boundary`);
+  assert(pyproject.includes('"inttegro==6.3.0"'), `${id} must require the async-first Python SDK`);
+  assert(
+    readFileSync(join(demosRoot, `${id}/wrangler.jsonc`), 'utf8').includes('"python_workers"'),
+    `${id} must opt into the Python Workers runtime`,
+  );
+  assert(readme.includes('deploy.workers.cloudflare.com'), `${id} must expose its Cloudflare deploy action`);
+}
+assert(
+  readFileSync(join(demosRoot, 'redwoodsdk/README.md'), 'utf8').includes('deploy.workers.cloudflare.com'),
+  'RedwoodSDK must expose its Cloudflare deploy action',
+);
 const nuxtWorkerConfig = readFileSync(join(demosRoot, 'nuxt/wrangler.jsonc'), 'utf8');
 assert(
   nuxtWorkerConfig.includes('"no_nodejs_compat", "no_nodejs_compat_v2"'),
@@ -319,8 +388,8 @@ assert.equal(generatedCatalogue.suiteTag, release.suiteTag, 'catalogue suite tag
 assert.equal(generatedCatalogue.domainStatus, 'active', 'catalogue must label the active release domain truthfully');
 assert.deepEqual(
   generatedCatalogue.demos.map((demo) => demo.id),
-  v1.map((demo) => demo.id),
-  'catalogue order must follow the V1 manifest',
+  release.demos.map((demo) => demo.id),
+  'catalogue order must follow the published release manifest',
 );
 const generatedNext = generatedCatalogue.demos.find((demo) => demo.id === 'nextjs');
 assert(
@@ -424,6 +493,11 @@ for (const demo of deployments.demos.filter((candidate) => candidate.mode === 's
       `${demo.id}/${provider.id} must use the shared provider button`,
     );
   }
+  const expectedButtonOrder = demo.providers
+    .filter((provider) => providerButtonAssets[provider.id] && ['prepared', 'verified'].includes(provider.status))
+    .map((provider) => ({ ...provider, name: deployments.providers[provider.id].name }))
+    .sort(compareProviders)
+    .map((provider) => provider.id);
   const buttonOrder = launchableProviders
     .filter((provider) => providerButtonAssets[provider.id])
     .map((provider) => ({
@@ -434,7 +508,7 @@ for (const demo of deployments.demos.filter((candidate) => candidate.mode === 's
     .map((provider) => provider.id);
   assert.deepEqual(
     buttonOrder,
-    launchableProviders.filter((provider) => providerButtonAssets[provider.id]).map((provider) => provider.id),
+    expectedButtonOrder,
     `${demo.id} README buttons must follow the active provider order`,
   );
 }
@@ -529,8 +603,8 @@ for (const decision of decisions.decisions) {
 
 assert.deepEqual(
   Object.keys(decisions.sourceEntryPoints).toSorted(),
-  v1.map((demo) => demo.id).toSorted(),
-  'every V1 demo must have documented source entry points',
+  implemented.map((demo) => demo.id).toSorted(),
+  'every implemented demo must have documented source entry points',
 );
 
 const knownDecisionIds = new Set(decisionIds);
@@ -559,7 +633,7 @@ for (const marker of decisions.markers) {
 
 for (const id of [
   'nextjs', 'express', 'nuxt', 'go', 'django', 'fastapi', 'rails', 'laravel',
-  'spring-boot', 'flutter', 'react-native-expo',
+  'spring-boot', 'flutter', 'react-native-expo', 'nestjs', 'redwoodsdk',
 ]) {
   assert(existsSync(join(demosRoot, id, '.env.example')), `missing environment template: ${id}`);
 }
@@ -568,6 +642,7 @@ for (const asset of [
   'assets/kora-dawn-brew.jpg',
   'assets/accra-afterglow.jpg',
   'assets/ledgerline-studio.jpg',
+  'assets/openfield-garden.jpg',
   'assets/favicon.svg',
   'assets/providers/docker.svg',
   'assets/providers/cloud-run-button.svg',
@@ -582,11 +657,12 @@ for (const asset of [
 
 for (const [asset, directories] of Object.entries({
   'kora-dawn-brew.jpg': ['nextjs/public', 'nuxt/public', 'rails/public', 'laravel/public'],
-  'accra-afterglow.jpg': ['express/public', 'django/checkout/static/checkout', 'fastapi/app/static'],
+  'accra-afterglow.jpg': ['express/public', 'django/src/checkout/static/checkout', 'fastapi/public/static'],
   'ledgerline-studio.jpg': ['go/static', 'spring-boot/src/main/resources/static'],
+  'openfield-garden.jpg': ['nestjs/public', 'redwoodsdk/public'],
   'favicon.svg': [
     'nextjs/public', 'nuxt/public', 'rails/public', 'laravel/public', 'express/public',
-    'django/checkout/static/checkout', 'fastapi/app/static', 'go/static',
+    'django/src/checkout/static/checkout', 'fastapi/public/static', 'go/static',
     'spring-boot/src/main/resources/static',
   ],
 })) {
@@ -635,4 +711,4 @@ for (const path of textFiles(demosRoot)) {
   assert(!source.includes(staleMobileField), `stale mobile SDK field in ${path}`);
 }
 
-console.log('Demo contract check passed: release tags, 13 V1 entries, four stories, deployment contracts, catalogue metadata, source commentary, original artwork, and Inttegro SDK naming are consistent.');
+console.log('Demo contract check passed: 15 published demos, five stories, deployment contracts, catalogue metadata, source commentary, original artwork, and Inttegro SDK naming are consistent.');

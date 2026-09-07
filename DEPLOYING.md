@@ -59,9 +59,12 @@ generated there. They are never shared Inttegro credentials.
 
 ## Docker and Compose
 
-Every server demo includes a production Dockerfile. Next.js uses its standalone
-Node output, Nuxt ships only Nitro's production output, and the other
-frameworks retain their idiomatic minimal runtimes. Native demos are device
+Every container-capable server demo includes a production Dockerfile. Next.js
+uses its standalone Node output, Nuxt ships only Nitro's production output,
+and the other container targets retain their idiomatic minimal runtimes.
+RedwoodSDK is intentionally excluded: its server-first application targets the
+Cloudflare Workers runtime directly, so presenting a generic Node container as
+equivalent would misrepresent the framework. Native demos are device
 applications rather than servers; deploy their shared Next.js companion
 backend when a reachable container endpoint is needed.
 
@@ -82,12 +85,16 @@ those platform-specific steps.
 ## Provider choices
 
 - **Cloudflare Workers** is prepared for Next.js through OpenNext, for Nuxt
-  through Nitro's Cloudflare preset, and for Express through Cloudflare's Node
-  HTTP adapter. These variants preserve the framework's application and SDK
-  boundary; the adapter exists only in the deployment entry point.
+  through Nitro's Cloudflare preset, for Express through Cloudflare's Node
+  HTTP adapter, and natively for RedwoodSDK, FastAPI, and Django. FastAPI and
+  Django use the async-first Python SDK; Django's ASGI
+  adapter keeps framework hooks that are known to be non-blocking inside the
+  single-threaded Worker runtime. These variants preserve the framework's
+  application and SDK boundary; adapters exist only at deployment boundaries.
 - **Vercel** is prepared for Next.js and Nuxt, where the platform can retain the
   framework-native build and routing model.
-- **Render** uses a Dockerfile and per-demo Blueprint. The Blueprint disables
+- **Render** uses a Dockerfile and per-demo Blueprint, including NestJS. The
+  Blueprint disables
   automatic deploys so a reader's released example does not silently begin
   following upstream changes.
 - **Railway** uses the same Dockerfile plus restart policy and, except for
@@ -100,10 +107,11 @@ those platform-specific steps.
 - **Google Cloud Run** uses the release Dockerfile and a checked-in `app.json`
   contract. The button prompts for the Inttegro key and catalog IDs, caps the
   service at three instances, and writes the provider-assigned HTTPS origin
-  back to `INTTEGRO_DEMO_PUBLIC_URL` after creation. Release 1.4.1 makes the
-  contracts launchable for Express, Django, FastAPI, Go, Rails, and Laravel
+  back to `INTTEGRO_DEMO_PUBLIC_URL` after creation. Release 1.5.0 makes the
+  contracts launchable for Express, Django, FastAPI, Go, Rails, Laravel, and NestJS
   from immutable deployment branches. They remain `prepared` until each button
-  passes the fresh-account verification gates below.
+  passes the fresh-account verification gates below. NestJS has the same
+  same cost-capped contract.
 - **AWS App Runner** is displayed as unavailable rather than linked to a
   misleading generic console page. AWS stopped accepting new App Runner
   customers on March 31, 2026, source deployment requires an account-specific
@@ -117,11 +125,11 @@ public example; it does not make that provider reader-launchable. Provider
 buttons continue to follow the `providers` list and require a prepared manifest
 or a verified public template.
 
-Python Workers supports Django and FastAPI, but the current Inttegro Python SDK
-uses a synchronous `urllib` transport. Cloudflare documents asynchronous HTTP
-clients as the supported outbound path for Python Workers. Rewriting the demo to
-bypass the official SDK would undermine its purpose, so Django and FastAPI use
-containers on Render or Railway until the SDK provides a compatible transport.
+Release 1.5.0 replaces Django and FastAPI's synchronous network boundary with
+`AsyncInttegroClient`, moves both applications to ASGI-native handlers, and
+includes host-neutral Worker and static-asset configuration. Both Worker builds
+and their health, page, static asset, validation, and safe configuration-error
+paths have passed local workerd runtime checks.
 
 Spring Boot remains remote-deployment gated until Java SDK 5.0.0 is public. The
 Dockerfile and provider manifests are checked in so the gate can be removed and
@@ -134,9 +142,9 @@ expect their configuration at repository root, so releases also publish one
 generated subtree branch per deployable demo:
 
 ```text
-deploy-nextjs-v1.4.1
-deploy-express-v1.4.1
-deploy-nuxt-v1.4.1
+deploy-nextjs-v1.5.0
+deploy-express-v1.5.0
+deploy-nuxt-v1.5.0
 ...
 ```
 
@@ -149,7 +157,7 @@ or reused. Studio permalinks continue to use the signed per-demo tag.
 Run the branch preparation script only after the suite tag exists:
 
 ```sh
-node scripts/prepare-deploy-refs.mjs v1.4.1
+node scripts/prepare-deploy-refs.mjs v1.5.0
 ```
 
 The script creates local branches but never pushes them. Inspect each branch,

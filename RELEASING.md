@@ -16,30 +16,38 @@ Releases use Semantic Versioning:
 - increment **patch** for backward-compatible fixes, documentation corrections,
   dependency maintenance, and UI refinements.
 
-All V1 demos currently release together. A suite release `v1.0.0` therefore has
-one per-demo alias for every implemented demo:
+All published demos currently release together. A suite release therefore has
+one per-demo alias for every included implementation. Release 1.5.0 contains:
 
 ```text
-v1.0.0
-nextjs-v1.0.0
-express-v1.0.0
-nuxt-v1.0.0
-go-v1.0.0
-django-v1.0.0
-fastapi-v1.0.0
-rails-v1.0.0
-laravel-v1.0.0
-spring-boot-v1.0.0
-ios-swiftui-v1.0.0
-android-compose-v1.0.0
-flutter-v1.0.0
-react-native-expo-v1.0.0
+v1.5.0
+nextjs-v1.5.0
+express-v1.5.0
+nuxt-v1.5.0
+go-v1.5.0
+django-v1.5.0
+fastapi-v1.5.0
+rails-v1.5.0
+laravel-v1.5.0
+spring-boot-v1.5.0
+ios-swiftui-v1.5.0
+android-compose-v1.5.0
+flutter-v1.5.0
+react-native-expo-v1.5.0
+nestjs-v1.5.0
+redwoodsdk-v1.5.0
 ```
 
 Every tag in a suite release points to the exact same commit. Per-demo aliases
 are names, not partial-repository snapshots: cloning any tag still produces the
 complete repository. A future independently shipped demo may advance its own
 alias, but must record that mapping in a new release manifest.
+
+`manifest.json.currentRelease`, `deployments.json`, the generated catalogue,
+and Studio always describe the latest published suite. Work intended for the
+next suite may be recorded under `manifest.json.nextRelease`, but that field is
+planning metadata only. Do not advance the public release fields or enable a
+provider button until its signed tags and immutable deployment refs exist.
 
 ## Stable Studio permalinks
 

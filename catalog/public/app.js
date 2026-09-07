@@ -21,6 +21,7 @@ const storyDescriptions = {
   'afterglow-sessions': 'An editorial event page with a validated ticket reservation flow.',
   ledgerline: 'A focused client invoice portal with an auditable settlement path.',
   'kora-market-mobile': 'A native product journey that presents the Inttegro payment sheet.',
+  openfield: 'A community campaign with trusted contribution tiers and immediate checkout.',
 };
 
 const storyImages = {
@@ -28,6 +29,7 @@ const storyImages = {
   'afterglow-sessions': '/assets/accra-afterglow.jpg',
   ledgerline: '/assets/ledgerline-studio.jpg',
   'kora-market-mobile': '/assets/kora-dawn-brew.jpg',
+  openfield: '/assets/openfield-garden.jpg',
 };
 
 let data;

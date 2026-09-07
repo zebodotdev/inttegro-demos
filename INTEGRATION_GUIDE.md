@@ -31,8 +31,8 @@ can index them in every language.
 
 ## Architecture A: hosted checkout for web applications
 
-Next.js, Nuxt, Express, Django, FastAPI, Rails, Laravel, Go, and Spring Boot use
-the same server-owned flow:
+Next.js, Nuxt, Express, Django, FastAPI, Rails, Laravel, Go, Spring Boot,
+NestJS, and RedwoodSDK use the same server-owned flow:
 
 ```text
 browser form
@@ -84,6 +84,34 @@ Canonical documentation:
 - [API keys](https://studio.inttegro.com/keys)
 - [Inttegro SDKs](https://studio.inttegro.com/sdks)
 
+### Match the client to the framework's concurrency model
+
+FastAPI, async Django views, and Python Workers use `AsyncInttegroClient` and
+await every resource operation. One application-lifetime client owns the HTTPX
+connection pool and is closed during framework shutdown. Calling the
+synchronous client from an async handler would block the event loop; wrapping
+it in a thread is not portable to runtimes such as Cloudflare Python Workers,
+which do not provide OS threads.
+
+The synchronous `InttegroClient` remains the correct choice for synchronous
+Django or Flask views, scripts, and jobs. Its continued availability is a
+compatibility boundary, not an invitation to mix both models in one request
+path. When an application injects its own async HTTP client, that pool remains
+application-owned and the application must close it.
+
+Cloudflare bindings also deserve an explicit adapter. FastAPI can receive its
+bindings in the ASGI scope. Django reads signing, allowed-host, and CSRF
+settings during initialization, so the Worker adapter applies those values
+before importing the ASGI application. The Django demo contains no ORM or
+blocking synchronous I/O; applications that do should follow Cloudflare's WSGI
+and storage guidance or use a container rather than copying its narrow inline
+framework-hook shim.
+
+Canonical documentation:
+
+- [Python SDK](https://studio.inttegro.com/sdks/python)
+- [SDK observability](https://studio.inttegro.com/sdk-observability)
+
 ### Make order creation replay-safe
 
 The browser generates one opaque `attempt_id` when it renders the checkout.
@@ -113,7 +141,8 @@ carts, bookings, invoices, or sales orders in their own system.
 
 The demos have no database, so they form a recognizable reference from the
 story name and the already validated checkout `attempt_id`: `KORA-…` for the
-storefronts, `AFTERGLOW-…` for ticketing, and `INV-2048-…` for Ledgerline. The
+storefronts, `AFTERGLOW-…` for ticketing, `INV-2048-…` for Ledgerline, and
+`OPENFIELD-…` for contributions. The
 suffix is normalized, bounded to keep the complete value below Inttegro's
 80-character limit, and—critically—stable when the same request is retried.
 
