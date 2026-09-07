@@ -28,12 +28,12 @@ Cloud Run, Railway, and Render build the released Dockerfile. The Railway templa
 pinned to this release's deployment branch and exact commit.
 Cloudflare Python Workers is deliberately not offered yet: its outbound HTTP
 path is asynchronous, while Inttegro Python SDK 6.0.0 currently uses synchronous
-`urllib`. See [`DEPLOYING.md`](../DEPLOYING.md) for the compatibility decision.
+`urllib`. See [`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.3.0/DEPLOYING.md) for the compatibility decision.
 
 ## Understand the integration
 
 Start with [`app/checkout.py`](./app/checkout.py) for the typed Order request and
 safe error mapping, then read [`app/main.py`](./app/main.py) for the FastAPI
 handoff and verification boundary. The `INTTEGRO:*` comments map choices and
-alternatives to the shared [integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+alternatives to the shared [integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.3.0/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.3.0/integration-decisions.json).
