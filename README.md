@@ -20,10 +20,11 @@ no product or amount. Run `pytest` for the focused checks.
 
 ## Deploy your own
 
+[![Deploy to Cloud Run](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-fastapi-v1.3.0)
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/wk2B6a?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=fastapi)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-fastapi-v1.2.3)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-fastapi-v1.3.0)
 
-Railway and Render build the released Dockerfile. The Railway template is
+Cloud Run, Railway, and Render build the released Dockerfile. The Railway template is
 pinned to this release's deployment branch and exact commit.
 Cloudflare Python Workers is deliberately not offered yet: its outbound HTTP
 path is asynchronous, while Inttegro Python SDK 6.0.0 currently uses synchronous
