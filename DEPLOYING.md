@@ -78,10 +78,10 @@ generated there. They are never shared Inttegro credentials.
 - **Google Cloud Run** uses the release Dockerfile and a checked-in `app.json`
   contract. The button prompts for the Inttegro key and catalog IDs, caps the
   service at three instances, and writes the provider-assigned HTTPS origin
-  back to `INTTEGRO_DEMO_PUBLIC_URL` after creation. These contracts are staged
-  for Express, Django, FastAPI, Go, Rails, and Laravel. They remain disabled in
-  the `v1.2.3` catalogue because immutable deployment refs cannot acquire new
-  files after publication; the next demo release will make them launchable.
+  back to `INTTEGRO_DEMO_PUBLIC_URL` after creation. Release 1.3.0 makes the
+  contracts launchable for Express, Django, FastAPI, Go, Rails, and Laravel
+  from immutable deployment branches. They remain `prepared` until each button
+  passes the fresh-account verification gates below.
 - **AWS App Runner** is displayed as unavailable rather than linked to a
   misleading generic console page. AWS stopped accepting new App Runner
   customers on March 31, 2026, source deployment requires an account-specific
@@ -112,9 +112,9 @@ expect their configuration at repository root, so releases also publish one
 generated subtree branch per deployable demo:
 
 ```text
-deploy-nextjs-v1.2.3
-deploy-express-v1.2.3
-deploy-nuxt-v1.2.3
+deploy-nextjs-v1.3.0
+deploy-express-v1.3.0
+deploy-nuxt-v1.3.0
 ...
 ```
 
@@ -127,7 +127,7 @@ or reused. Studio permalinks continue to use the signed per-demo tag.
 Run the branch preparation script only after the suite tag exists:
 
 ```sh
-node scripts/prepare-deploy-refs.mjs v1.2.3
+node scripts/prepare-deploy-refs.mjs v1.3.0
 ```
 
 The script creates local branches but never pushes them. Inspect each branch,

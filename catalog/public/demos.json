@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "https://github.com/zebodotdev/inttegro-demos",
-  "releaseVersion": "1.2.3",
-  "suiteTag": "v1.2.3",
+  "releaseVersion": "1.3.0",
+  "suiteTag": "v1.3.0",
   "domainStatus": "active",
   "demos": [
     {
@@ -19,8 +19,8 @@
         "url": "https://nextjs-demo.inttegro.dev"
       },
       "hostname": "nextjs-demo.inttegro.dev",
-      "tag": "nextjs-v1.2.3",
-      "deployRef": "deploy-nextjs-v1.2.3",
+      "tag": "nextjs-v1.3.0",
+      "deployRef": "deploy-nextjs-v1.3.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -80,7 +80,7 @@
           "id": "cloud-run",
           "recommendation": "alternative",
           "status": "blocked",
-          "reason": "The v1.2.3 Next.js deployment artifact does not include a tested portable container.",
+          "reason": "The v1.3.0 Next.js deployment artifact does not include a tested portable container.",
           "name": "Cloud Run",
           "icon": "/assets/providers/cloud-run.svg",
           "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
@@ -101,8 +101,8 @@
         "url": "https://express-demo.inttegro.dev"
       },
       "hostname": "express-demo.inttegro.dev",
-      "tag": "express-v1.2.3",
-      "deployRef": "deploy-express-v1.2.3",
+      "tag": "express-v1.3.0",
+      "deployRef": "deploy-express-v1.3.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -126,6 +126,15 @@
         }
       ],
       "providers": [
+        {
+          "id": "cloud-run",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "express/app.json",
+          "name": "Cloud Run",
+          "icon": "/assets/providers/cloud-run.svg",
+          "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
+        },
         {
           "id": "cloudflare",
           "recommendation": "alternative",
@@ -162,16 +171,6 @@
           "name": "AWS App Runner",
           "icon": "/assets/providers/app-runner.svg",
           "documentation": "https://docs.aws.amazon.com/apprunner/latest/dg/what-is-apprunner.html"
-        },
-        {
-          "id": "cloud-run",
-          "recommendation": "alternative",
-          "status": "blocked",
-          "config": "express/app.json",
-          "reason": "The Cloud Run contract is prepared on main but is not part of the immutable v1.2.3 deployment artifact.",
-          "name": "Cloud Run",
-          "icon": "/assets/providers/cloud-run.svg",
-          "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
         }
       ]
     },
@@ -189,8 +188,8 @@
         "url": "https://nuxt-demo.inttegro.dev"
       },
       "hostname": "nuxt-demo.inttegro.dev",
-      "tag": "nuxt-v1.2.3",
-      "deployRef": "deploy-nuxt-v1.2.3",
+      "tag": "nuxt-v1.3.0",
+      "deployRef": "deploy-nuxt-v1.3.0",
       "environment": [
         {
           "name": "NUXT_INTTEGRO_API_KEY",
@@ -245,7 +244,7 @@
           "id": "cloud-run",
           "recommendation": "alternative",
           "status": "blocked",
-          "reason": "The v1.2.3 Nuxt deployment artifact does not include a tested portable container.",
+          "reason": "The v1.3.0 Nuxt deployment artifact does not include a tested portable container.",
           "name": "Cloud Run",
           "icon": "/assets/providers/cloud-run.svg",
           "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
@@ -266,8 +265,8 @@
         "url": "https://go-demo.inttegro.dev"
       },
       "hostname": "go-demo.inttegro.dev",
-      "tag": "go-v1.2.3",
-      "deployRef": "deploy-go-v1.2.3",
+      "tag": "go-v1.3.0",
+      "deployRef": "deploy-go-v1.3.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -291,6 +290,15 @@
         }
       ],
       "providers": [
+        {
+          "id": "cloud-run",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "go/app.json",
+          "name": "Cloud Run",
+          "icon": "/assets/providers/cloud-run.svg",
+          "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
+        },
         {
           "id": "railway",
           "recommendation": "recommended",
@@ -318,16 +326,6 @@
           "name": "AWS App Runner",
           "icon": "/assets/providers/app-runner.svg",
           "documentation": "https://docs.aws.amazon.com/apprunner/latest/dg/what-is-apprunner.html"
-        },
-        {
-          "id": "cloud-run",
-          "recommendation": "alternative",
-          "status": "blocked",
-          "config": "go/app.json",
-          "reason": "The Cloud Run contract is prepared on main but is not part of the immutable v1.2.3 deployment artifact.",
-          "name": "Cloud Run",
-          "icon": "/assets/providers/cloud-run.svg",
-          "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
         }
       ]
     },
@@ -345,8 +343,8 @@
         "url": "https://django-demo.inttegro.dev"
       },
       "hostname": "django-demo.inttegro.dev",
-      "tag": "django-v1.2.3",
-      "deployRef": "deploy-django-v1.2.3",
+      "tag": "django-v1.3.0",
+      "deployRef": "deploy-django-v1.3.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -386,6 +384,15 @@
       ],
       "providers": [
         {
+          "id": "cloud-run",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "django/app.json",
+          "name": "Cloud Run",
+          "icon": "/assets/providers/cloud-run.svg",
+          "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
+        },
+        {
           "id": "railway",
           "recommendation": "recommended",
           "status": "prepared",
@@ -414,16 +421,6 @@
           "documentation": "https://docs.aws.amazon.com/apprunner/latest/dg/what-is-apprunner.html"
         },
         {
-          "id": "cloud-run",
-          "recommendation": "alternative",
-          "status": "blocked",
-          "config": "django/app.json",
-          "reason": "The Cloud Run contract is prepared on main but is not part of the immutable v1.2.3 deployment artifact.",
-          "name": "Cloud Run",
-          "icon": "/assets/providers/cloud-run.svg",
-          "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
-        },
-        {
           "id": "cloudflare",
           "recommendation": "experimental",
           "status": "blocked",
@@ -448,8 +445,8 @@
         "url": "https://fastapi-demo.inttegro.dev"
       },
       "hostname": "fastapi-demo.inttegro.dev",
-      "tag": "fastapi-v1.2.3",
-      "deployRef": "deploy-fastapi-v1.2.3",
+      "tag": "fastapi-v1.3.0",
+      "deployRef": "deploy-fastapi-v1.3.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -473,6 +470,15 @@
         }
       ],
       "providers": [
+        {
+          "id": "cloud-run",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "fastapi/app.json",
+          "name": "Cloud Run",
+          "icon": "/assets/providers/cloud-run.svg",
+          "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
+        },
         {
           "id": "railway",
           "recommendation": "recommended",
@@ -502,16 +508,6 @@
           "documentation": "https://docs.aws.amazon.com/apprunner/latest/dg/what-is-apprunner.html"
         },
         {
-          "id": "cloud-run",
-          "recommendation": "alternative",
-          "status": "blocked",
-          "config": "fastapi/app.json",
-          "reason": "The Cloud Run contract is prepared on main but is not part of the immutable v1.2.3 deployment artifact.",
-          "name": "Cloud Run",
-          "icon": "/assets/providers/cloud-run.svg",
-          "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
-        },
-        {
           "id": "cloudflare",
           "recommendation": "experimental",
           "status": "blocked",
@@ -536,8 +532,8 @@
         "url": "https://rails-demo.inttegro.dev"
       },
       "hostname": "rails-demo.inttegro.dev",
-      "tag": "rails-v1.2.3",
-      "deployRef": "deploy-rails-v1.2.3",
+      "tag": "rails-v1.3.0",
+      "deployRef": "deploy-rails-v1.3.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -567,6 +563,15 @@
       ],
       "providers": [
         {
+          "id": "cloud-run",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "rails/app.json",
+          "name": "Cloud Run",
+          "icon": "/assets/providers/cloud-run.svg",
+          "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
+        },
+        {
           "id": "railway",
           "recommendation": "recommended",
           "status": "prepared",
@@ -593,16 +598,6 @@
           "name": "AWS App Runner",
           "icon": "/assets/providers/app-runner.svg",
           "documentation": "https://docs.aws.amazon.com/apprunner/latest/dg/what-is-apprunner.html"
-        },
-        {
-          "id": "cloud-run",
-          "recommendation": "alternative",
-          "status": "blocked",
-          "config": "rails/app.json",
-          "reason": "The Cloud Run contract is prepared on main but is not part of the immutable v1.2.3 deployment artifact.",
-          "name": "Cloud Run",
-          "icon": "/assets/providers/cloud-run.svg",
-          "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
         }
       ]
     },
@@ -620,8 +615,8 @@
         "url": "https://laravel-demo.inttegro.dev"
       },
       "hostname": "laravel-demo.inttegro.dev",
-      "tag": "laravel-v1.2.3",
-      "deployRef": "deploy-laravel-v1.2.3",
+      "tag": "laravel-v1.3.0",
+      "deployRef": "deploy-laravel-v1.3.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -651,6 +646,15 @@
       ],
       "providers": [
         {
+          "id": "cloud-run",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "laravel/app.json",
+          "name": "Cloud Run",
+          "icon": "/assets/providers/cloud-run.svg",
+          "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
+        },
+        {
           "id": "railway",
           "recommendation": "recommended",
           "status": "prepared",
@@ -677,16 +681,6 @@
           "name": "AWS App Runner",
           "icon": "/assets/providers/app-runner.svg",
           "documentation": "https://docs.aws.amazon.com/apprunner/latest/dg/what-is-apprunner.html"
-        },
-        {
-          "id": "cloud-run",
-          "recommendation": "alternative",
-          "status": "blocked",
-          "config": "laravel/app.json",
-          "reason": "The Cloud Run contract is prepared on main but is not part of the immutable v1.2.3 deployment artifact.",
-          "name": "Cloud Run",
-          "icon": "/assets/providers/cloud-run.svg",
-          "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
         }
       ]
     },
@@ -699,8 +693,8 @@
       "releaseStatus": "publication-gated",
       "mode": "server",
       "hostname": "spring-boot-demo.inttegro.dev",
-      "tag": "spring-boot-v1.2.3",
-      "deployRef": "deploy-spring-boot-v1.2.3",
+      "tag": "spring-boot-v1.3.0",
+      "deployRef": "deploy-spring-boot-v1.3.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -774,8 +768,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "ios-swiftui-demo.inttegro.dev",
-      "tag": "ios-swiftui-v1.2.3",
-      "deployRef": "deploy-ios-swiftui-v1.2.3",
+      "tag": "ios-swiftui-v1.3.0",
+      "deployRef": "deploy-ios-swiftui-v1.3.0",
       "environment": [],
       "providers": []
     },
@@ -789,8 +783,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "android-compose-demo.inttegro.dev",
-      "tag": "android-compose-v1.2.3",
-      "deployRef": "deploy-android-compose-v1.2.3",
+      "tag": "android-compose-v1.3.0",
+      "deployRef": "deploy-android-compose-v1.3.0",
       "environment": [],
       "providers": []
     },
@@ -804,8 +798,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "flutter-demo.inttegro.dev",
-      "tag": "flutter-v1.2.3",
-      "deployRef": "deploy-flutter-v1.2.3",
+      "tag": "flutter-v1.3.0",
+      "deployRef": "deploy-flutter-v1.3.0",
       "environment": [],
       "providers": []
     },
@@ -819,8 +813,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "react-native-expo-demo.inttegro.dev",
-      "tag": "react-native-expo-v1.2.3",
-      "deployRef": "deploy-react-native-expo-v1.2.3",
+      "tag": "react-native-expo-v1.3.0",
+      "deployRef": "deploy-react-native-expo-v1.3.0",
       "environment": [],
       "providers": []
     }

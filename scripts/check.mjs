@@ -177,6 +177,14 @@ for (const id of ['express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'spr
 }
 
 for (const id of ['express', 'django', 'fastapi', 'go', 'rails', 'laravel']) {
+  const deployment = deployments.demos.find((demo) => demo.id === id);
+  const provider = deployment.providers.find((candidate) => candidate.id === 'cloud-run');
+  assert(
+    ['prepared', 'verified'].includes(provider.status),
+    `${id}/cloud-run must be reader-launchable in the current release`,
+  );
+  assert.equal(provider.config, `${id}/app.json`, `${id}/cloud-run must reference its app.json contract`);
+
   const cloudRun = JSON.parse(readFileSync(join(demosRoot, id, 'app.json'), 'utf8'));
   for (const name of ['INTTEGRO_API_KEY', 'INTTEGRO_DEMO_PRODUCT_ID', 'INTTEGRO_DEMO_PRICE_ID']) {
     assert(cloudRun.env[name], `${id}/app.json must prompt for ${name}`);
@@ -188,6 +196,14 @@ for (const id of ['express', 'django', 'fastapi', 'go', 'rails', 'laravel']) {
   const postcreate = cloudRun.hooks?.postcreate?.commands?.join('\n') ?? '';
   assert(postcreate.includes('$SERVICE_URL'), `${id} must derive its Cloud Run public origin`);
   assert(postcreate.includes('INTTEGRO_DEMO_PUBLIC_URL'), `${id} must configure its checkout return origin`);
+
+  const readme = readFileSync(join(demosRoot, id, 'README.md'), 'utf8');
+  assert(
+    readme.includes(
+      `https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-${id}-v${release.version}`,
+    ),
+    `${id} README must launch Cloud Run from its immutable deployment ref`,
+  );
 }
 
 const djangoCloudRun = JSON.parse(readFileSync(join(demosRoot, 'django/app.json'), 'utf8'));

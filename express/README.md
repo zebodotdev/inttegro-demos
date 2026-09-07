@@ -19,14 +19,15 @@ focused unit tests.
 
 ## Deploy your own
 
+[![Deploy to Cloud Run](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-express-v1.3.0)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-express-v1.3.0)
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/MJF7nD?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=express)
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-express-v1.2.3)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-express-v1.2.3)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-express-v1.3.0)
 
 Cloudflare uses a separate Node HTTP adapter entry point; the ordinary Express
-application and Inttegro integration remain unchanged. Railway and Render build
-the released Dockerfile. The Railway template is pinned to this release's
-deployment branch and exact commit. See [`DEPLOYING.md`](../DEPLOYING.md).
+application and Inttegro integration remain unchanged. Cloud Run, Railway, and
+Render build the released Dockerfile. The deployment links target immutable
+release branches. See [`DEPLOYING.md`](../DEPLOYING.md).
 
 ## Understand the integration
 

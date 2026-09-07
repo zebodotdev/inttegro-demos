@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "currentRelease": {
-    "version": "1.2.3",
-    "suiteTag": "v1.2.3",
-    "manifest": "releases/v1.2.3.json"
+    "version": "1.3.0",
+    "suiteTag": "v1.3.0",
+    "manifest": "releases/v1.3.0.json"
   },
   "demos": [
     { "id": "nextjs", "release": "v1", "status": "verified", "story": "kora-market", "technology": "Next.js", "language": "TypeScript" },
