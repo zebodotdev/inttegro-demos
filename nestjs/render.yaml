@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: inttegro-demo-nestjs
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: INTTEGRO_API_KEY
+        sync: false
+      - key: INTTEGRO_DEMO_PRODUCT_ID
+        sync: false
+      - key: INTTEGRO_DEMO_PRICE_ID
+        sync: false
+      - key: INTTEGRO_DEMO_PUBLIC_URL
+        sync: false

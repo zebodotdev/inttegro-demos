@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    ports:
+      - "3013:3013"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PORT: "3013"
+      INTTEGRO_DEMO_PUBLIC_URL: "${INTTEGRO_DEMO_PUBLIC_URL:-http://localhost:3013}"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3013/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s

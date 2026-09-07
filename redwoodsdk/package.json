@@ -1,0 +1,53 @@
+{
+  "name": "inttegro-demo-redwoodsdk",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite dev",
+    "preview": "vite preview",
+    "deploy:cloudflare": "wrangler deploy",
+    "generate": "wrangler types --include-runtime false",
+    "types": "tsc --noEmit",
+    "test": "tsx --test test/*.test.ts",
+    "check": "npm run generate && npm run types && npm test && npm run build"
+  },
+  "dependencies": {
+    "@inttegro/inttegro-sdk": "8.2.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-server-dom-webpack": "19.2.8",
+    "rwsdk": "1.7.3"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.54.4",
+    "@cloudflare/workers-types": "5.20260907.1",
+    "@types/node": "24.10.1",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
+    "tsx": "4.23.13",
+    "typescript": "7.0.2",
+    "vite": "8.2.0",
+    "wrangler": "4.129.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "cloudflare": {
+    "bindings": {
+      "INTTEGRO_API_KEY": {
+        "description": "Create a dedicated API key in Inttegro Studio. This secret remains inside the Worker."
+      },
+      "INTTEGRO_DEMO_PRODUCT_ID": {
+        "description": "The active Openfield campaign Product ID resolved by the Worker."
+      },
+      "INTTEGRO_DEMO_PRICE_ID": {
+        "description": "The active GHS 50 Price ID belonging to the Openfield campaign Product."
+      },
+      "INTTEGRO_DEMO_PUBLIC_URL": {
+        "description": "Optional public origin for checkout completion and cancellation URLs."
+      }
+    }
+  }
+}
