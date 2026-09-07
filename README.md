@@ -25,12 +25,12 @@ the focused checks.
 
 Cloud Run, Railway, and Render build a small distroless image from the released
 multi-stage Dockerfile. The deployment links target immutable release refs. See
-[`DEPLOYING.md`](../DEPLOYING.md).
+[`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.3.0/DEPLOYING.md).
 
 ## Understand the integration
 
 [`main.go`](./main.go) keeps the complete integration deliberately visible:
 input validation, Order construction, hosted URL selection, safe errors,
 correlation, and the 303 handoff. Its `INTTEGRO:*` comments map choices and
-alternatives to the shared [integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+alternatives to the shared [integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.3.0/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.3.0/integration-decisions.json).
