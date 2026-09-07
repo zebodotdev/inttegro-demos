@@ -1,4 +1,3 @@
-import os
 import re
 from dataclasses import dataclass
 from urllib.parse import urlparse
@@ -136,28 +135,30 @@ def build_order_request(checkout: CheckoutInput, origin: str, product: CatalogSe
     )
 
 
-def create_hosted_checkout(checkout: CheckoutInput, origin: str) -> tuple[str, str]:
-    # INTTEGRO:SECURITY [server-api-key] Use a deployment secret manager in
-    # production and rotate the value there; do not serialize it into errors.
-    api_key = os.environ.get("INTTEGRO_API_KEY", "").strip()
-    if not api_key:
-        raise DemoError("configuration_error", "Set INTTEGRO_API_KEY on the server.")
-    product_id = os.environ.get("INTTEGRO_DEMO_PRODUCT_ID", "").strip()
-    price_id = os.environ.get("INTTEGRO_DEMO_PRICE_ID", "").strip()
+async def create_hosted_checkout(
+    checkout: CheckoutInput,
+    origin: str,
+    client: inttegro.AsyncInttegroClient,
+    product_id: str,
+    price_id: str,
+) -> tuple[str, str]:
+    # INTTEGRO:SECURITY [server-api-key] The view constructs this client from
+    # server runtime bindings. The secret never enters form data, templates,
+    # static files, logs, or a public error response.
     if not re.fullmatch(r"prod_[A-Za-z0-9]+", product_id) or not re.fullmatch(r"pr_[A-Za-z0-9]+", price_id):
         raise DemoError("configuration_error", "Set INTTEGRO_DEMO_PRODUCT_ID and INTTEGRO_DEMO_PRICE_ID on the server.")
     try:
-        # INTTEGRO:ALTERNATIVE [server-api-key] A long-running service can inject
-        # one startup-configured client for connection reuse and application-
-        # owned OpenTelemetry. Per-call construction keeps the demo local.
+        # INTTEGRO:DECISION [async-client] This Django view runs under ASGI and
+        # awaits every SDK network operation. The same ASGI application runs in
+        # Uvicorn containers and Cloudflare Workers. Traditional synchronous
+        # Django applications can continue to use InttegroClient instead.
         # https://studio.inttegro.com/sdk-observability
-        client = inttegro.InttegroClient(api_key=api_key)
         # INTTEGRO:FLOW [catalog-lookup] Fetch at checkout time so product
         # publication and price changes are observed. High-volume services can
         # add a short cache with explicit invalidation.
         # https://studio.inttegro.com/products
-        product = select_catalog_product(client.products.lookup(product_id), price_id)
-        order = client.orders.create(build_order_request(checkout, origin, product))
+        product = select_catalog_product(await client.products.lookup(product_id), price_id)
+        order = await client.orders.create(build_order_request(checkout, origin, product))
         # INTTEGRO:DECISION [returned-checkout-url] Use the response's URL. Do
         # not construct one from order.id and undocumented routing conventions.
         checkout_url = order.invoice.format.web.url

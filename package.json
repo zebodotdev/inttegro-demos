@@ -1,0 +1,37 @@
+{
+  "name": "inttegro-django-demo",
+  "private": true,
+  "scripts": {
+    "build": "uv run python manage.py collectstatic --noinput",
+    "dev:cloudflare": "npm run build && uv run pywrangler dev",
+    "deploy": "uv run pywrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.129.0"
+  },
+  "cloudflare": {
+    "bindings": {
+      "INTTEGRO_API_KEY": {
+        "description": "A dedicated server-side Inttegro API key from https://studio.inttegro.com/keys. Never expose it to browser code."
+      },
+      "INTTEGRO_DEMO_PRODUCT_ID": {
+        "description": "The active Afterglow admission Product resolved by the trusted server."
+      },
+      "INTTEGRO_DEMO_PRICE_ID": {
+        "description": "The active Price belonging to the configured Afterglow Product."
+      },
+      "INTTEGRO_DEMO_PUBLIC_URL": {
+        "description": "The final HTTPS origin of this deployment, without a trailing slash."
+      },
+      "DJANGO_SECRET_KEY": {
+        "description": "A unique high-entropy signing secret. Generate one with `openssl rand -hex 32`."
+      },
+      "DJANGO_ALLOWED_HOSTS": {
+        "description": "Comma-separated hostnames only, without schemes. Include the assigned workers.dev hostname."
+      },
+      "DJANGO_CSRF_TRUSTED_ORIGINS": {
+        "description": "Comma-separated exact HTTPS origins allowed to submit the checkout form."
+      }
+    }
+  }
+}

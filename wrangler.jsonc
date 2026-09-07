@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "inttegro-django-demo",
+  "main": "src/worker.py",
+  "compatibility_date": "2026-09-07",
+  "compatibility_flags": ["python_workers"],
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "./public",
+    "run_worker_first": ["/", "/checkout", "/complete", "/cancel", "/health"]
+  },
+  "python_modules": {
+    "exclude": ["**/*.pyc", "**/__pycache__"]
+  }
+}

@@ -1,10 +1,12 @@
+import asyncio
+import os
 from urllib.parse import urlencode
 from uuid import uuid4
 
-from django.conf import settings
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_GET, require_POST
+from inttegro import AsyncInttegroClient
 
 from .service import DemoError, create_hosted_checkout, parse_checkout_input, validated_origin
 
@@ -18,8 +20,37 @@ from .service import DemoError, create_hosted_checkout, parse_checkout_input, va
 # https://studio.inttegro.com/webhooks
 
 
+_inttegro_client: AsyncInttegroClient | None = None
+_inttegro_client_lock: asyncio.Lock | None = None
+
+
+def runtime_setting(request: HttpRequest, name: str) -> str:
+    """Read a Worker binding first, then the ordinary process environment."""
+
+    scope = getattr(request, "scope", {})
+    worker_environment = scope.get("env") if isinstance(scope, dict) else None
+    value = getattr(worker_environment, name, None) if worker_environment is not None else None
+    return str(value).strip() if value is not None else os.environ.get(name, "").strip()
+
+
+async def inttegro_client(request: HttpRequest) -> AsyncInttegroClient:
+    global _inttegro_client, _inttegro_client_lock
+
+    api_key = runtime_setting(request, "INTTEGRO_API_KEY")
+    if not api_key:
+        raise DemoError("configuration_error", "Set INTTEGRO_API_KEY on the server.")
+    if _inttegro_client_lock is None:
+        _inttegro_client_lock = asyncio.Lock()
+    async with _inttegro_client_lock:
+        if _inttegro_client is None or _inttegro_client.http.api_key != api_key:
+            if _inttegro_client is not None:
+                await _inttegro_client.aclose()
+            _inttegro_client = AsyncInttegroClient(api_key=api_key)
+        return _inttegro_client
+
+
 @require_GET
-def home(request: HttpRequest) -> HttpResponse:
+async def home(request: HttpRequest) -> HttpResponse:
     return render(request, "checkout/home.html", {
         "attempt_id": uuid4().hex,
         "error_code": request.GET.get("code", ""),
@@ -28,12 +59,20 @@ def home(request: HttpRequest) -> HttpResponse:
 
 
 @require_POST
-def checkout(request: HttpRequest) -> HttpResponse:
+async def checkout(request: HttpRequest) -> HttpResponse:
     try:
         values = parse_checkout_input(request.POST)
         default_origin = request.build_absolute_uri("/").rstrip("/")
-        origin = validated_origin(settings.INTTEGRO_DEMO_PUBLIC_URL or default_origin)
-        order_id, checkout_url = create_hosted_checkout(values, origin)
+        configured_origin = runtime_setting(request, "INTTEGRO_DEMO_PUBLIC_URL")
+        origin = validated_origin(configured_origin or default_origin)
+        client = await inttegro_client(request)
+        order_id, checkout_url = await create_hosted_checkout(
+            values,
+            origin,
+            client,
+            runtime_setting(request, "INTTEGRO_DEMO_PRODUCT_ID"),
+            runtime_setting(request, "INTTEGRO_DEMO_PRICE_ID"),
+        )
         # INTTEGRO:DECISION [see-other-redirect] 303 tells the browser to follow
         # with GET. A 307/308 would preserve POST and risk sending this merchant
         # form body to the hosted checkout destination.
@@ -51,15 +90,15 @@ def checkout(request: HttpRequest) -> HttpResponse:
 
 
 @require_GET
-def complete(request: HttpRequest) -> HttpResponse:
+async def complete(request: HttpRequest) -> HttpResponse:
     return render(request, "checkout/result.html", {"complete": True})
 
 
 @require_GET
-def cancel(request: HttpRequest) -> HttpResponse:
+async def cancel(request: HttpRequest) -> HttpResponse:
     return render(request, "checkout/result.html", {"complete": False})
 
 
 @require_GET
-def health(_request: HttpRequest) -> JsonResponse:
+async def health(_request: HttpRequest) -> JsonResponse:
     return JsonResponse({"status": "ok", "demo": "django"})
