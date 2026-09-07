@@ -1,0 +1,9 @@
+services:
+  app:
+    build:
+      context: .
+    env_file: .env
+    init: true
+    ports:
+      - "3003:3003"
+    restart: unless-stopped

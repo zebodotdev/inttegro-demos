@@ -27,8 +27,8 @@ hosts or runtime font services.
 
 ## Current release
 
-The current release is **1.3.0**. Use
-[`releases/v1.3.0.json`](./releases/v1.3.0.json) to resolve each demo to its
+The current release is **1.4.0**. Use
+[`releases/v1.4.0.json`](./releases/v1.4.0.json) to resolve each demo to its
 immutable Git tag and integration entry points. Studio and external
 documentation must link through those tags rather than `main`; see
 [RELEASING.md](./RELEASING.md) for the versioning, permalink, signature, and
@@ -83,6 +83,8 @@ See [CONTRACT.md](./CONTRACT.md) for the normative acceptance contract and
 
 ## Deploy your own
 
+[![Run with Docker](./assets/providers/docker-button.svg)](./DEPLOYING.md#docker-and-compose)
+
 The suite includes a public-facing catalogue, checked-in provider manifests,
 and a machine-readable deployment matrix. Start with
 [`DEPLOYING.md`](./DEPLOYING.md) for the reader experience, environment
@@ -96,6 +98,12 @@ deployment manifests remain host-neutral; Inttegro-owned custom-domain bindings
 are attached during release operations so a cloned demo never targets an
 Inttegro hostname. All application code also works on localhost and
 provider-assigned preview origins.
+
+For local or self-hosted containers, each currently runnable server demo has a
+`compose.yaml`. Configure its environment file, then run
+`docker compose up --build --wait` from that demo's directory. See the Docker
+section in [`DEPLOYING.md`](./DEPLOYING.md) for health checks, native app
+backends, and the Spring Boot SDK publication gate.
 
 ## Configuration
 

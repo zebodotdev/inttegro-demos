@@ -57,6 +57,28 @@ Framework-generated signing secrets such as `DJANGO_SECRET_KEY`,
 `SECRET_KEY_BASE`, and `APP_KEY` belong to the reader's deployment and must be
 generated there. They are never shared Inttegro credentials.
 
+## Docker and Compose
+
+Every server demo includes a production Dockerfile. Next.js uses its standalone
+Node output, Nuxt ships only Nitro's production output, and the other
+frameworks retain their idiomatic minimal runtimes. Native demos are device
+applications rather than servers; deploy their shared Next.js companion
+backend when a reachable container endpoint is needed.
+
+Every currently runnable server demo also includes a Compose contract for the
+common local self-hosting path. After copying and configuring the environment
+example, `docker compose up --build --wait` builds the image, starts it in the
+background, and returns when it is running or healthy. Runtime-capable images
+monitor `GET /health`; Go retains its intentionally minimal distroless runtime
+and relies on an external probe.
+Spring Boot joins this path when the Java SDK release gate described below is
+cleared.
+
+This is a one-command container run, not a universal cloud deployment button:
+Docker cannot choose an infrastructure account, provision DNS or TLS, or create
+production secrets. Provider buttons wrap the same released Dockerfiles with
+those platform-specific steps.
+
 ## Provider choices
 
 - **Cloudflare Workers** is prepared for Next.js through OpenNext, for Nuxt
@@ -78,7 +100,7 @@ generated there. They are never shared Inttegro credentials.
 - **Google Cloud Run** uses the release Dockerfile and a checked-in `app.json`
   contract. The button prompts for the Inttegro key and catalog IDs, caps the
   service at three instances, and writes the provider-assigned HTTPS origin
-  back to `INTTEGRO_DEMO_PUBLIC_URL` after creation. Release 1.3.0 makes the
+  back to `INTTEGRO_DEMO_PUBLIC_URL` after creation. Release 1.4.0 makes the
   contracts launchable for Express, Django, FastAPI, Go, Rails, and Laravel
   from immutable deployment branches. They remain `prepared` until each button
   passes the fresh-account verification gates below.
@@ -112,9 +134,9 @@ expect their configuration at repository root, so releases also publish one
 generated subtree branch per deployable demo:
 
 ```text
-deploy-nextjs-v1.3.0
-deploy-express-v1.3.0
-deploy-nuxt-v1.3.0
+deploy-nextjs-v1.4.0
+deploy-express-v1.4.0
+deploy-nuxt-v1.4.0
 ...
 ```
 
@@ -127,7 +149,7 @@ or reused. Studio permalinks continue to use the signed per-demo tag.
 Run the branch preparation script only after the suite tag exists:
 
 ```sh
-node scripts/prepare-deploy-refs.mjs v1.3.0
+node scripts/prepare-deploy-refs.mjs v1.4.0
 ```
 
 The script creates local branches but never pushes them. Inspect each branch,

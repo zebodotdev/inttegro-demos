@@ -13,6 +13,7 @@ const providerDescriptions = {
   railway: 'Creates an ejectable Railway project from the release-pinned template.',
   'cloud-run': 'Builds the released Dockerfile and creates a public Google Cloud Run service.',
   'app-runner': 'Runs a prebuilt container or connected source repository in AWS App Runner.',
+  docker: 'Builds and runs the released container locally with Docker Compose.',
 };
 
 const storyDescriptions = {
@@ -67,6 +68,9 @@ function deployUrl(demo, provider) {
       revision: demo.deployRef,
     });
     return `https://deploy.cloud.run/?${query}`;
+  }
+  if (provider.id === 'docker') {
+    return `${data.repository}/blob/${encodeURIComponent(demo.tag)}/${demo.id}/README.md#run-with-docker`;
   }
   return '';
 }
@@ -124,7 +128,11 @@ function openDeployDialog(demo) {
     : `Choose a prepared target. Each flow starts from ${demo.tag}, asks for your own test credentials, and leaves you with source you control.`;
 
   if (demo.mode === 'native') {
-    providerList.innerHTML = `<div class="provider-option"><span class="provider-monogram">SDK</span><div class="provider-copy"><strong>Local development</strong><p>Follow the tagged README for platform tooling, simulator, and device instructions.</p></div><a class="provider-action" href="${sourceUrl(demo)}">Open guide</a></div>`;
+    const backend = data.demos.find((candidate) => candidate.id === demo.companionBackend);
+    const dockerUrl = backend ? deployUrl(backend, { id: 'docker' }) : '';
+    providerList.innerHTML = `
+      <div class="provider-option"><span class="provider-monogram">SDK</span><div class="provider-copy"><strong>Local development</strong><p>Follow the tagged README for platform tooling, simulator, and device instructions.</p></div><a class="provider-action" href="${sourceUrl(demo)}">Open guide</a></div>
+      <div class="provider-option"><span class="provider-monogram"><img src="/assets/providers/docker.svg" alt="" /></span><div class="provider-copy"><strong>Docker backend</strong><p>Run the released Next.js companion backend with Docker Compose.</p></div><a class="provider-action" href="${dockerUrl}" rel="noreferrer">Open guide</a></div>`;
   } else {
     providerList.replaceChildren(...demo.providers.map((provider) => {
       const row = document.createElement('div');
@@ -138,13 +146,16 @@ function openDeployDialog(demo) {
           <p>${provider.reason || providerDescriptions[provider.id]}</p>
         </div>
         ${actionable
-          ? `<a class="provider-action" href="${url}" rel="noreferrer">Deploy</a>`
+          ? `<a class="provider-action" href="${url}" rel="noreferrer">${provider.id === 'docker' ? 'Open guide' : 'Deploy'}</a>`
           : `<span class="provider-action" aria-disabled="true">${providerState(provider)}</span>`}`;
       return row;
     }));
   }
 
-  environmentList.replaceChildren(...demo.environment.map((variable) => {
+  const environmentOwner = demo.mode === 'native'
+    ? data.demos.find((candidate) => candidate.id === demo.companionBackend) ?? demo
+    : demo;
+  environmentList.replaceChildren(...environmentOwner.environment.map((variable) => {
     const item = document.createElement('div');
     item.className = 'environment-variable';
     item.innerHTML = `<code>${variable.name}</code><p>${variable.description}</p>`;

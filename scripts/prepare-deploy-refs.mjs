@@ -92,10 +92,12 @@ try {
 
     const taggedReadme = git(['show', `${requestedTag}:${demo.id}/README.md`]);
     const suiteDocumentRoot = `${deployments.repository}/blob/${requestedTag}`;
+    const suiteAssetRoot = `${deployments.repository.replace('https://github.com/', 'https://raw.githubusercontent.com/')}/${requestedTag}`;
     const portableReadme = taggedReadme
       .replaceAll('../DEPLOYING.md', `${suiteDocumentRoot}/DEPLOYING.md`)
       .replaceAll('../INTEGRATION_GUIDE.md', `${suiteDocumentRoot}/INTEGRATION_GUIDE.md`)
-      .replaceAll('../integration-decisions.json', `${suiteDocumentRoot}/integration-decisions.json`);
+      .replaceAll('../integration-decisions.json', `${suiteDocumentRoot}/integration-decisions.json`)
+      .replaceAll('../assets/providers/docker-button.svg', `${suiteAssetRoot}/assets/providers/docker-button.svg`);
     const readmePath = join(temporaryDirectory, `${demo.id}.README.md`);
     writeFileSync(readmePath, `${portableReadme}\n`);
 

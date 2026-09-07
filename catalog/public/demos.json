@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "https://github.com/zebodotdev/inttegro-demos",
-  "releaseVersion": "1.3.0",
-  "suiteTag": "v1.3.0",
+  "releaseVersion": "1.4.0",
+  "suiteTag": "v1.4.0",
   "domainStatus": "active",
   "demos": [
     {
@@ -19,8 +19,8 @@
         "url": "https://nextjs-demo.inttegro.dev"
       },
       "hostname": "nextjs-demo.inttegro.dev",
-      "tag": "nextjs-v1.3.0",
-      "deployRef": "deploy-nextjs-v1.3.0",
+      "tag": "nextjs-v1.4.0",
+      "deployRef": "deploy-nextjs-v1.4.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -59,6 +59,15 @@
           "documentation": "https://developers.cloudflare.com/workers/platform/deploy-buttons/"
         },
         {
+          "id": "docker",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "nextjs/compose.yaml",
+          "name": "Docker",
+          "icon": "/assets/providers/docker.svg",
+          "documentation": "https://docs.docker.com/compose/gettingstarted/"
+        },
+        {
           "id": "vercel",
           "recommendation": "recommended",
           "status": "prepared",
@@ -80,7 +89,7 @@
           "id": "cloud-run",
           "recommendation": "alternative",
           "status": "blocked",
-          "reason": "The v1.3.0 Next.js deployment artifact does not include a tested portable container.",
+          "reason": "This release does not include a tested Cloud Run app.json contract for Next.js.",
           "name": "Cloud Run",
           "icon": "/assets/providers/cloud-run.svg",
           "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
@@ -101,8 +110,8 @@
         "url": "https://express-demo.inttegro.dev"
       },
       "hostname": "express-demo.inttegro.dev",
-      "tag": "express-v1.3.0",
-      "deployRef": "deploy-express-v1.3.0",
+      "tag": "express-v1.4.0",
+      "deployRef": "deploy-express-v1.4.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -143,6 +152,15 @@
           "name": "Cloudflare",
           "icon": "/assets/providers/cloudflare.svg",
           "documentation": "https://developers.cloudflare.com/workers/platform/deploy-buttons/"
+        },
+        {
+          "id": "docker",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "express/compose.yaml",
+          "name": "Docker",
+          "icon": "/assets/providers/docker.svg",
+          "documentation": "https://docs.docker.com/compose/gettingstarted/"
         },
         {
           "id": "railway",
@@ -188,8 +206,8 @@
         "url": "https://nuxt-demo.inttegro.dev"
       },
       "hostname": "nuxt-demo.inttegro.dev",
-      "tag": "nuxt-v1.3.0",
-      "deployRef": "deploy-nuxt-v1.3.0",
+      "tag": "nuxt-v1.4.0",
+      "deployRef": "deploy-nuxt-v1.4.0",
       "environment": [
         {
           "name": "NUXT_INTTEGRO_API_KEY",
@@ -223,6 +241,15 @@
           "documentation": "https://developers.cloudflare.com/workers/platform/deploy-buttons/"
         },
         {
+          "id": "docker",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "nuxt/compose.yaml",
+          "name": "Docker",
+          "icon": "/assets/providers/docker.svg",
+          "documentation": "https://docs.docker.com/compose/gettingstarted/"
+        },
+        {
           "id": "vercel",
           "recommendation": "alternative",
           "status": "prepared",
@@ -244,7 +271,7 @@
           "id": "cloud-run",
           "recommendation": "alternative",
           "status": "blocked",
-          "reason": "The v1.3.0 Nuxt deployment artifact does not include a tested portable container.",
+          "reason": "This release does not include a tested Cloud Run app.json contract for Nuxt.",
           "name": "Cloud Run",
           "icon": "/assets/providers/cloud-run.svg",
           "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
@@ -265,8 +292,8 @@
         "url": "https://go-demo.inttegro.dev"
       },
       "hostname": "go-demo.inttegro.dev",
-      "tag": "go-v1.3.0",
-      "deployRef": "deploy-go-v1.3.0",
+      "tag": "go-v1.4.0",
+      "deployRef": "deploy-go-v1.4.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -298,6 +325,15 @@
           "name": "Cloud Run",
           "icon": "/assets/providers/cloud-run.svg",
           "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
+        },
+        {
+          "id": "docker",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "go/compose.yaml",
+          "name": "Docker",
+          "icon": "/assets/providers/docker.svg",
+          "documentation": "https://docs.docker.com/compose/gettingstarted/"
         },
         {
           "id": "railway",
@@ -343,8 +379,8 @@
         "url": "https://django-demo.inttegro.dev"
       },
       "hostname": "django-demo.inttegro.dev",
-      "tag": "django-v1.3.0",
-      "deployRef": "deploy-django-v1.3.0",
+      "tag": "django-v1.4.0",
+      "deployRef": "deploy-django-v1.4.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -391,6 +427,15 @@
           "name": "Cloud Run",
           "icon": "/assets/providers/cloud-run.svg",
           "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
+        },
+        {
+          "id": "docker",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "django/compose.yaml",
+          "name": "Docker",
+          "icon": "/assets/providers/docker.svg",
+          "documentation": "https://docs.docker.com/compose/gettingstarted/"
         },
         {
           "id": "railway",
@@ -445,8 +490,8 @@
         "url": "https://fastapi-demo.inttegro.dev"
       },
       "hostname": "fastapi-demo.inttegro.dev",
-      "tag": "fastapi-v1.3.0",
-      "deployRef": "deploy-fastapi-v1.3.0",
+      "tag": "fastapi-v1.4.0",
+      "deployRef": "deploy-fastapi-v1.4.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -478,6 +523,15 @@
           "name": "Cloud Run",
           "icon": "/assets/providers/cloud-run.svg",
           "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
+        },
+        {
+          "id": "docker",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "fastapi/compose.yaml",
+          "name": "Docker",
+          "icon": "/assets/providers/docker.svg",
+          "documentation": "https://docs.docker.com/compose/gettingstarted/"
         },
         {
           "id": "railway",
@@ -532,8 +586,8 @@
         "url": "https://rails-demo.inttegro.dev"
       },
       "hostname": "rails-demo.inttegro.dev",
-      "tag": "rails-v1.3.0",
-      "deployRef": "deploy-rails-v1.3.0",
+      "tag": "rails-v1.4.0",
+      "deployRef": "deploy-rails-v1.4.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -570,6 +624,15 @@
           "name": "Cloud Run",
           "icon": "/assets/providers/cloud-run.svg",
           "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
+        },
+        {
+          "id": "docker",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "rails/compose.yaml",
+          "name": "Docker",
+          "icon": "/assets/providers/docker.svg",
+          "documentation": "https://docs.docker.com/compose/gettingstarted/"
         },
         {
           "id": "railway",
@@ -615,8 +678,8 @@
         "url": "https://laravel-demo.inttegro.dev"
       },
       "hostname": "laravel-demo.inttegro.dev",
-      "tag": "laravel-v1.3.0",
-      "deployRef": "deploy-laravel-v1.3.0",
+      "tag": "laravel-v1.4.0",
+      "deployRef": "deploy-laravel-v1.4.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -653,6 +716,15 @@
           "name": "Cloud Run",
           "icon": "/assets/providers/cloud-run.svg",
           "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
+        },
+        {
+          "id": "docker",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "laravel/compose.yaml",
+          "name": "Docker",
+          "icon": "/assets/providers/docker.svg",
+          "documentation": "https://docs.docker.com/compose/gettingstarted/"
         },
         {
           "id": "railway",
@@ -693,8 +765,8 @@
       "releaseStatus": "publication-gated",
       "mode": "server",
       "hostname": "spring-boot-demo.inttegro.dev",
-      "tag": "spring-boot-v1.3.0",
-      "deployRef": "deploy-spring-boot-v1.3.0",
+      "tag": "spring-boot-v1.4.0",
+      "deployRef": "deploy-spring-boot-v1.4.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -737,6 +809,15 @@
           "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
         },
         {
+          "id": "docker",
+          "recommendation": "alternative",
+          "status": "blocked",
+          "reason": "The Java SDK 5.0.0 dependency must be publicly available before the Docker image can build.",
+          "name": "Docker",
+          "icon": "/assets/providers/docker.svg",
+          "documentation": "https://docs.docker.com/compose/gettingstarted/"
+        },
+        {
           "id": "railway",
           "recommendation": "recommended",
           "status": "blocked",
@@ -768,8 +849,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "ios-swiftui-demo.inttegro.dev",
-      "tag": "ios-swiftui-v1.3.0",
-      "deployRef": "deploy-ios-swiftui-v1.3.0",
+      "tag": "ios-swiftui-v1.4.0",
+      "deployRef": "deploy-ios-swiftui-v1.4.0",
       "environment": [],
       "providers": []
     },
@@ -783,8 +864,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "android-compose-demo.inttegro.dev",
-      "tag": "android-compose-v1.3.0",
-      "deployRef": "deploy-android-compose-v1.3.0",
+      "tag": "android-compose-v1.4.0",
+      "deployRef": "deploy-android-compose-v1.4.0",
       "environment": [],
       "providers": []
     },
@@ -798,8 +879,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "flutter-demo.inttegro.dev",
-      "tag": "flutter-v1.3.0",
-      "deployRef": "deploy-flutter-v1.3.0",
+      "tag": "flutter-v1.4.0",
+      "deployRef": "deploy-flutter-v1.4.0",
       "environment": [],
       "providers": []
     },
@@ -813,8 +894,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "react-native-expo-demo.inttegro.dev",
-      "tag": "react-native-expo-v1.3.0",
-      "deployRef": "deploy-react-native-expo-v1.3.0",
+      "tag": "react-native-expo-v1.4.0",
+      "deployRef": "deploy-react-native-expo-v1.4.0",
       "environment": [],
       "providers": []
     }

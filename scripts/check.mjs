@@ -170,11 +170,55 @@ assert.equal(
   'Spring Boot must not claim a live deployment while its SDK publication is gated',
 );
 
-for (const id of ['express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'spring-boot']) {
-  for (const file of ['Dockerfile', '.dockerignore', 'render.yaml', 'railway.json']) {
+for (const id of ['nextjs', 'nuxt', 'express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'spring-boot']) {
+  for (const file of ['Dockerfile', '.dockerignore']) {
     assert(existsSync(join(demosRoot, id, file)), `${id} must include ${file} for portable deployment`);
   }
 }
+
+for (const id of ['express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'spring-boot']) {
+  for (const file of ['render.yaml', 'railway.json']) {
+    assert(existsSync(join(demosRoot, id, file)), `${id} must include ${file} for portable deployment`);
+  }
+}
+
+for (const [id, envFile, port, hasContainerHealthcheck] of [
+  ['nextjs', '.env.local', 3000],
+  ['nuxt', '.env', 3002],
+  ['express', '.env', 3001],
+  ['django', '.env', 3004],
+  ['fastapi', '.env', 3005],
+  ['go', '.env', 3003, false],
+  ['rails', '.env', 3006],
+  ['laravel', '.env', 3007],
+]) {
+  const composePath = join(demosRoot, id, 'compose.yaml');
+  assert(existsSync(composePath), `${id} must include a one-command Compose path`);
+  const compose = readFileSync(composePath, 'utf8');
+  assert(compose.includes(`env_file: ${envFile}`), `${id} Compose must load its documented environment file`);
+  assert(compose.includes(`"${port}:${port}"`), `${id} Compose must publish its documented port`);
+  if (hasContainerHealthcheck !== false) {
+    assert(compose.includes(`127.0.0.1:${port}/health`), `${id} Compose must check application health`);
+  }
+  assert(
+    readFileSync(join(demosRoot, id, 'README.md'), 'utf8').includes('docker compose up --build --wait'),
+    `${id} README must document its one-command Compose path`,
+  );
+  const docker = deployments.demos
+    .find((demo) => demo.id === id)
+    ?.providers.find((provider) => provider.id === 'docker');
+  assert.equal(docker?.status, 'prepared', `${id} Docker workflow must be reader-launchable`);
+  assert.equal(docker?.config, `${id}/compose.yaml`, `${id} Docker workflow must reference Compose`);
+  assert(
+    readFileSync(join(demosRoot, id, 'README.md'), 'utf8').includes('../assets/providers/docker-button.svg'),
+    `${id} README must present the Docker action with its logo`,
+  );
+}
+
+const springDocker = deployments.demos
+  .find((demo) => demo.id === 'spring-boot')
+  ?.providers.find((provider) => provider.id === 'docker');
+assert.equal(springDocker?.status, 'blocked', 'Spring Boot Docker must remain gated on Java SDK publication');
 
 for (const id of ['express', 'django', 'fastapi', 'go', 'rails', 'laravel']) {
   const deployment = deployments.demos.find((demo) => demo.id === id);
@@ -329,6 +373,10 @@ assert(
   'catalogue must build Cloud Run actions from immutable deployment refs',
 );
 assert(
+  catalogueApplication.includes("provider.id === 'docker'"),
+  'catalogue must link Docker to the tagged run guide',
+);
+assert(
   catalogueApplication.includes('<img src="${provider.icon}" alt="" />'),
   'catalogue provider choices must use provider logos',
 );
@@ -379,6 +427,10 @@ for (const id of ['ios-swiftui', 'android-compose', 'flutter', 'react-native-exp
     readme.includes(`/tree/deploy-nextjs-v${release.version}`),
     `${id} companion deployment button must target the immutable Next.js deployment ref`,
   );
+  assert(
+    readme.includes('../assets/providers/docker-button.svg'),
+    `${id} must present the Docker companion-backend action with its logo`,
+  );
 }
 
 const deployRefScript = readFileSync(join(demosRoot, 'scripts/prepare-deploy-refs.mjs'), 'utf8');
@@ -388,6 +440,7 @@ for (const requiredReleaseGuard of [
   "typeof output === 'string' ? output.trim() : ''",
   "`${requestedTag}:LICENSE`",
   ".replaceAll('../DEPLOYING.md'",
+  ".replaceAll('../assets/providers/docker-button.svg'",
 ]) {
   assert(
     deployRefScript.includes(requiredReleaseGuard),
@@ -463,6 +516,8 @@ for (const asset of [
   'assets/accra-afterglow.jpg',
   'assets/ledgerline-studio.jpg',
   'assets/favicon.svg',
+  'assets/providers/docker.svg',
+  'assets/providers/docker-button.svg',
 ]) {
   assert(existsSync(join(demosRoot, asset)), `missing original demo artwork: ${asset}`);
 }

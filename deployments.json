@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "https://github.com/zebodotdev/inttegro-demos",
-  "releaseVersion": "1.3.0",
-  "suiteTag": "v1.3.0",
+  "releaseVersion": "1.4.0",
+  "suiteTag": "v1.4.0",
   "domain": {
     "status": "active",
     "provider": "cloudflare",
@@ -47,6 +47,11 @@
       "name": "AWS App Runner",
       "icon": "/assets/providers/app-runner.svg",
       "documentation": "https://docs.aws.amazon.com/apprunner/latest/dg/what-is-apprunner.html"
+    },
+    "docker": {
+      "name": "Docker",
+      "icon": "/assets/providers/docker.svg",
+      "documentation": "https://docs.docker.com/compose/gettingstarted/"
     }
   },
   "environment": {
@@ -92,9 +97,10 @@
       "live": { "status": "verified", "provider": "cloudflare", "url": "https://nextjs-demo.inttegro.dev" },
       "additionalEnvironment": ["INTTEGRO_DEMO_CUSTOMER_ID"],
       "providers": [
+        { "id": "docker", "recommendation": "alternative", "status": "prepared", "config": "nextjs/compose.yaml" },
         { "id": "vercel", "recommendation": "recommended", "status": "prepared", "config": "nextjs/vercel.json" },
         { "id": "cloudflare", "recommendation": "alternative", "status": "verified", "config": "nextjs/wrangler.jsonc" },
-        { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "reason": "The v1.3.0 Next.js deployment artifact does not include a tested portable container." },
+        { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "reason": "This release does not include a tested Cloud Run app.json contract for Next.js." },
         { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." }
       ]
     },
@@ -108,9 +114,10 @@
         "INTTEGRO_DEMO_PUBLIC_URL": "NUXT_DEMO_PUBLIC_URL"
       },
       "providers": [
+        { "id": "docker", "recommendation": "alternative", "status": "prepared", "config": "nuxt/compose.yaml" },
         { "id": "cloudflare", "recommendation": "recommended", "status": "verified", "config": "nuxt/wrangler.jsonc" },
         { "id": "vercel", "recommendation": "alternative", "status": "prepared", "config": "nuxt/vercel.json" },
-        { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "reason": "The v1.3.0 Nuxt deployment artifact does not include a tested portable container." },
+        { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "reason": "This release does not include a tested Cloud Run app.json contract for Nuxt." },
         { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." }
       ]
     },
@@ -118,6 +125,7 @@
       "id": "express",
       "live": { "status": "verified", "provider": "cloudflare", "url": "https://express-demo.inttegro.dev" },
       "providers": [
+        { "id": "docker", "recommendation": "alternative", "status": "prepared", "config": "express/compose.yaml" },
         { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "express/railway.json", "templateId": "MJF7nD" },
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "express/render.yaml" },
         { "id": "cloudflare", "recommendation": "alternative", "status": "verified", "config": "express/wrangler.jsonc" },
@@ -130,6 +138,7 @@
       "live": { "status": "verified", "provider": "railway", "url": "https://django-demo.inttegro.dev" },
       "additionalEnvironment": ["DJANGO_SECRET_KEY", "DJANGO_ALLOWED_HOSTS", "DJANGO_CSRF_TRUSTED_ORIGINS"],
       "providers": [
+        { "id": "docker", "recommendation": "alternative", "status": "prepared", "config": "django/compose.yaml" },
         { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "django/railway.json", "templateId": "0h-Ilj" },
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "django/render.yaml" },
         { "id": "cloud-run", "recommendation": "alternative", "status": "prepared", "config": "django/app.json" },
@@ -141,6 +150,7 @@
       "id": "fastapi",
       "live": { "status": "verified", "provider": "railway", "url": "https://fastapi-demo.inttegro.dev" },
       "providers": [
+        { "id": "docker", "recommendation": "alternative", "status": "prepared", "config": "fastapi/compose.yaml" },
         { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "fastapi/railway.json", "templateId": "wk2B6a" },
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "fastapi/render.yaml" },
         { "id": "cloud-run", "recommendation": "alternative", "status": "prepared", "config": "fastapi/app.json" },
@@ -153,6 +163,7 @@
       "live": { "status": "verified", "provider": "railway", "url": "https://rails-demo.inttegro.dev" },
       "additionalEnvironment": ["SECRET_KEY_BASE"],
       "providers": [
+        { "id": "docker", "recommendation": "alternative", "status": "prepared", "config": "rails/compose.yaml" },
         { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "rails/railway.json", "templateId": "CssQzr" },
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "rails/render.yaml" },
         { "id": "cloud-run", "recommendation": "alternative", "status": "prepared", "config": "rails/app.json" },
@@ -164,6 +175,7 @@
       "live": { "status": "verified", "provider": "railway", "url": "https://laravel-demo.inttegro.dev" },
       "additionalEnvironment": ["APP_KEY"],
       "providers": [
+        { "id": "docker", "recommendation": "alternative", "status": "prepared", "config": "laravel/compose.yaml" },
         { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "laravel/railway.json", "templateId": "p5qiP5" },
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "laravel/render.yaml" },
         { "id": "cloud-run", "recommendation": "alternative", "status": "prepared", "config": "laravel/app.json" },
@@ -174,6 +186,7 @@
       "id": "go",
       "live": { "status": "verified", "provider": "railway", "url": "https://go-demo.inttegro.dev" },
       "providers": [
+        { "id": "docker", "recommendation": "alternative", "status": "prepared", "config": "go/compose.yaml" },
         { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "go/railway.json", "templateId": "ABT6ae" },
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "go/render.yaml" },
         { "id": "cloud-run", "recommendation": "alternative", "status": "prepared", "config": "go/app.json" },
@@ -183,6 +196,7 @@
     {
       "id": "spring-boot",
       "providers": [
+        { "id": "docker", "recommendation": "alternative", "status": "blocked", "reason": "The Java SDK 5.0.0 dependency must be publicly available before the Docker image can build." },
         { "id": "railway", "recommendation": "recommended", "status": "blocked", "config": "spring-boot/railway.json", "reason": "The Java SDK 5.0.0 dependency must be publicly available before a reader-owned remote build can succeed." },
         { "id": "render", "recommendation": "alternative", "status": "blocked", "config": "spring-boot/render.yaml", "reason": "The Java SDK 5.0.0 dependency must be publicly available before a reader-owned remote build can succeed." },
         { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "reason": "The Java SDK 5.0.0 dependency must be publicly available before a Cloud Run source build can succeed." },

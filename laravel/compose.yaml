@@ -1,0 +1,15 @@
+services:
+  app:
+    build:
+      context: .
+    env_file: .env
+    init: true
+    ports:
+      - "3007:3007"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1:3007/health') === false ? 1 : 0);"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 20s

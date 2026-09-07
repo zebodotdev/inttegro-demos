@@ -16,11 +16,21 @@ Open <http://localhost:3006>. Configure `INTTEGRO_DEMO_PRODUCT_ID` and
 resolves and validates both server-side; the storefront cannot submit its own
 product or amount. Run `bin/rails test` for the focused checks.
 
+## Run with Docker
+
+After configuring `.env`, run `docker compose up --build --wait`. Compose
+starts the production image at <http://localhost:3006> and monitors
+`GET /health`. It defaults `RAILS_FORCE_SSL` to `false` only for this direct
+localhost path. Behind a TLS-terminating proxy, set `RAILS_FORCE_SSL=true` and
+`INTTEGRO_DEMO_PUBLIC_URL` to the exact HTTPS origin. Hosted production remains
+secure by default. Use `docker compose down` to stop it.
+
 ## Deploy your own
 
-[![Deploy to Cloud Run](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-rails-v1.3.0)
+[![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
+[![Deploy to Cloud Run](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-rails-v1.4.0)
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/CssQzr?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=rails)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-rails-v1.3.0)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-rails-v1.4.0)
 
 Cloud Run, Railway, and Render build the released Dockerfile with Puma. The Railway
 template pins the release commit and generates the framework signing secret
