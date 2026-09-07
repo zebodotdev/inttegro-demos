@@ -30,10 +30,11 @@ HTTPS origin before exposing the container publicly.
 
 ## Deploy your own
 
-[![Deploy to Cloud Run](../assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-django-v1.4.1)
+[![Deploy to Cloud Run](../assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-django-v1.5.0)
+[![Deploy to Cloudflare](../assets/providers/cloudflare-button.svg)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-django-v1.5.0)
 [![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
 [![Deploy on Railway](../assets/providers/railway-button.svg)](https://railway.com/new/template/0h-Ilj?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=django)
-[![Deploy to Render](../assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-django-v1.4.1)
+[![Deploy to Render](../assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-django-v1.5.0)
 
 Cloud Run, Railway, and Render build the release-pinned Dockerfile. Railway generates the Django signing
 secret, and configures its public and health-check hostnames. On Render, set
@@ -47,9 +48,7 @@ files through Workers Static Assets. Set `DJANGO_ALLOWED_HOSTS` to the assigned
 hostname and `DJANGO_CSRF_TRUSTED_ORIGINS` plus
 `INTTEGRO_DEMO_PUBLIC_URL` to its exact HTTPS origin. Run
 `npm run dev:cloudflare` for the Worker runtime locally. Inttegro Python SDK
-6.3.0 or newer is required because its outbound requests are asynchronous. The
-one-click action is activated only after that SDK and the immutable 1.5.0
-deployment branch exist publicly.
+6.3.0 or newer is required because its outbound requests are asynchronous.
 
 Python Workers do not provide OS threads, while Django's ASGI handler delegates
 small synchronous framework hooks to `asgiref`'s thread pool. This demo has no
