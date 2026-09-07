@@ -1,0 +1,17 @@
+services:
+  app:
+    build:
+      context: .
+    env_file: .env
+    environment:
+      RAILS_FORCE_SSL: "${RAILS_FORCE_SSL:-false}"
+    init: true
+    ports:
+      - "3006:3006"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "ruby", "-rnet/http", "-e", "response = Net::HTTP.get_response(URI('http://127.0.0.1:3006/health')); exit(response.is_a?(Net::HTTPSuccess) ? 0 : 1)"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 20s
