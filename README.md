@@ -17,12 +17,21 @@ Express resolves and validates both on the server; the reservation form cannot
 choose its own ticket or amount. Run `npm run check` to compile and execute the
 focused unit tests.
 
+## Run with Docker
+
+After configuring `.env`, run `docker compose up --build --wait`. Compose
+starts the production image at <http://localhost:3001> and monitors
+`GET /health`. Use
+`docker compose down` to stop it. Set `INTTEGRO_DEMO_PUBLIC_URL` to the exact
+HTTPS origin before exposing the container publicly.
+
 ## Deploy your own
 
-[![Deploy to Cloud Run](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-express-v1.3.0)
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-express-v1.3.0)
+[![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
+[![Deploy to Cloud Run](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-express-v1.4.0)
+[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-express-v1.4.0)
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/MJF7nD?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=express)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-express-v1.3.0)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-express-v1.4.0)
 
 Cloudflare uses a separate Node HTTP adapter entry point; the ordinary Express
 application and Inttegro integration remain unchanged. Cloud Run, Railway, and
