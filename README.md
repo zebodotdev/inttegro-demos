@@ -27,7 +27,7 @@ template pins the release commit and generates the framework signing secret
 separately from `INTTEGRO_API_KEY`. Railway uses process readiness for this
 demo because Rails redirects the platform's internal HTTP health probe to
 HTTPS; the public `GET /health` endpoint remains available over HTTPS. See
-[`DEPLOYING.md`](../DEPLOYING.md).
+[`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.3.0/DEPLOYING.md).
 
 ## Understand the integration
 
@@ -37,5 +37,5 @@ Order creation and safe error mapping, then read
 [`app/controllers/checkouts_controller.rb`](./app/controllers/checkouts_controller.rb)
 for the 303 handoff and correlation boundary. The `INTTEGRO:*` comments map
 choices and alternatives to the shared
-[integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+[integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.3.0/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.3.0/integration-decisions.json).
