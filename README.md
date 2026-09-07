@@ -27,10 +27,10 @@ container publicly.
 
 ## Deploy your own
 
+[![Deploy to Cloud Run](../assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-laravel-v1.4.1)
 [![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
-[![Deploy to Cloud Run](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-laravel-v1.4.0)
-[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/p5qiP5?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=laravel)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-laravel-v1.4.0)
+[![Deploy on Railway](../assets/providers/railway-button.svg)](https://railway.com/new/template/p5qiP5?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=laravel)
+[![Deploy to Render](../assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-laravel-v1.4.1)
 
 Cloud Run, Railway, and Render build the released Dockerfile. The Railway template pins the
 release commit and generates `APP_KEY` in the deployment, separate from the
