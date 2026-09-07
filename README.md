@@ -18,11 +18,20 @@ active Afterglow admission Product and Price. Django looks them up and validates
 their relationship server-side; the reservation form supplies no product or
 amount. Run `python manage.py test` for the focused checks.
 
+## Run with Docker
+
+After configuring `.env`, run `docker compose up --build --wait`. Compose
+starts the production image at <http://localhost:3004> and monitors
+`GET /health`. Use
+`docker compose down` to stop it. Set `INTTEGRO_DEMO_PUBLIC_URL` to the exact
+HTTPS origin before exposing the container publicly.
+
 ## Deploy your own
 
-[![Deploy to Cloud Run](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-django-v1.3.0)
+[![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
+[![Deploy to Cloud Run](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-django-v1.4.0)
 [![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/0h-Ilj?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=django)
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-django-v1.3.0)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-django-v1.4.0)
 
 Cloud Run, Railway, and Render build the release-pinned Dockerfile. Railway generates the Django signing
 secret, and configures its public and health-check hostnames. On Render, set
