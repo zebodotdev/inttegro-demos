@@ -1,0 +1,27 @@
+{
+  "name": "inttegro-fastapi-demo",
+  "private": true,
+  "scripts": {
+    "dev:cloudflare": "uv run pywrangler dev",
+    "deploy": "uv run pywrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.129.0"
+  },
+  "cloudflare": {
+    "bindings": {
+      "INTTEGRO_API_KEY": {
+        "description": "A dedicated server-side Inttegro API key from https://studio.inttegro.com/keys. Never expose it to browser code."
+      },
+      "INTTEGRO_DEMO_PRODUCT_ID": {
+        "description": "The active Afterglow admission Product resolved by the trusted server."
+      },
+      "INTTEGRO_DEMO_PRICE_ID": {
+        "description": "The active Price belonging to the configured Afterglow Product."
+      },
+      "INTTEGRO_DEMO_PUBLIC_URL": {
+        "description": "The final HTTPS origin of this deployment, without a trailing slash."
+      }
+    }
+  }
+}

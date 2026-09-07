@@ -1,0 +1,9 @@
+.dev.vars
+.env
+.pytest_cache/
+.venv/
+.venv-workers/
+.wrangler/
+python_modules/
+__pycache__/
+*.py[cod]
