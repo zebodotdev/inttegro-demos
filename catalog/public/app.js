@@ -10,7 +10,9 @@ const providerDescriptions = {
   cloudflare: 'Runs on Cloudflare Workers with the checked-in runtime adapter.',
   vercel: 'Uses the framework-native Vercel build and project creation flow.',
   render: 'Builds the released Dockerfile through a Render Blueprint.',
-  railway: 'Creates an ejectable Railway project from the published template.',
+  railway: 'Creates an ejectable Railway project from the release-pinned template.',
+  'cloud-run': 'Builds the released Dockerfile and creates a public Google Cloud Run service.',
+  'app-runner': 'Runs a prebuilt container or connected source repository in AWS App Runner.',
 };
 
 const storyDescriptions = {
@@ -58,6 +60,13 @@ function deployUrl(demo, provider) {
   }
   if (provider.id === 'railway' && provider.templateId) {
     return `https://railway.com/new/template/${provider.templateId}?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=${demo.id}`;
+  }
+  if (provider.id === 'cloud-run') {
+    const query = new URLSearchParams({
+      git_repo: `${data.repository}.git`,
+      revision: demo.deployRef,
+    });
+    return `https://deploy.cloud.run/?${query}`;
   }
   return '';
 }
@@ -123,7 +132,7 @@ function openDeployDialog(demo) {
       const url = deployUrl(demo, provider);
       const actionable = ['prepared', 'verified'].includes(provider.status) && Boolean(url);
       row.innerHTML = `
-        <span class="provider-monogram">${provider.name.slice(0, 2).toUpperCase()}</span>
+        <span class="provider-monogram"><img src="${provider.icon}" alt="" /></span>
         <div class="provider-copy">
           <strong>${provider.name}${provider.recommendation === 'recommended' ? '<span class="tag">Recommended</span>' : ''}</strong>
           <p>${provider.reason || providerDescriptions[provider.id]}</p>

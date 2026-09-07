@@ -20,12 +20,13 @@ amount. Run `python manage.py test` for the focused checks.
 
 ## Deploy your own
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/0h-Ilj?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=django)
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-django-v1.2.3)
 
-Render builds the released Dockerfile. Railway configuration is also ready; its
-button follows after the public template is registered and smoke-tested.
-Set `DJANGO_CSRF_TRUSTED_ORIGINS` to the deployment's exact HTTPS origin, such
-as `https://inttegro-demo-django.onrender.com`; this remains separate from the
+Railway builds the release-pinned Dockerfile, generates the Django signing
+secret, and configures its public and health-check hostnames. On Render, set
+`DJANGO_CSRF_TRUSTED_ORIGINS` to the deployment's exact HTTPS origin, such as
+`https://inttegro-demo-django.onrender.com`; this remains separate from the
 host-only `DJANGO_ALLOWED_HOSTS` value. The proxy must overwrite
 `X-Forwarded-Proto` before Django is allowed to trust it.
 Cloudflare Python Workers is deliberately not offered yet: Python Workers

@@ -1,0 +1,36 @@
+{
+  "name": "inttegro-demo-rails",
+  "env": {
+    "INTTEGRO_API_KEY": {
+      "description": "A dedicated Inttegro server API key. Cloud Run exposes it only to server code; use Secret Manager for production workloads.",
+      "order": 1
+    },
+    "INTTEGRO_DEMO_PRODUCT_ID": {
+      "description": "The active Kora Market Product ID.",
+      "order": 2
+    },
+    "INTTEGRO_DEMO_PRICE_ID": {
+      "description": "An active Price ID belonging to the configured Product.",
+      "order": 3
+    },
+    "SECRET_KEY_BASE": {
+      "description": "A deployment-specific Rails signing secret generated in Cloud Shell.",
+      "generator": "secret",
+      "order": 4
+    }
+  },
+  "options": {
+    "allow-unauthenticated": true,
+    "memory": "512Mi",
+    "cpu": "1",
+    "concurrency": 40,
+    "max-instances": 3
+  },
+  "hooks": {
+    "postcreate": {
+      "commands": [
+        "gcloud run services update \"$K_SERVICE\" --project \"$GOOGLE_CLOUD_PROJECT\" --region \"$GOOGLE_CLOUD_REGION\" --update-env-vars \"INTTEGRO_DEMO_PUBLIC_URL=$SERVICE_URL\""
+      ]
+    }
+  }
+}

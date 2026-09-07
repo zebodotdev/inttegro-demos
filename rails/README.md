@@ -18,12 +18,14 @@ product or amount. Run `bin/rails test` for the focused checks.
 
 ## Deploy your own
 
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/new/template/CssQzr?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=rails)
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-rails-v1.2.3)
 
-Render builds the released Dockerfile with Puma. Railway uses the same image and
-checked-in health policy; its button follows after the public template is
-registered and smoke-tested. The deploy flow generates the framework signing
-secret separately from `INTTEGRO_API_KEY`. See
+Railway and Render build the released Dockerfile with Puma. The Railway
+template pins the release commit and generates the framework signing secret
+separately from `INTTEGRO_API_KEY`. Railway uses process readiness for this
+demo because Rails redirects the platform's internal HTTP health probe to
+HTTPS; the public `GET /health` endpoint remains available over HTTPS. See
 [`DEPLOYING.md`](../DEPLOYING.md).
 
 ## Understand the integration

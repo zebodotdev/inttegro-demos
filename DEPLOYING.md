@@ -68,9 +68,26 @@ generated there. They are never shared Inttegro credentials.
 - **Render** uses a Dockerfile and per-demo Blueprint. The Blueprint disables
   automatic deploys so a reader's released example does not silently begin
   following upstream changes.
-- **Railway** uses the same Dockerfile plus health and restart policy. Railway's
-  visible button requires a published template ID, so it remains hidden until
-  the template is created and smoke-tested in the Inttegro workspace.
+- **Railway** uses the same Dockerfile plus restart policy and, except for
+  Rails, an HTTP health probe. Rails redirects Railway's internal HTTP probe to
+  HTTPS, so its template uses process readiness while retaining the public
+  HTTPS `GET /health` endpoint. Each one-click template is pinned to both the
+  immutable per-demo deployment branch and its exact release commit. The direct
+  template URLs are shareable without a marketplace listing; marketplace
+  publication remains a separate branding and discovery decision.
+- **Google Cloud Run** uses the release Dockerfile and a checked-in `app.json`
+  contract. The button prompts for the Inttegro key and catalog IDs, caps the
+  service at three instances, and writes the provider-assigned HTTPS origin
+  back to `INTTEGRO_DEMO_PUBLIC_URL` after creation. These contracts are staged
+  for Express, Django, FastAPI, Go, Rails, and Laravel. They remain disabled in
+  the `v1.2.3` catalogue because immutable deployment refs cannot acquire new
+  files after publication; the next demo release will make them launchable.
+- **AWS App Runner** is displayed as unavailable rather than linked to a
+  misleading generic console page. AWS stopped accepting new App Runner
+  customers on March 31, 2026, source deployment requires an account-specific
+  GitHub or Bitbucket connection, and the current release does not publish
+  portable images to ECR Public. Existing AWS customers can still adapt the
+  Dockerfiles, but there is no honest public one-click path for every reader.
 
 First-party hosting is recorded separately under each demo's `live` object in
 `deployments.json`. The `provider` there identifies where Inttegro runs the

@@ -108,6 +108,7 @@ img { display: block; width: 100%; }
 .provider-list { display: grid; gap: 10px; padding: 22px 24px; }
 .provider-option { display: grid; grid-template-columns: 42px 1fr auto; gap: 13px; min-height: 74px; padding: 13px; align-items: center; border: 1px solid var(--line); border-radius: 18px; }
 .provider-monogram { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 13px; background: #eceee9; color: var(--green); font-size: 12px; font-weight: 840; }
+.provider-monogram img { width: 20px; height: 20px; object-fit: contain; }
 .provider-copy strong { display: flex; align-items: center; gap: 8px; font-size: 13px; }
 .provider-copy p { margin: 5px 0 0; color: var(--muted); font-size: 11px; line-height: 1.4; }
 .tag { padding: 4px 6px; border-radius: 999px; background: #e5f4ec; color: #176048; font-size: 8px; font-weight: 820; letter-spacing: .08em; text-transform: uppercase; }

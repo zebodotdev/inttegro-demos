@@ -8,6 +8,7 @@ const deployments = JSON.parse(readFileSync(join(root, 'deployments.json'), 'utf
 const release = JSON.parse(readFileSync(join(root, `releases/v${deployments.releaseVersion}.json`), 'utf8'));
 const outputDirectory = join(root, 'catalog/public');
 const assetDirectory = join(outputDirectory, 'assets');
+const providerAssetDirectory = join(assetDirectory, 'providers');
 
 const releaseById = new Map(release.demos.map((demo) => [demo.id, demo]));
 const deploymentById = new Map(deployments.demos.map((demo) => [demo.id, demo]));
@@ -16,6 +17,12 @@ const storyLabels = {
   'afterglow-sessions': 'Afterglow Sessions',
   ledgerline: 'Ledgerline',
   'kora-market-mobile': 'Kora Market mobile',
+};
+
+const providerIsActive = (provider) => provider.status === 'prepared' || provider.status === 'verified';
+const compareProviders = (left, right) => {
+  const activityOrder = Number(providerIsActive(right)) - Number(providerIsActive(left));
+  return activityOrder || left.name.localeCompare(right.name);
 };
 
 const environmentFor = (demo) => {
@@ -53,17 +60,25 @@ const demos = manifest.demos.filter((demo) => demo.release === 'v1').map((demo) 
     tag: released.tag,
     deployRef: deployments.deployRefTemplate.replace('{id}', demo.id).replace('{version}', release.version),
     environment: environmentFor(deployment),
-    providers: deployment.providers.map((provider) => ({
-      ...provider,
-      name: deployments.providers[provider.id].name,
-      documentation: deployments.providers[provider.id].documentation,
-    })),
+    providers: deployment.providers
+      .map((provider) => ({
+        ...provider,
+        name: deployments.providers[provider.id].name,
+        icon: deployments.providers[provider.id].icon,
+        documentation: deployments.providers[provider.id].documentation,
+      }))
+      .sort(compareProviders),
   };
 });
 
 mkdirSync(assetDirectory, { recursive: true });
+mkdirSync(providerAssetDirectory, { recursive: true });
 for (const asset of ['kora-dawn-brew.jpg', 'accra-afterglow.jpg', 'ledgerline-studio.jpg', 'favicon.svg']) {
   copyFileSync(join(root, 'assets', asset), join(assetDirectory, asset));
+}
+for (const provider of Object.values(deployments.providers)) {
+  const fileName = provider.icon.split('/').at(-1);
+  copyFileSync(join(root, 'assets/providers', fileName), join(providerAssetDirectory, fileName));
 }
 
 writeFileSync(join(outputDirectory, 'demos.json'), `${JSON.stringify({

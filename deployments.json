@@ -15,23 +15,38 @@
   "providers": {
     "cloudflare": {
       "name": "Cloudflare",
+      "icon": "/assets/providers/cloudflare.svg",
       "buttonImage": "https://deploy.workers.cloudflare.com/button",
       "documentation": "https://developers.cloudflare.com/workers/platform/deploy-buttons/"
     },
     "vercel": {
       "name": "Vercel",
+      "icon": "/assets/providers/vercel.svg",
       "buttonImage": "https://vercel.com/button",
       "documentation": "https://vercel.com/docs/deploy-button"
     },
     "render": {
       "name": "Render",
+      "icon": "/assets/providers/render.svg",
       "buttonImage": "https://render.com/images/deploy-to-render-button.svg",
       "documentation": "https://render.com/docs/deploy-to-render"
     },
     "railway": {
       "name": "Railway",
+      "icon": "/assets/providers/railway.svg",
       "buttonImage": "https://railway.com/button.svg",
       "documentation": "https://docs.railway.com/templates/publish-and-share"
+    },
+    "cloud-run": {
+      "name": "Cloud Run",
+      "icon": "/assets/providers/cloud-run.svg",
+      "buttonImage": "https://deploy.cloud.run/button.svg",
+      "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
+    },
+    "app-runner": {
+      "name": "AWS App Runner",
+      "icon": "/assets/providers/app-runner.svg",
+      "documentation": "https://docs.aws.amazon.com/apprunner/latest/dg/what-is-apprunner.html"
     }
   },
   "environment": {
@@ -78,7 +93,9 @@
       "additionalEnvironment": ["INTTEGRO_DEMO_CUSTOMER_ID"],
       "providers": [
         { "id": "vercel", "recommendation": "recommended", "status": "prepared", "config": "nextjs/vercel.json" },
-        { "id": "cloudflare", "recommendation": "alternative", "status": "verified", "config": "nextjs/wrangler.jsonc" }
+        { "id": "cloudflare", "recommendation": "alternative", "status": "verified", "config": "nextjs/wrangler.jsonc" },
+        { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "reason": "The v1.2.3 Next.js deployment artifact does not include a tested portable container." },
+        { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." }
       ]
     },
     {
@@ -92,16 +109,20 @@
       },
       "providers": [
         { "id": "cloudflare", "recommendation": "recommended", "status": "verified", "config": "nuxt/wrangler.jsonc" },
-        { "id": "vercel", "recommendation": "alternative", "status": "prepared", "config": "nuxt/vercel.json" }
+        { "id": "vercel", "recommendation": "alternative", "status": "prepared", "config": "nuxt/vercel.json" },
+        { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "reason": "The v1.2.3 Nuxt deployment artifact does not include a tested portable container." },
+        { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." }
       ]
     },
     {
       "id": "express",
       "live": { "status": "verified", "provider": "cloudflare", "url": "https://express-demo.inttegro.dev" },
       "providers": [
-        { "id": "railway", "recommendation": "recommended", "status": "template-pending", "config": "express/railway.json" },
+        { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "express/railway.json", "templateId": "MJF7nD" },
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "express/render.yaml" },
-        { "id": "cloudflare", "recommendation": "alternative", "status": "verified", "config": "express/wrangler.jsonc" }
+        { "id": "cloudflare", "recommendation": "alternative", "status": "verified", "config": "express/wrangler.jsonc" },
+        { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "config": "express/app.json", "reason": "The Cloud Run contract is prepared on main but is not part of the immutable v1.2.3 deployment artifact." },
+        { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." }
       ]
     },
     {
@@ -109,8 +130,10 @@
       "live": { "status": "verified", "provider": "railway", "url": "https://django-demo.inttegro.dev" },
       "additionalEnvironment": ["DJANGO_SECRET_KEY", "DJANGO_ALLOWED_HOSTS", "DJANGO_CSRF_TRUSTED_ORIGINS"],
       "providers": [
-        { "id": "railway", "recommendation": "recommended", "status": "template-pending", "config": "django/railway.json" },
+        { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "django/railway.json", "templateId": "0h-Ilj" },
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "django/render.yaml" },
+        { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "config": "django/app.json", "reason": "The Cloud Run contract is prepared on main but is not part of the immutable v1.2.3 deployment artifact." },
+        { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." },
         { "id": "cloudflare", "recommendation": "experimental", "status": "blocked", "reason": "Python Workers supports asynchronous HTTP clients, while Inttegro Python SDK 6.0.0 currently uses synchronous urllib transport." }
       ]
     },
@@ -118,8 +141,10 @@
       "id": "fastapi",
       "live": { "status": "verified", "provider": "railway", "url": "https://fastapi-demo.inttegro.dev" },
       "providers": [
-        { "id": "railway", "recommendation": "recommended", "status": "template-pending", "config": "fastapi/railway.json" },
+        { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "fastapi/railway.json", "templateId": "wk2B6a" },
         { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "fastapi/render.yaml" },
+        { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "config": "fastapi/app.json", "reason": "The Cloud Run contract is prepared on main but is not part of the immutable v1.2.3 deployment artifact." },
+        { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." },
         { "id": "cloudflare", "recommendation": "experimental", "status": "blocked", "reason": "Python Workers supports asynchronous HTTP clients, while Inttegro Python SDK 6.0.0 currently uses synchronous urllib transport." }
       ]
     },
@@ -128,8 +153,10 @@
       "live": { "status": "verified", "provider": "railway", "url": "https://rails-demo.inttegro.dev" },
       "additionalEnvironment": ["SECRET_KEY_BASE"],
       "providers": [
-        { "id": "railway", "recommendation": "recommended", "status": "template-pending", "config": "rails/railway.json" },
-        { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "rails/render.yaml" }
+        { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "rails/railway.json", "templateId": "CssQzr" },
+        { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "rails/render.yaml" },
+        { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "config": "rails/app.json", "reason": "The Cloud Run contract is prepared on main but is not part of the immutable v1.2.3 deployment artifact." },
+        { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." }
       ]
     },
     {
@@ -137,23 +164,29 @@
       "live": { "status": "verified", "provider": "railway", "url": "https://laravel-demo.inttegro.dev" },
       "additionalEnvironment": ["APP_KEY"],
       "providers": [
-        { "id": "railway", "recommendation": "recommended", "status": "template-pending", "config": "laravel/railway.json" },
-        { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "laravel/render.yaml" }
+        { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "laravel/railway.json", "templateId": "p5qiP5" },
+        { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "laravel/render.yaml" },
+        { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "config": "laravel/app.json", "reason": "The Cloud Run contract is prepared on main but is not part of the immutable v1.2.3 deployment artifact." },
+        { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." }
       ]
     },
     {
       "id": "go",
       "live": { "status": "verified", "provider": "railway", "url": "https://go-demo.inttegro.dev" },
       "providers": [
-        { "id": "railway", "recommendation": "recommended", "status": "template-pending", "config": "go/railway.json" },
-        { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "go/render.yaml" }
+        { "id": "railway", "recommendation": "recommended", "status": "prepared", "config": "go/railway.json", "templateId": "ABT6ae" },
+        { "id": "render", "recommendation": "alternative", "status": "prepared", "config": "go/render.yaml" },
+        { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "config": "go/app.json", "reason": "The Cloud Run contract is prepared on main but is not part of the immutable v1.2.3 deployment artifact." },
+        { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image." }
       ]
     },
     {
       "id": "spring-boot",
       "providers": [
         { "id": "railway", "recommendation": "recommended", "status": "blocked", "config": "spring-boot/railway.json", "reason": "The Java SDK 5.0.0 dependency must be publicly available before a reader-owned remote build can succeed." },
-        { "id": "render", "recommendation": "alternative", "status": "blocked", "config": "spring-boot/render.yaml", "reason": "The Java SDK 5.0.0 dependency must be publicly available before a reader-owned remote build can succeed." }
+        { "id": "render", "recommendation": "alternative", "status": "blocked", "config": "spring-boot/render.yaml", "reason": "The Java SDK 5.0.0 dependency must be publicly available before a reader-owned remote build can succeed." },
+        { "id": "cloud-run", "recommendation": "alternative", "status": "blocked", "reason": "The Java SDK 5.0.0 dependency must be publicly available before a Cloud Run source build can succeed." },
+        { "id": "app-runner", "recommendation": "experimental", "status": "blocked", "reason": "AWS App Runner is no longer available to new AWS customers; the Java SDK is also not public." }
       ]
     },
     { "id": "ios-swiftui", "mode": "native", "companionBackend": "nextjs", "providers": [] },

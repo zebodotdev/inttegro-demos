@@ -1,0 +1,42 @@
+{
+  "name": "inttegro-demo-django",
+  "env": {
+    "INTTEGRO_API_KEY": {
+      "description": "A dedicated Inttegro server API key. Cloud Run exposes it only to server code; use Secret Manager for production workloads.",
+      "order": 1
+    },
+    "INTTEGRO_DEMO_PRODUCT_ID": {
+      "description": "The active Afterglow Sessions Product ID.",
+      "order": 2
+    },
+    "INTTEGRO_DEMO_PRICE_ID": {
+      "description": "An active Price ID belonging to the configured Product.",
+      "order": 3
+    },
+    "DJANGO_SECRET_KEY": {
+      "description": "A deployment-specific Django signing secret generated in Cloud Shell.",
+      "generator": "secret",
+      "order": 4
+    },
+    "DJANGO_DEBUG": {
+      "description": "Keep Django debug output disabled.",
+      "value": "false",
+      "required": false,
+      "order": 5
+    }
+  },
+  "options": {
+    "allow-unauthenticated": true,
+    "memory": "512Mi",
+    "cpu": "1",
+    "concurrency": 80,
+    "max-instances": 3
+  },
+  "hooks": {
+    "postcreate": {
+      "commands": [
+        "gcloud run services update \"$K_SERVICE\" --project \"$GOOGLE_CLOUD_PROJECT\" --region \"$GOOGLE_CLOUD_REGION\" --update-env-vars \"INTTEGRO_DEMO_PUBLIC_URL=$SERVICE_URL,DJANGO_ALLOWED_HOSTS=${SERVICE_URL#https://},DJANGO_CSRF_TRUSTED_ORIGINS=$SERVICE_URL\""
+      ]
+    }
+  }
+}

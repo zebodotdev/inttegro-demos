@@ -104,12 +104,16 @@ assert.deepEqual(
   'deployment metadata must cover every V1 demo exactly once',
 );
 
-const providerStatuses = new Set(['prepared', 'verified', 'template-pending', 'blocked']);
+const providerStatuses = new Set(['prepared', 'verified', 'blocked']);
 const providerRecommendations = new Set(['recommended', 'alternative', 'experimental']);
 const providerIds = new Set(Object.keys(deployments.providers));
 for (const provider of Object.values(deployments.providers)) {
   assert.match(provider.documentation, /^https:\/\//, `${provider.name} must link its canonical deployment documentation`);
-  assert.match(provider.buttonImage, /^https:\/\//, `${provider.name} must define its official button image`);
+  assert.match(provider.icon, /^\/assets\/providers\/[a-z-]+\.svg$/, `${provider.name} must define its provider icon`);
+  assert(existsSync(join(demosRoot, provider.icon.slice(1))), `${provider.name} provider icon must exist`);
+  if (provider.buttonImage) {
+    assert.match(provider.buttonImage, /^https:\/\//, `${provider.name} button image must use HTTPS`);
+  }
 }
 
 for (const demo of deployments.demos) {
@@ -146,6 +150,13 @@ for (const demo of deployments.demos) {
     } else {
       assert(provider.config, `${demo.id}/${provider.id} must point to checked-in configuration`);
     }
+    if (provider.id === 'railway' && provider.status !== 'blocked') {
+      assert.match(
+        provider.templateId,
+        /^[A-Za-z0-9_-]{6}$/,
+        `${demo.id}/railway must identify its shareable one-click template`,
+      );
+    }
   }
 }
 
@@ -164,6 +175,42 @@ for (const id of ['express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'spr
     assert(existsSync(join(demosRoot, id, file)), `${id} must include ${file} for portable deployment`);
   }
 }
+
+for (const id of ['express', 'django', 'fastapi', 'go', 'rails', 'laravel']) {
+  const cloudRun = JSON.parse(readFileSync(join(demosRoot, id, 'app.json'), 'utf8'));
+  for (const name of ['INTTEGRO_API_KEY', 'INTTEGRO_DEMO_PRODUCT_ID', 'INTTEGRO_DEMO_PRICE_ID']) {
+    assert(cloudRun.env[name], `${id}/app.json must prompt for ${name}`);
+  }
+  assert.equal(cloudRun.env.INTTEGRO_API_KEY.value, undefined, `${id}/app.json must not contain an API key`);
+  assert.equal(cloudRun.env.INTTEGRO_API_KEY.generator, undefined, `${id}/app.json must prompt for the API key`);
+  assert.equal(cloudRun.options['allow-unauthenticated'], true, `${id} must create a public demo service`);
+  assert(cloudRun.options['max-instances'] <= 3, `${id} must cap Cloud Run scale for reader cost safety`);
+  const postcreate = cloudRun.hooks?.postcreate?.commands?.join('\n') ?? '';
+  assert(postcreate.includes('$SERVICE_URL'), `${id} must derive its Cloud Run public origin`);
+  assert(postcreate.includes('INTTEGRO_DEMO_PUBLIC_URL'), `${id} must configure its checkout return origin`);
+}
+
+const djangoCloudRun = JSON.parse(readFileSync(join(demosRoot, 'django/app.json'), 'utf8'));
+assert.equal(djangoCloudRun.env.DJANGO_SECRET_KEY.generator, 'secret');
+assert(djangoCloudRun.hooks.postcreate.commands.join('\n').includes('DJANGO_ALLOWED_HOSTS'));
+assert(djangoCloudRun.hooks.postcreate.commands.join('\n').includes('DJANGO_CSRF_TRUSTED_ORIGINS'));
+const railsCloudRun = JSON.parse(readFileSync(join(demosRoot, 'rails/app.json'), 'utf8'));
+assert.equal(railsCloudRun.env.SECRET_KEY_BASE.generator, 'secret');
+const laravelCloudRun = JSON.parse(readFileSync(join(demosRoot, 'laravel/app.json'), 'utf8'));
+assert.equal(laravelCloudRun.env.APP_KEY.value, undefined);
+assert.equal(laravelCloudRun.env.APP_KEY.generator, undefined);
+assert(laravelCloudRun.env.APP_KEY.description.includes('key:generate --show'));
+
+for (const id of ['express', 'django', 'fastapi', 'laravel', 'go']) {
+  const railway = JSON.parse(readFileSync(join(demosRoot, id, 'railway.json'), 'utf8'));
+  assert.equal(railway.deploy?.healthcheckPath, '/health', `${id} must retain its Railway health probe`);
+}
+const railsRailway = JSON.parse(readFileSync(join(demosRoot, 'rails/railway.json'), 'utf8'));
+assert.equal(
+  railsRailway.deploy?.healthcheckPath,
+  undefined,
+  'Rails must use Railway process readiness because its production HTTP probe redirects to HTTPS',
+);
 
 for (const id of ['nextjs', 'nuxt']) {
   assert(existsSync(join(demosRoot, id, 'vercel.json')), `${id} must include an explicit Vercel contract`);
@@ -205,6 +252,27 @@ assert(
   'Next.js catalogue deployment requirements must include the mobile demo customer',
 );
 for (const demo of generatedCatalogue.demos.filter((candidate) => candidate.mode === 'server')) {
+  const activeProviders = demo.providers.filter((provider) =>
+    ['prepared', 'verified'].includes(provider.status),
+  );
+  const unavailableProviders = demo.providers.filter(
+    (provider) => !['prepared', 'verified'].includes(provider.status),
+  );
+  assert.deepEqual(
+    demo.providers,
+    [...activeProviders, ...unavailableProviders],
+    `${demo.id} must list active providers before unavailable providers`,
+  );
+  for (const [group, providers] of [
+    ['active', activeProviders],
+    ['unavailable', unavailableProviders],
+  ]) {
+    assert.deepEqual(
+      providers.map((provider) => provider.name),
+      providers.map((provider) => provider.name).toSorted((left, right) => left.localeCompare(right)),
+      `${demo.id} ${group} providers must be alphabetical`,
+    );
+  }
   const expectedProductName = demo.id === 'nuxt' ? 'NUXT_DEMO_PRODUCT_ID' : 'INTTEGRO_DEMO_PRODUCT_ID';
   const expectedPriceName = demo.id === 'nuxt' ? 'NUXT_DEMO_PRICE_ID' : 'INTTEGRO_DEMO_PRICE_ID';
   assert(
@@ -236,14 +304,55 @@ assert(
   catalogueApplication.includes("['prepared', 'verified'].includes(provider.status)"),
   'catalogue must let readers launch prepared or verified provider configurations',
 );
+assert(
+  catalogueApplication.includes('railway.com/new/template/${provider.templateId}'),
+  'catalogue must build Railway actions from the release manifest template code',
+);
+assert(
+  catalogueApplication.includes('https://deploy.cloud.run/?${query}'),
+  'catalogue must build Cloud Run actions from immutable deployment refs',
+);
+assert(
+  catalogueApplication.includes('<img src="${provider.icon}" alt="" />'),
+  'catalogue provider choices must use provider logos',
+);
 const catalogueDocument = readFileSync(join(demosRoot, 'catalog/public/index.html'), 'utf8');
 assert(!catalogueDocument.includes('Release candidate'), 'published catalogue must not label the current release as a candidate');
+for (const providerId of Object.keys(deployments.providers)) {
+  assert(
+    catalogueDocument.includes(`<option value="${providerId}">`),
+    `catalogue filter must expose ${providerId}`,
+  );
+}
 
 for (const id of ['nextjs', 'nuxt', 'express']) {
   const readme = readFileSync(join(demosRoot, id, 'README.md'), 'utf8');
   assert(
     readme.includes(`/tree/deploy-${id}-v${release.version}`),
     `${id} deployment buttons must target its root-level immutable deployment ref`,
+  );
+}
+
+const railwayTemplateIds = {
+  express: 'MJF7nD',
+  django: '0h-Ilj',
+  fastapi: 'wk2B6a',
+  go: 'ABT6ae',
+  rails: 'CssQzr',
+  laravel: 'p5qiP5',
+};
+for (const [id, templateId] of Object.entries(railwayTemplateIds)) {
+  const readme = readFileSync(join(demosRoot, id, 'README.md'), 'utf8');
+  assert(
+    readme.includes(`railway.com/new/template/${templateId}`),
+    `${id} README must link its shareable Railway template`,
+  );
+  const generatedDemo = generatedCatalogue.demos.find((demo) => demo.id === id);
+  const railway = generatedDemo.providers.find((provider) => provider.id === 'railway');
+  assert.equal(railway.templateId, templateId, `${id} catalogue must expose the Railway template code`);
+  assert(
+    ['prepared', 'verified'].includes(railway.status),
+    `${id} Railway template must be reader-launchable`,
   );
 }
 
