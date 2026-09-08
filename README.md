@@ -20,6 +20,14 @@ no product or amount. The request handler uses `AsyncInttegroClient`, awaits
 both API calls, and reuses its HTTP connection pool across requests. Run
 `pytest` for the focused checks.
 
+## Try the Checkout presentations
+
+The reservation form offers **Embedded**, **Modal**, and **Hosted page**.
+Embedded is the default. FastAPI returns a no-store `{ orderId }` for the first
+two and a `303` hosted-page redirect for the third or when JavaScript is absent.
+Read [`public/static/checkout-presentations.js`](./public/static/checkout-presentations.js)
+for the client-side lifecycle.
+
 ## Run with Docker
 
 After configuring `.env`, run `docker compose up --build --wait`. Compose
@@ -48,6 +56,6 @@ runtime locally. See
 
 Start with [`src/app/checkout.py`](./src/app/checkout.py) for the typed Order request and
 safe error mapping, then read [`src/app/main.py`](./src/app/main.py) for the FastAPI
-handoff and verification boundary. The `INTTEGRO:*` comments map choices and
+JSON/303 handoff and verification boundary. The `INTTEGRO:*` comments map choices and
 alternatives to the shared [integration guide](../INTEGRATION_GUIDE.md) and
 [machine-readable decision registry](../integration-decisions.json).
