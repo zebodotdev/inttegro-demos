@@ -9,8 +9,8 @@ import { createHostedCheckout, DemoError } from '@/checkout';
 
 export type AppContext = {};
 
-// INTTEGRO:FLOW [hosted-checkout] Routes keep the Worker HTTP boundary
-// separate from the integration service. The hosted handoff is documented at
+// INTTEGRO:FLOW [checkout-presentation] Routes keep the Worker HTTP boundary
+// separate from the integration service. All three presentations are documented at
 // https://studio.inttegro.com/accept-payment-with-inttegro-checkout.
 const redirectToError = (requestUrl: string, error: DemoError) => {
   const target = new URL('/', requestUrl);
@@ -18,6 +18,9 @@ const redirectToError = (requestUrl: string, error: DemoError) => {
   target.searchParams.set('message', error.message);
   return new Response(null, { status: 303, headers: { Location: target.toString() } });
 };
+
+const wantsJson = (request: Request) =>
+  request.headers.get('accept')?.includes('application/json') ?? false;
 
 export default defineApp([
   ({ response }) => {
@@ -39,6 +42,18 @@ export default defineApp([
       post: async ({ request }) => {
         try {
           const result = await createHostedCheckout(await request.formData(), request.url, env);
+          if (wantsJson(request)) {
+            return Response.json(
+              { orderId: result.orderId },
+              {
+                status: 201,
+                headers: {
+                  'Cache-Control': 'no-store',
+                  'Set-Cookie': `inttegro_demo_order=${encodeURIComponent(result.orderId)}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=1800`,
+                },
+              },
+            );
+          }
           // INTTEGRO:DECISION [see-other-redirect] 303 converts the form POST to
           // a GET at the Inttegro URL and avoids replaying supporter details.
           return new Response(null, {
@@ -49,9 +64,21 @@ export default defineApp([
             },
           });
         } catch (error) {
+          const publicError = error instanceof DemoError
+            ? error
+            : new DemoError('api_error', 'Contributions are temporarily unavailable.');
+          if (wantsJson(request)) {
+            return Response.json(
+              { code: publicError.code, message: publicError.message },
+              {
+                status: publicError.code === 'validation_error' ? 400 : 503,
+                headers: { 'Cache-Control': 'no-store' },
+              },
+            );
+          }
           return redirectToError(
             request.url,
-            error instanceof DemoError ? error : new DemoError('api_error', 'Contributions are temporarily unavailable.'),
+            publicError,
           );
         }
       },

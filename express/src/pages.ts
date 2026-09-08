@@ -1,6 +1,6 @@
 const page = (body: string, title = 'Afterglow Sessions — Inttegro × Express') => `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#08091d">
-<title>${title}</title><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/styles.css"><script src="/demo-ui.js" defer></script></head><body>${body}</body></html>`;
+<title>${title}</title><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/checkout-presentations.css"><script src="/checkout-presentations.js" defer></script><script src="/demo-ui.js" defer></script></head><body>${body}</body></html>`;
 
 const escapeHtml = (value: string) => value.replace(/[&<>'"]/g, (character) => ({
   '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',

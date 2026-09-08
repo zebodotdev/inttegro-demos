@@ -5,8 +5,8 @@ import { randomUUID } from 'node:crypto';
 import { CheckoutService, DemoError } from './checkout.service.js';
 import { homePage, resultPage } from './pages.js';
 
-// INTTEGRO:FLOW [hosted-checkout] This controller owns the browser-facing
-// transition described at
+// INTTEGRO:FLOW [checkout-presentation] This controller builds one finalized
+// Order for hosted-page, embedded, and modal Checkout described at
 // https://studio.inttegro.com/accept-payment-with-inttegro-checkout; the
 // injected service owns trusted catalog and Order work.
 @Controller()
@@ -30,6 +30,8 @@ export class CampaignController {
     @Req() request: Request,
     @Res() response: Response,
   ) {
+    const wantsJson = request.headers.accept?.includes('application/json') ?? false;
+    if (wantsJson) response.set('Cache-Control', 'no-store');
     try {
       const requestOrigin = `${request.protocol}://${request.get('host') ?? 'localhost:3013'}`;
       const result = await this.checkout.createHostedCheckout(body, requestOrigin);
@@ -39,13 +41,24 @@ export class CampaignController {
         sameSite: 'lax',
         secure: request.secure,
       });
-      // INTTEGRO:DECISION [see-other-redirect] A 303 follows checkout with GET;
-      // 307 or 308 would preserve POST and could replay supporter form data.
-      response.redirect(303, result.checkoutUrl);
+      if (wantsJson) {
+        response.status(201).json({ orderId: result.orderId });
+      } else {
+        // INTTEGRO:DECISION [see-other-redirect] A 303 follows checkout with GET;
+        // 307 or 308 would preserve POST and could replay supporter form data.
+        response.redirect(303, result.checkoutUrl);
+      }
     } catch (error) {
       const publicError = error instanceof DemoError
         ? error
         : new DemoError('api_error', 'Contributions are temporarily unavailable.');
+      if (wantsJson) {
+        response.status(publicError.code === 'validation_error' ? 400 : 503).json({
+          code: publicError.code,
+          message: publicError.message,
+        });
+        return;
+      }
       response.redirect(
         303,
         `/?${new URLSearchParams({ code: publicError.code, message: publicError.message })}`,

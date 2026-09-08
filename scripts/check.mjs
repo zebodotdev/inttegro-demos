@@ -30,6 +30,10 @@ assert.deepEqual(
   'the remaining V2 roadmap must stay explicit',
 );
 const implemented = manifest.demos.filter((demo) => demo.status !== 'planned');
+const serverDemoIds = [
+  'nextjs', 'express', 'nuxt', 'go', 'django', 'fastapi', 'rails', 'laravel',
+  'spring-boot', 'nestjs', 'redwoodsdk',
+];
 
 assert.equal(release.schemaVersion, 1, 'release manifest schema must be version 1');
 assert.match(release.version, /^\d+\.\d+\.\d+$/, 'release version must use SemVer');
@@ -93,6 +97,85 @@ for (const demo of implemented) {
   const directory = join(demosRoot, demo.id);
   assert(existsSync(directory), `missing implemented demo directory: ${demo.id}`);
   assert(existsSync(join(directory, 'README.md')), `missing implemented demo README: ${demo.id}`);
+}
+
+const checkoutPresentationAssets = {
+  nextjs: 'nextjs/public',
+  express: 'express/public',
+  nuxt: 'nuxt/public',
+  go: 'go/static',
+  django: 'django/src/checkout/static/checkout',
+  fastapi: 'fastapi/public/static',
+  rails: 'rails/public',
+  laravel: 'laravel/public',
+  'spring-boot': 'spring-boot/src/main/resources/static',
+  nestjs: 'nestjs/public',
+  redwoodsdk: 'redwoodsdk/public',
+};
+const presentationScript = readFileSync(join(demosRoot, 'assets/checkout-presentations.js'), 'utf8');
+const presentationStyles = readFileSync(join(demosRoot, 'assets/checkout-presentations.css'), 'utf8');
+for (const value of ['embedded', 'modal', 'hosted']) {
+  assert(
+    presentationScript.includes(`    ${value}: {`),
+    `presentation selector must offer ${value} Checkout`,
+  );
+}
+assert(
+  presentationScript.includes('https://js.inttegro.com/inttegro.js@0.2.0'),
+  'presentation client must pin the reviewed Inttegro runtime',
+);
+assert(
+  presentationScript.includes('headers: { Accept: "application/json" }'),
+  'embedded and modal Checkout must negotiate the minimal JSON representation',
+);
+for (const [id, directory] of Object.entries(checkoutPresentationAssets)) {
+  const scriptPath = join(demosRoot, directory, 'checkout-presentations.js');
+  const stylesPath = join(demosRoot, directory, 'checkout-presentations.css');
+  assert(existsSync(scriptPath), `${id} must ship the shared Checkout presentation client`);
+  assert(existsSync(stylesPath), `${id} must ship the shared Checkout presentation styles`);
+  assert.equal(readFileSync(scriptPath, 'utf8'), presentationScript, `${id} presentation client must match the reviewed shared asset`);
+  assert.equal(readFileSync(stylesPath, 'utf8'), presentationStyles, `${id} presentation styles must match the reviewed shared asset`);
+}
+
+const checkoutHandlers = {
+  nextjs: 'nextjs/app/checkout/route.ts',
+  express: 'express/src/app.ts',
+  nuxt: 'nuxt/server/routes/checkout.post.ts',
+  go: 'go/main.go',
+  django: 'django/src/checkout/views.py',
+  fastapi: 'fastapi/src/app/main.py',
+  rails: 'rails/app/controllers/checkouts_controller.rb',
+  laravel: 'laravel/app/Http/Controllers/CheckoutController.php',
+  'spring-boot': 'spring-boot/src/main/java/com/inttegro/demo/CheckoutController.java',
+  nestjs: 'nestjs/src/campaign.controller.ts',
+  redwoodsdk: 'redwoodsdk/src/worker.tsx',
+};
+const checkoutDocuments = {
+  nextjs: 'nextjs/app/layout.tsx',
+  express: 'express/src/pages.ts',
+  nuxt: 'nuxt/nuxt.config.ts',
+  go: 'go/templates/home.html',
+  django: 'django/src/checkout/templates/checkout/home.html',
+  fastapi: 'fastapi/src/app/templates/home.html',
+  rails: 'rails/app/views/layouts/application.html.erb',
+  laravel: 'laravel/resources/views/checkout.blade.php',
+  'spring-boot': 'spring-boot/src/main/resources/templates/checkout.html',
+  nestjs: 'nestjs/src/pages.ts',
+  redwoodsdk: 'redwoodsdk/src/app/document.tsx',
+};
+assert.deepEqual(Object.keys(checkoutHandlers).toSorted(), serverDemoIds.toSorted());
+assert.deepEqual(Object.keys(checkoutDocuments).toSorted(), serverDemoIds.toSorted());
+for (const id of serverDemoIds) {
+  const handler = readFileSync(join(demosRoot, checkoutHandlers[id]), 'utf8');
+  assert(handler.includes('orderId'), `${id} must return the finalized Order ID for browser Checkout`);
+  assert(handler.toLowerCase().includes('no-store'), `${id} JSON Checkout responses must not be cached`);
+  const document = readFileSync(join(demosRoot, checkoutDocuments[id]), 'utf8');
+  assert(document.includes('checkout-presentations.css'), `${id} must load the shared presentation styles`);
+  assert(document.includes('checkout-presentations.js'), `${id} must load the shared presentation client`);
+  const readme = readFileSync(join(demosRoot, id, 'README.md'), 'utf8');
+  for (const label of ['Embedded', 'Modal', 'Hosted page']) {
+    assert(readme.includes(label), `${id} README must document the ${label} presentation`);
+  }
 }
 
 assert.equal(deployments.schemaVersion, 1, 'deployment manifest schema must be version 1');
@@ -711,4 +794,4 @@ for (const path of textFiles(demosRoot)) {
   assert(!source.includes(staleMobileField), `stale mobile SDK field in ${path}`);
 }
 
-console.log('Demo contract check passed: 15 published demos, five stories, deployment contracts, catalogue metadata, source commentary, original artwork, and Inttegro SDK naming are consistent.');
+console.log('Demo contract check passed: 15 published demos, five stories, three web Checkout presentations, deployment contracts, catalogue metadata, source commentary, original artwork, and Inttegro SDK naming are consistent.');

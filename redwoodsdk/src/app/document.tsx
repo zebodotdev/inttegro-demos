@@ -12,10 +12,13 @@ export function Document({ children }: { children: React.ReactNode }) {
         <title>Openfield — Riverbend Learning Garden</title>
         <link rel="icon" href="/favicon.svg" />
         <link rel="stylesheet" href="/styles.css" />
+        <link rel="stylesheet" href="/checkout-presentations.css" />
       </head>
       <body>
         {children}
-        <script>import('/src/client.tsx')</script>
+        <script
+          data-source="/checkout-presentations.js"
+        >{`import(document.currentScript.dataset.source).then(() => import('/src/client.tsx'))`}</script>
       </body>
     </html>
   );

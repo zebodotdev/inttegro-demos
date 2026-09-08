@@ -1,0 +1,278 @@
+.checkout-presentation-picker {
+  min-width: 0;
+  margin: 2px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+[data-checkout-form][hidden],
+[data-contribution-form][hidden] {
+  display: none !important;
+}
+
+.checkout-presentation-picker legend {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 740;
+  letter-spacing: 0.02em;
+}
+
+.checkout-presentation-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.checkout-presentation-options label {
+  position: relative;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.checkout-presentation-options input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.checkout-presentation-options label > span {
+  display: flex;
+  min-height: 66px;
+  padding: 10px 6px 9px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid color-mix(in srgb, var(--line) 86%, transparent);
+  border-radius: 13px;
+  background: color-mix(in srgb, var(--card, var(--surface, white)) 74%, transparent);
+  color: var(--muted);
+  text-align: center;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.checkout-presentation-options svg {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.45;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.checkout-presentation-options strong {
+  overflow: hidden;
+  font-size: 10px;
+  font-weight: 780;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.checkout-presentation-options input:checked + span {
+  border-color: color-mix(in srgb, var(--accent, #2c6d51) 72%, var(--line));
+  background: color-mix(in srgb, var(--accent, #2c6d51) 11%, var(--card, var(--surface, white)));
+  color: var(--ink);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent, #2c6d51) 22%, transparent);
+}
+
+.checkout-presentation-options input:focus-visible + span {
+  outline: 3px solid color-mix(in srgb, var(--accent, #2c6d51) 26%, transparent);
+  outline-offset: 2px;
+}
+
+.checkout-presentation-options input:disabled + span {
+  cursor: wait;
+  opacity: 0.58;
+}
+
+.checkout-presentation-description {
+  min-height: 32px;
+  margin: 8px 2px 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.checkout-presentation-feedback {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.checkout-presentation-feedback[data-kind="error"] {
+  color: var(--error, #b42318);
+}
+
+.inttegro-checkout-surface {
+  margin-top: 18px;
+  color: var(--ink);
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 220ms ease-out,
+    transform 220ms cubic-bezier(0.23, 1, 0.32, 1);
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.inttegro-checkout-surface-header {
+  margin-bottom: 14px;
+}
+
+.inttegro-checkout-surface-header h3,
+.inttegro-checkout-dialog-header h2 {
+  margin: 3px 0 0;
+  font-size: clamp(20px, 4vw, 27px);
+  letter-spacing: -0.035em;
+}
+
+.inttegro-checkout-surface-header p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.inttegro-checkout-kicker {
+  color: var(--accent, #2c6d51);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.inttegro-checkout-dialog {
+  width: min(620px, calc(100% - 24px));
+  max-width: none;
+  max-height: min(92dvh, 900px);
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--line, #d9dedb) 82%, transparent);
+  border-radius: 24px;
+  background: var(--card, var(--surface, #fff));
+  color: var(--ink, #1b1e37);
+  box-shadow: 0 28px 90px rgb(16 24 20 / 0.28);
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  transition:
+    opacity 180ms ease-out,
+    transform 220ms cubic-bezier(0.23, 1, 0.32, 1),
+    overlay 180ms ease-out allow-discrete,
+    display 180ms ease-out allow-discrete;
+
+  @starting-style {
+    opacity: 0;
+    transform: scale(0.97) translateY(8px);
+  }
+}
+
+.inttegro-checkout-dialog::backdrop {
+  background: rgb(12 18 15 / 0.6);
+  backdrop-filter: blur(5px);
+}
+
+.inttegro-checkout-dialog-frame {
+  display: grid;
+  max-height: min(92dvh, 900px);
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.inttegro-checkout-dialog-header {
+  display: flex;
+  padding: 18px 18px 15px 22px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid var(--line, #e7ebe8);
+  background: color-mix(in srgb, var(--card, var(--surface, white)) 94%, var(--accent, #2c6d51));
+}
+
+.inttegro-checkout-dialog-header button {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid var(--line, #e0e4e1);
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.inttegro-checkout-dialog-header button:active,
+.checkout-presentation-options label:active > span {
+  transform: scale(0.97);
+}
+
+.inttegro-checkout-dialog-header svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+.inttegro-checkout-dialog-scroll {
+  padding: 18px 22px 24px;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+body:has(.inttegro-checkout-dialog[open]) {
+  overflow: hidden;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .checkout-presentation-options label:hover > span {
+    border-color: color-mix(in srgb, var(--accent, #2c6d51) 42%, var(--line));
+    transform: translateY(-1px);
+  }
+
+  .inttegro-checkout-dialog-header button:hover {
+    background: color-mix(in srgb, var(--ink) 7%, transparent);
+  }
+}
+
+@media (max-width: 420px) {
+  .checkout-presentation-options strong {
+    font-size: 9px;
+  }
+
+  .inttegro-checkout-dialog {
+    width: calc(100% - 12px);
+    max-height: calc(100dvh - 12px);
+    border-radius: 20px;
+  }
+
+  .inttegro-checkout-dialog-frame {
+    max-height: calc(100dvh - 12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .checkout-presentation-options label > span,
+  .inttegro-checkout-surface,
+  .inttegro-checkout-dialog,
+  .inttegro-checkout-dialog-header button {
+    transform: none;
+    transition-duration: 1ms;
+  }
+}

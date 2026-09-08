@@ -11,8 +11,9 @@ from inttegro import AsyncInttegroClient
 from .service import DemoError, create_hosted_checkout, parse_checkout_input, validated_origin
 
 
-# INTTEGRO:FLOW [hosted-checkout] POST /checkout performs the browser handoff
-# described at https://studio.inttegro.com/accept-payment-with-inttegro-checkout.
+# INTTEGRO:FLOW [checkout-presentation] POST /checkout creates one finalized
+# Order for the hosted-page, embedded, and modal experiences described at
+# https://studio.inttegro.com/accept-payment-with-inttegro-checkout.
 # INTTEGRO:VERIFY [server-side-verification] The /complete view is a UX return,
 # not proof of payment. Resolve the order through a merchant-owned mapping and
 # look it up server-side before fulfillment. Because merchant webhooks are not
@@ -60,6 +61,7 @@ async def home(request: HttpRequest) -> HttpResponse:
 
 @require_POST
 async def checkout(request: HttpRequest) -> HttpResponse:
+    wants_json = "application/json" in request.headers.get("Accept", "")
     try:
         values = parse_checkout_input(request.POST)
         default_origin = request.build_absolute_uri("/").rstrip("/")
@@ -76,7 +78,11 @@ async def checkout(request: HttpRequest) -> HttpResponse:
         # INTTEGRO:DECISION [see-other-redirect] 303 tells the browser to follow
         # with GET. A 307/308 would preserve POST and risk sending this merchant
         # form body to the hosted checkout destination.
-        response = HttpResponse(status=303, headers={"Location": checkout_url})
+        response = (
+            JsonResponse({"orderId": order_id}, status=201, headers={"Cache-Control": "no-store"})
+            if wants_json
+            else HttpResponse(status=303, headers={"Location": checkout_url})
+        )
         # INTTEGRO:DECISION [durable-order-correlation] This short-lived HttpOnly
         # cookie is a demo aid, not authorization or payment evidence. Persist
         # merchant reservation, owner, Inttegro order ID, and idempotency key in
@@ -86,6 +92,9 @@ async def checkout(request: HttpRequest) -> HttpResponse:
     except DemoError as error:
         # INTTEGRO:SECURITY [safe-error-boundary] Only our bounded error code and
         # message reach the browser. Detailed upstream diagnostics stay server-side.
+        if wants_json:
+            status = 400 if error.code == "validation_error" else 503
+            return JsonResponse({"code": error.code, "message": error.message}, status=status, headers={"Cache-Control": "no-store"})
         return HttpResponse(status=303, headers={"Location": f"/?{urlencode({'code': error.code, 'message': error.message})}"})
 
 

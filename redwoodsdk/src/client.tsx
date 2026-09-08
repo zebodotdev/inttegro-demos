@@ -21,14 +21,6 @@ if (form instanceof HTMLFormElement) {
     if (input instanceof HTMLInputElement && input.name === 'tier') updateButton();
   });
 
-  form.addEventListener('submit', () => {
-    const button = form.querySelector('button');
-    if (button instanceof HTMLButtonElement) {
-      button.disabled = true;
-      if (buttonLabel) buttonLabel.textContent = 'Opening secure checkout…';
-    }
-  });
-
   window.addEventListener('pageshow', () => {
     const button = form.querySelector('button');
     if (button instanceof HTMLButtonElement) button.disabled = false;
