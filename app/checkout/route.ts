@@ -2,21 +2,28 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createHostedCheckout, DemoError, parseCheckoutInput } from '@/lib/checkout';
 
 /**
- * INTTEGRO:FLOW [hosted-checkout] POST /checkout crosses from the merchant app
- * to hosted Inttegro Checkout. The detailed Order choices live in
+ * INTTEGRO:FLOW [checkout-presentation] POST /checkout creates one finalized
+ * Order for hosted-page, embedded, and modal Inttegro Checkout. The detailed Order choices live in
  * lib/checkout.ts and https://studio.inttegro.com/accept-payment-with-inttegro-checkout.
  * INTTEGRO:VERIFY [server-side-verification] The later /complete redirect is a
  * browser navigation signal, not proof of payment or authority to fulfill.
  */
 
 export async function POST(request: NextRequest) {
+  const wantsJson = request.headers.get('accept')?.includes('application/json') ?? false;
   try {
     const input = parseCheckoutInput(await request.formData());
     const checkout = await createHostedCheckout(input, request.nextUrl.origin);
-    // INTTEGRO:DECISION [see-other-redirect] 303 converts this form POST into a
-    // GET to the hosted URL. Unlike 307/308, it cannot replay the form body to
-    // the destination.
-    const response = NextResponse.redirect(checkout.checkoutUrl, 303);
+    const response = wantsJson
+      // INTTEGRO:SECURITY [client-order-reference] The enhanced UI receives
+      // only the finalized Order ID; credentials and commercial inputs stay here.
+      ? NextResponse.json(
+        { orderId: checkout.orderId },
+        { status: 201, headers: { 'Cache-Control': 'no-store' } },
+      )
+      // INTTEGRO:DECISION [see-other-redirect] The no-JavaScript and hosted-page
+      // path uses 303 so the browser follows with GET and never replays this body.
+      : NextResponse.redirect(checkout.checkoutUrl, 303);
 
     // INTTEGRO:DECISION [durable-order-correlation] This short-lived HttpOnly
     // cookie illustrates server-readable correlation; it is not payment proof
@@ -38,6 +45,15 @@ export async function POST(request: NextRequest) {
     const safe = error instanceof DemoError
       ? error
       : new DemoError('api_error', 'Checkout is temporarily unavailable.');
+    if (wantsJson) {
+      return NextResponse.json(
+        { code: safe.code, message: safe.message },
+        {
+          status: safe.code === 'validation_error' ? 400 : 503,
+          headers: { 'Cache-Control': 'no-store' },
+        },
+      );
+    }
     const url = new URL('/', request.url);
     url.searchParams.set('code', safe.code);
     url.searchParams.set('message', safe.message);
