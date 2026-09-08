@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "demo": "fastapi",
+  "version": "1.6.0",
+  "sourceSuiteTag": "v1.6.0",
+  "sourceDemoTag": "fastapi-v1.6.0",
+  "sourceCommit": "063f8551aaa52e4371564983dddce2581ee9c288",
+  "sourceSubtreeCommit": "9444b53edc25e453395216666357cd653b9ccf9f"
+}
