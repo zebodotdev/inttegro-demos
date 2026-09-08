@@ -29,7 +29,7 @@ for example `INTTEGRO:DECISION [finalize-on-create]`. Markers are deliberately
 plain text so source search, documentation generators, and retrieval systems
 can index them in every language.
 
-## Architecture A: hosted checkout for web applications
+## Architecture A: server-owned Checkout for web applications
 
 Next.js, Nuxt, Express, Django, FastAPI, Rails, Laravel, Go, Spring Boot,
 NestJS, and RedwoodSDK use the same server-owned flow:
@@ -38,28 +38,62 @@ NestJS, and RedwoodSDK use the same server-owned flow:
 browser form
     -> demo server validates customer and attempt data
     -> server creates and finalizes an order with its Inttegro API key
-    -> server stores the returned order ID and sends a 303 redirect
-    -> browser completes the hosted Inttegro experience
+    -> hosted page: server sends a 303 to the URL returned by Inttegro
+    -> embedded/modal: server sends no-store JSON containing only { orderId }
+    -> browser completes the same Inttegro-hosted experience
     -> browser returns to /complete or /cancel with order_id appended
     -> merchant server looks up the order before fulfillment
 ```
 
-### Why hosted checkout
+### One Checkout experience, three presentations
 
-These demos choose the hosted invoice URL returned by the finalized order. It
-keeps payment entry and provider-specific confirmation inside Inttegro while
-the merchant application owns products, customer context, totals, and
-fulfillment. It is the smallest production-shaped integration for a web app.
+Every demo offers **Embedded**, **Modal**, and **Hosted page** at the point of
+checkout. All three use the same server-created Order and the same
+Inttegro-hosted payment experience. Only placement changes: inline Checkout
+keeps the order context visible, a modal creates a focused interruption, and
+the hosted page provides a full-page handoff with no dependency on merchant
+JavaScript.
+
+The selector exists so readers can compare those trade-offs in a real product
+journey. A production product normally chooses one presentation deliberately
+instead of asking every payer. The native HTML form remains the baseline; the
+browser module intercepts only embedded and modal submissions. This progressive
+enhancement means failed or disabled JavaScript can still reach the hosted page.
+
+The server distinguishes the two representations with content negotiation. An
+ordinary form request gets `303 See Other` and the hosted URL. A request with
+`Accept: application/json` gets `201 Created`, `Cache-Control: no-store`, and
+only `{ "orderId": "or_…" }`. The API key, catalog selection, amount, customer
+authority, and full upstream response never cross into merchant JavaScript.
+
+These standalone framework demos load the fixed versioned runtime directly
+from `https://js.inttegro.com`. That keeps Rails, Django, Go, and Java examples
+free of an otherwise unnecessary Node build. The package adapters are currently
+a developer preview; after publication, production JavaScript applications
+should normally use `@inttegro/js` or the React, Vue, Svelte, or Angular adapter
+for typed lifecycle and cleanup integration. Those packages still load the
+executable runtime only from Inttegro's controlled origin; never download,
+proxy, bundle, mirror, or self-host it.
+
+The merchant page owns the outer modal: its close control, focus restoration,
+scroll containment, and visual motion. Inttegro owns the isolated iframe and
+the payment controls inside it. Open the dialog before calling `mount()` so the
+frame can measure its available space, and destroy the controller when the
+dialog closes. Embedded Checkout hides the completed merchant form and mounts
+beside it; the controller is destroyed whenever the owning page replaces that
+surface.
 
 An application with a materially custom payment experience can use the Orders
 payment endpoints instead, but then it owns more state transitions, recovery
-UI, payment-method behavior, testing, and compliance analysis. Do not copy only
-the redirect from these demos if your intended architecture is direct API
-payment; model that lifecycle explicitly.
+UI, payment-method behavior, testing, and compliance analysis. Embedding the
+Inttegro-hosted iframe is not direct API payment: the merchant controls
+placement, while Inttegro still owns sensitive payment entry and confirmation.
 
 Canonical documentation:
 
 - [Accept payment with Inttegro Checkout](https://studio.inttegro.com/accept-payment-with-inttegro-checkout)
+- [Web Checkout SDKs](https://studio.inttegro.com/web)
+- [JavaScript runtime and loader](https://studio.inttegro.com/web/javascript)
 - [Orders API and lifecycle](https://studio.inttegro.com/orders)
 - [Payment methods](https://studio.inttegro.com/payment-methods)
 
@@ -237,17 +271,23 @@ forwarded host and protocol headers only when the application is behind a known
 proxy and its framework is configured with the exact trusted proxy chain. An
 untrusted Host header must not be allowed to choose a payment return target.
 
-### Redirect to the URL Inttegro returned
+### Choose the response representation deliberately
 
 The hosted URL is read from `order.invoice.format.web.url`. Do not construct an
 Inttegro URL from an order ID or rely on undocumented hostname/path patterns.
 Returned links can evolve independently of the merchant integration.
 
-The POST handlers answer with `303 See Other`, which tells the browser to
-follow the hosted URL with GET. `302` is historically ambiguous after POST;
-`307` and `308` preserve POST and could resubmit the merchant form body to the
-checkout destination. Client-side navigation is possible, but adds JavaScript
-failure modes and is unnecessary for this server-rendered flow.
+For Hosted page and the native form fallback, handlers answer with `303 See
+Other`, which tells the browser to follow the hosted URL with GET. `302` is
+historically ambiguous after POST; `307` and `308` preserve POST and could
+resubmit the merchant form body to the checkout destination.
+
+Embedded and modal Checkout send the same form with `Accept: application/json`.
+The server answers `201 Created` with only the finalized Order ID. Mark that
+response `Cache-Control: no-store`: the ID is intentionally usable by the payer
+but should not be retained by shared caches, analytics, or URLs. Do not return
+the API key, authoritative input values, raw Order payload, or the hosted URL
+merely because a browser requested JSON.
 
 ### Store correlation, then verify before fulfillment
 

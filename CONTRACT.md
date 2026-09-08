@@ -3,14 +3,14 @@
 This contract keeps all Inttegro demos behaviorally equivalent while allowing
 each application to follow its framework's normal project structure.
 
-## V1 hosted-checkout flow
+## Web Checkout presentation flow
 
 Every server-backed demo must expose:
 
 | Route | Behavior |
 | --- | --- |
 | `GET /` | Render the complete app story and generate a fresh checkout attempt ID. |
-| `POST /checkout` | Validate the form, create and finalize an Inttegro order, then redirect to hosted checkout. |
+| `POST /checkout` | Validate the form and create one finalized Inttegro Order. An ordinary HTML request receives a `303` to the returned hosted URL; `Accept: application/json` receives `201 {"orderId":"…"}` for embedded or modal Checkout. |
 | `GET /complete` | Explain that the browser returned successfully and server-side status remains authoritative. |
 | `GET /cancel` | Explain that checkout was canceled and offer a safe retry. |
 | `GET /health` | Return a non-secret readiness response without calling Inttegro. |
@@ -23,23 +23,40 @@ The order request must use:
 - `finalize: true`;
 - an inline line item whose product type and name match the visible app story;
 - explicit redirect and cancellation URLs; and
-- the hosted checkout URL returned by Inttegro rather than a URL constructed by
-  the demo.
+- the hosted checkout URL returned by Inttegro rather than one constructed by
+  the demo; and
+- a JSON response containing only the finalized Order ID, marked
+  `Cache-Control: no-store`, when merchant-page Checkout is requested.
+
+Browser JavaScript progressively enhances the native form with three choices:
+
+- **Embedded** mounts Inttegro Checkout below the order form;
+- **Modal** mounts the same Checkout inside an app-owned accessible dialog; and
+- **Hosted page** follows the returned Inttegro Pages URL.
+
+The default is Embedded. Hosted page remains the no-JavaScript fallback. The
+presentation changes neither the Order request nor the server trust boundary.
+The browser must load executable Checkout code only from the fixed, versioned
+`https://js.inttegro.com` URL and must never mirror or self-host it.
 
 ## Input contract
 
-The checkout form contains `name`, `email`, `phone`, and `attempt_id`. Each story
-uses one fixed GHS 50.00 purchase so integrations remain comparable while the
-surrounding application stays realistic:
+The checkout form contains `name`, `email`, `phone`, and `attempt_id`.
+Storefront, ticketing, and invoice stories use one fixed GHS 50.00 purchase so
+integrations remain comparable. Openfield adds a server-validated tier whose
+only effect is the line-item quantity:
 
 | Story | API line item | Product type |
 | --- | --- | --- |
 | Kora Market | `Dawn Brew Set` | `physical` |
 | Afterglow Sessions | `Afterglow Sessions - Courtyard admission` | `digital` |
 | Ledgerline | `Invoice INV-2048` | `service` |
+| Openfield | Configured campaign Product | Configured Product type |
 
-Every line item has quantity `1`, currency `GHS`, and value `5000` minor units.
-Visible product names, totals, fulfillment language, and API requests must agree.
+Each configured Price is GHS `5000` minor units. The first three stories use
+quantity `1`; Openfield maps its three allow-listed tiers to quantities `1`,
+`2`, and `5`. Visible product names, totals, fulfillment language, and API
+requests must agree.
 
 Applications must trim input, reject missing fields, require a syntactically
 valid email address, and reject attempt IDs outside `[A-Za-z0-9_-]`.
@@ -76,6 +93,11 @@ Every server-backed demo must provide:
 - at least one test for invalid input;
 - at least one test proving the expected Inttegro order request; and
 - an `.env.example` containing placeholders only.
+
+It must also verify that every presentation creates the same authoritative
+Order shape, that embedded and modal responses expose only `orderId`, and that
+closing a merchant-owned modal destroys its Checkout controller and restores
+focus through the platform dialog behavior.
 
 Every V1 integration entry point must also:
 

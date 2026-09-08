@@ -16,11 +16,11 @@ Commerce checkout.
 
 | Story | Demos | Customer journey |
 | --- | --- | --- |
-| **Kora Market** | Next.js, Nuxt, Rails, Laravel | Discover the Dawn Brew Set, choose a finish, review the bag, and continue to hosted checkout. |
+| **Kora Market** | Next.js, Nuxt, Rails, Laravel | Discover the Dawn Brew Set, choose a finish, review the bag, and choose embedded, modal, or hosted-page Checkout. |
 | **Afterglow Sessions** | Express, Django, FastAPI | Explore an intimate live lineup, review venue details, and reserve a courtyard ticket. |
 | **Ledgerline** | Go, Spring Boot | Review a client invoice, inspect its service lines, and settle the balance securely. |
 | **Kora Market mobile** | SwiftUI, Compose, Flutter, React Native | Browse a native product detail experience and present the Inttegro payment sheet. |
-| **Openfield** | NestJS, RedwoodSDK | Choose a trusted contribution tier, support a community learning garden, and continue to hosted checkout. |
+| **Openfield** | NestJS, RedwoodSDK | Choose a trusted contribution tier, support a community learning garden, and compare all three web Checkout presentations. |
 
 Original product and event artwork is generated for this repository and stored
 locally under [`assets/`](./assets); demos do not depend on third-party image
@@ -69,7 +69,9 @@ Each implemented demo:
 2. Collects only the customer and order data required by that journey.
 3. Creates and finalizes an order through an official Inttegro SDK.
 4. Supplies explicit completion and cancellation URLs.
-5. Redirects the browser to the hosted checkout URL returned by Inttegro.
+5. Lets the payer use the same Inttegro-hosted Checkout inline, in an app-owned
+   modal, or on the hosted invoice page. The native form falls back to a `303`
+   redirect when JavaScript is unavailable.
 6. Explains that the browser return is not authoritative fulfillment evidence.
 7. Handles configuration, validation, and Inttegro API failures without leaking
    credentials or raw internal errors.

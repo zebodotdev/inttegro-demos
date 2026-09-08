@@ -20,11 +20,13 @@
     "paymentMethods": "https://studio.inttegro.com/payment-methods",
     "sdks": "https://studio.inttegro.com/sdks",
     "observability": "https://studio.inttegro.com/sdk-observability",
-    "webhooks": "https://studio.inttegro.com/webhooks"
+    "webhooks": "https://studio.inttegro.com/webhooks",
+    "web": "https://studio.inttegro.com/web",
+    "javascript": "https://studio.inttegro.com/web/javascript"
   },
   "architectures": {
     "hosted-web": {
-      "summary": "A trusted merchant server creates and finalizes an order, then redirects the browser to the hosted URL returned by Inttegro.",
+      "summary": "A trusted merchant server creates and finalizes one order; the payer chooses Inttegro Checkout on its hosted page, embedded in the app, or in an app-owned modal.",
       "demos": [
         "nextjs",
         "nuxt",
@@ -68,8 +70,8 @@
     {
       "id": "hosted-checkout",
       "appliesTo": ["hosted-web"],
-      "selected": "Redirect to the hosted invoice URL returned on the finalized order.",
-      "rationale": "Inttegro owns payment entry and provider confirmation while the merchant owns order context and fulfillment.",
+      "selected": "Use the Inttegro-hosted Checkout experience for payment entry in all three presentations.",
+      "rationale": "Inttegro owns payment entry and provider confirmation while the merchant controls whether that experience appears as a page, inline frame, or modal.",
       "alternatives": [
         {
           "id": "direct-api-payment",
@@ -78,6 +80,48 @@
         }
       ],
       "docs": ["checkout", "orders", "paymentMethods"]
+    },
+    {
+      "id": "checkout-presentation",
+      "appliesTo": ["hosted-web"],
+      "selected": "Let the payer choose embedded, modal, or hosted-page Checkout without changing the server-owned Order operation.",
+      "rationale": "The demos compare presentation choices directly while preserving one payment contract, one trust boundary, and a working no-JavaScript path.",
+      "alternatives": [
+        {
+          "id": "product-selected-presentation",
+          "whenToUse": "A production product has already chosen the presentation that best fits its journey.",
+          "consequences": "Render only that option and keep the same server endpoint and progressive fallback where practical."
+        }
+      ],
+      "docs": ["web", "javascript", "checkout"]
+    },
+    {
+      "id": "client-order-reference",
+      "appliesTo": ["hosted-web", "native-payment-sheet"],
+      "selected": "Return only the finalized Order ID to clients that mount an Inttegro Checkout surface, with JSON responses marked no-store.",
+      "rationale": "The client needs the Order capability to pay, but not the merchant API key, authoritative cart inputs, customer authority, or hosted invoice URL.",
+      "alternatives": [
+        {
+          "id": "server-owned-navigation",
+          "whenToUse": "The browser follows the hosted-page path.",
+          "consequences": "Return an HTTP 303 directly to the URL supplied by Inttegro so no Order reference must be handled by merchant JavaScript."
+        }
+      ],
+      "docs": ["javascript", "keys", "orders"]
+    },
+    {
+      "id": "hosted-runtime-loader",
+      "appliesTo": ["hosted-web"],
+      "selected": "Standalone server-framework demos load the fixed, versioned Inttegro runtime URL directly.",
+      "rationale": "Rails, Django, Go, Java, and similar examples remain runnable without adding a Node build solely to demonstrate the same browser Checkout contract.",
+      "alternatives": [
+        {
+          "id": "package-loader-or-adapter",
+          "whenToUse": "After the preview packages are published, a production JavaScript application already has a package build and benefits from typed lifecycle integration.",
+          "consequences": "Install @inttegro/js or the React, Vue, Svelte, or Angular adapter; the package still loads executable code only from Inttegro's fixed origin."
+        }
+      ],
+      "docs": ["javascript", "web"]
     },
     {
       "id": "stable-idempotency-key",
@@ -256,8 +300,8 @@
     {
       "id": "see-other-redirect",
       "appliesTo": ["hosted-web"],
-      "selected": "Respond to the merchant form POST with HTTP 303.",
-      "rationale": "The browser follows the hosted checkout URL with GET and does not replay the merchant form body.",
+      "selected": "Respond to an ordinary or hosted-page form POST with HTTP 303.",
+      "rationale": "This preserves a resilient no-JavaScript path: the browser follows the hosted checkout URL with GET and does not replay the merchant form body.",
       "alternatives": [
         {
           "id": "client-navigation",
@@ -409,20 +453,20 @@
     }
   ],
   "sourceEntryPoints": {
-    "nextjs": ["nextjs/lib/checkout.ts", "nextjs/app/checkout/route.ts", "nextjs/app/mobile/orders/route.ts"],
-    "nuxt": ["nuxt/server/utils/checkout.ts", "nuxt/server/routes/checkout.post.ts"],
-    "express": ["express/src/checkout.ts", "express/src/app.ts"],
-    "django": ["django/src/checkout/service.py", "django/src/checkout/views.py", "django/src/worker.py"],
-    "fastapi": ["fastapi/src/app/checkout.py", "fastapi/src/app/main.py", "fastapi/src/worker.py"],
-    "rails": ["rails/app/services/checkout_service.rb", "rails/app/controllers/checkouts_controller.rb"],
-    "laravel": ["laravel/app/Services/CheckoutService.php", "laravel/app/Http/Controllers/CheckoutController.php"],
-    "go": ["go/main.go"],
-    "spring-boot": ["spring-boot/src/main/java/com/inttegro/demo/CheckoutService.java", "spring-boot/src/main/java/com/inttegro/demo/CheckoutController.java"],
+    "nextjs": ["nextjs/lib/checkout.ts", "nextjs/app/checkout/route.ts", "nextjs/app/mobile/orders/route.ts", "nextjs/public/checkout-presentations.js"],
+    "nuxt": ["nuxt/server/utils/checkout.ts", "nuxt/server/routes/checkout.post.ts", "nuxt/public/checkout-presentations.js"],
+    "express": ["express/src/checkout.ts", "express/src/app.ts", "express/public/checkout-presentations.js"],
+    "django": ["django/src/checkout/service.py", "django/src/checkout/views.py", "django/src/worker.py", "django/src/checkout/static/checkout/checkout-presentations.js"],
+    "fastapi": ["fastapi/src/app/checkout.py", "fastapi/src/app/main.py", "fastapi/src/worker.py", "fastapi/public/static/checkout-presentations.js"],
+    "rails": ["rails/app/services/checkout_service.rb", "rails/app/controllers/checkouts_controller.rb", "rails/public/checkout-presentations.js"],
+    "laravel": ["laravel/app/Services/CheckoutService.php", "laravel/app/Http/Controllers/CheckoutController.php", "laravel/public/checkout-presentations.js"],
+    "go": ["go/main.go", "go/static/checkout-presentations.js"],
+    "spring-boot": ["spring-boot/src/main/java/com/inttegro/demo/CheckoutService.java", "spring-boot/src/main/java/com/inttegro/demo/CheckoutController.java", "spring-boot/src/main/resources/static/checkout-presentations.js"],
     "ios-swiftui": ["ios-swiftui/InttegroSwiftUIDemo/DemoBackend.swift", "ios-swiftui/InttegroSwiftUIDemo/CheckoutView.swift"],
     "android-compose": ["android-compose/app/src/main/java/com/inttegro/demo/compose/DemoBackend.kt", "android-compose/app/src/main/java/com/inttegro/demo/compose/MainActivity.kt"],
     "flutter": ["flutter/lib/demo_backend.dart", "flutter/lib/main.dart"],
     "react-native-expo": ["react-native-expo/src/demoBackend.ts", "react-native-expo/App.tsx"],
-    "nestjs": ["nestjs/src/checkout.service.ts", "nestjs/src/campaign.controller.ts"],
-    "redwoodsdk": ["redwoodsdk/src/checkout.ts", "redwoodsdk/src/worker.tsx"]
+    "nestjs": ["nestjs/src/checkout.service.ts", "nestjs/src/campaign.controller.ts", "nestjs/public/checkout-presentations.js"],
+    "redwoodsdk": ["redwoodsdk/src/checkout.ts", "redwoodsdk/src/worker.tsx", "redwoodsdk/public/checkout-presentations.js"]
   }
 }

@@ -2,7 +2,7 @@
 
 **Afterglow Sessions** is an event-discovery and ticket-reservation experience.
 Django validates the guest details, creates a finalized digital ticket order
-with the Inttegro Python SDK, and redirects to hosted checkout.
+with the Inttegro Python SDK, and supports all three web Checkout presentations.
 
 ```bash
 python3 -m venv .venv
@@ -19,6 +19,14 @@ their relationship server-side; the reservation form supplies no product or
 amount. The checkout view runs under ASGI, awaits `AsyncInttegroClient`, and
 reuses one HTTP connection pool per process or Worker isolate. Run
 `python manage.py test` for the focused checks.
+
+## Try the Checkout presentations
+
+The reservation form offers **Embedded**, **Modal**, and **Hosted page**.
+Embedded is the default. The async view returns only a no-store finalized Order
+ID for embedded/modal Checkout and preserves a `303` hosted-page path for the
+native form. Browser ownership is documented in
+[`checkout-presentations.js`](./src/checkout/static/checkout/checkout-presentations.js).
 
 ## Run with Docker
 
@@ -63,6 +71,6 @@ or use the unmodified ASGI application in a container. See
 Start with [`src/checkout/service.py`](./src/checkout/service.py) for the typed Order
 request and safe error mapping, then read
 [`src/checkout/views.py`](./src/checkout/views.py) for the 303 handoff and correlation
-boundary. The `INTTEGRO:*` comments map choices and alternatives to the shared
+boundary, including its JSON representation. The `INTTEGRO:*` comments map choices and alternatives to the shared
 [integration guide](../INTEGRATION_GUIDE.md) and
 [machine-readable decision registry](../integration-decisions.json).

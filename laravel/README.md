@@ -2,7 +2,7 @@
 
 **Kora Market** is a product-led Laravel storefront with an interactive finish
 picker and accessible bag dialog. Laravel validates the customer and redirects
-to the exact hosted checkout URL returned by the Inttegro PHP SDK.
+or returns the minimal Order reference needed by the selected Checkout presentation.
 
 ```bash
 composer install
@@ -15,6 +15,14 @@ Open <http://localhost:3007>. Configure `INTTEGRO_DEMO_PRODUCT_ID` and
 `INTTEGRO_DEMO_PRICE_ID` with the active Kora Market Product and Price. Laravel
 resolves and validates both server-side; the storefront cannot submit its own
 product or amount. Run `composer test` for the focused checks.
+
+## Try the Checkout presentations
+
+Open the bag and choose **Embedded**, **Modal**, or **Hosted page**. Embedded is
+the default. Laravel returns a no-store finalized Order ID for embedded/modal
+Checkout and a `303` to the exact Inttegro URL for the hosted choice or native
+form fallback. The client boundary is in
+[`public/checkout-presentations.js`](./public/checkout-presentations.js).
 
 ## Run with Docker
 
@@ -42,7 +50,7 @@ Inttegro test API key. See
 Start with [`app/Services/CheckoutService.php`](./app/Services/CheckoutService.php)
 for the Order payload and SDK boundary, then read
 [`app/Http/Controllers/CheckoutController.php`](./app/Http/Controllers/CheckoutController.php)
-for validation, correlation, and the 303 handoff. The `INTTEGRO:*` comments map
+for validation, correlation, and the JSON/303 handoff. The `INTTEGRO:*` comments map
 choices and alternatives to the shared
 [integration guide](../INTEGRATION_GUIDE.md) and
 [machine-readable decision registry](../integration-decisions.json).

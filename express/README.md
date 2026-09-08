@@ -1,8 +1,8 @@
 # Inttegro + Express demo
 
 **Afterglow Sessions** is a cinematic event page with lineup, venue, and ticket
-reservation states. Express validates the guest details, creates the finalized
-ticket order, and redirects to the hosted checkout URL returned by Inttegro.
+reservation states. Express validates the guest details and creates one
+finalized ticket Order for all three Inttegro Checkout presentations.
 
 ```bash
 cp .env.example .env
@@ -16,6 +16,14 @@ Open <http://localhost:3001>. Configure `INTTEGRO_DEMO_PRODUCT_ID` and
 Express resolves and validates both on the server; the reservation form cannot
 choose its own ticket or amount. Run `npm run check` to compile and execute the
 focused unit tests.
+
+## Try the Checkout presentations
+
+The reservation form offers **Embedded**, **Modal**, and **Hosted page**.
+Embedded is the default. The first two fetch only a no-store finalized Order ID;
+the hosted choice and no-JavaScript fallback follow a server `303`. Read
+[`public/checkout-presentations.js`](./public/checkout-presentations.js) for the
+progressive enhancement and controller lifecycle.
 
 ## Run with Docker
 
@@ -41,7 +49,7 @@ release branches. See [`DEPLOYING.md`](../DEPLOYING.md).
 ## Understand the integration
 
 Start with [`src/checkout.ts`](./src/checkout.ts) for the finalized ticket Order
-and hosted URL, then read [`src/app.ts`](./src/app.ts) for the HTTP handoff and
+and hosted URL, then read [`src/app.ts`](./src/app.ts) for the JSON/303 handoff and
 verification boundary. `src/server.ts` and `src/worker.ts` are intentionally
 thin, provider-specific transport entry points. The `INTTEGRO:*` comments map
 choices and alternatives to the shared [integration guide](../INTEGRATION_GUIDE.md)
