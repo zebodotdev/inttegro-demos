@@ -16,6 +16,14 @@ Prices. The Nitro route resolves both server-side, verifies their relationship,
 and never accepts product or amount data from the browser. Run `npm run check`
 for type checking and tests.
 
+## Try the Checkout presentations
+
+Open the bag and choose **Embedded**, **Modal**, or **Hosted page**. Embedded is
+the default. The Nitro route returns a no-store `{ orderId }` representation to
+the first two and a `303` redirect to the hosted choice or native form fallback.
+The browser lifecycle is visible in
+[`public/checkout-presentations.js`](./public/checkout-presentations.js).
+
 ## Run with Docker
 
 After configuring `.env`, build and start the production image with one
@@ -50,6 +58,6 @@ and trade-offs.
 Start with [`server/utils/checkout.ts`](./server/utils/checkout.ts) for Order
 construction and error mapping, then read
 [`server/routes/checkout.post.ts`](./server/routes/checkout.post.ts) for cookie
-correlation and the 303 handoff. The `INTTEGRO:*` comments map choices and
+correlation and the JSON/303 response boundary. The `INTTEGRO:*` comments map choices and
 alternatives to the shared [integration guide](../INTEGRATION_GUIDE.md) and
 [machine-readable decision registry](../integration-decisions.json).
