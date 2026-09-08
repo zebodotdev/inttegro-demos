@@ -17,25 +17,25 @@ Releases use Semantic Versioning:
   dependency maintenance, and UI refinements.
 
 All published demos currently release together. A suite release therefore has
-one per-demo alias for every included implementation. Release 1.5.0 contains:
+one per-demo alias for every included implementation. Release 1.6.0 contains:
 
 ```text
-v1.5.0
-nextjs-v1.5.0
-express-v1.5.0
-nuxt-v1.5.0
-go-v1.5.0
-django-v1.5.0
-fastapi-v1.5.0
-rails-v1.5.0
-laravel-v1.5.0
-spring-boot-v1.5.0
-ios-swiftui-v1.5.0
-android-compose-v1.5.0
-flutter-v1.5.0
-react-native-expo-v1.5.0
-nestjs-v1.5.0
-redwoodsdk-v1.5.0
+v1.6.0
+nextjs-v1.6.0
+express-v1.6.0
+nuxt-v1.6.0
+go-v1.6.0
+django-v1.6.0
+fastapi-v1.6.0
+rails-v1.6.0
+laravel-v1.6.0
+spring-boot-v1.6.0
+ios-swiftui-v1.6.0
+android-compose-v1.6.0
+flutter-v1.6.0
+react-native-expo-v1.6.0
+nestjs-v1.6.0
+redwoodsdk-v1.6.0
 ```
 
 Every tag in a suite release points to the exact same commit. Per-demo aliases

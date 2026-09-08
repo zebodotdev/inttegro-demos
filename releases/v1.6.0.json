@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "version": "1.6.0",
+  "suiteTag": "v1.6.0",
+  "repository": "https://github.com/zebodotdev/inttegro-demos",
+  "permalinkTemplate": "https://github.com/zebodotdev/inttegro-demos/blob/{tag}/{file}#L{start}-L{end}",
+  "rawTemplate": "https://raw.githubusercontent.com/zebodotdev/inttegro-demos/{tag}/{file}",
+  "releaseNotes": "releases/v1.6.0.md",
+  "deploymentManifest": "deployments.json",
+  "demos": [
+    {
+      "id": "nextjs",
+      "version": "1.6.0",
+      "tag": "nextjs-v1.6.0",
+      "path": "nextjs",
+      "entryPoints": ["nextjs/lib/checkout.ts", "nextjs/app/checkout/route.ts", "nextjs/public/checkout-presentations.js", "nextjs/app/mobile/orders/route.ts"]
+    },
+    {
+      "id": "express",
+      "version": "1.6.0",
+      "tag": "express-v1.6.0",
+      "path": "express",
+      "entryPoints": ["express/src/checkout.ts", "express/src/app.ts", "express/public/checkout-presentations.js"]
+    },
+    {
+      "id": "nuxt",
+      "version": "1.6.0",
+      "tag": "nuxt-v1.6.0",
+      "path": "nuxt",
+      "entryPoints": ["nuxt/server/utils/checkout.ts", "nuxt/server/routes/checkout.post.ts", "nuxt/public/checkout-presentations.js"]
+    },
+    {
+      "id": "go",
+      "version": "1.6.0",
+      "tag": "go-v1.6.0",
+      "path": "go",
+      "entryPoints": ["go/main.go", "go/static/checkout-presentations.js"]
+    },
+    {
+      "id": "django",
+      "version": "1.6.0",
+      "tag": "django-v1.6.0",
+      "path": "django",
+      "entryPoints": ["django/src/checkout/service.py", "django/src/checkout/views.py", "django/src/checkout/static/checkout/checkout-presentations.js", "django/src/worker.py"]
+    },
+    {
+      "id": "fastapi",
+      "version": "1.6.0",
+      "tag": "fastapi-v1.6.0",
+      "path": "fastapi",
+      "entryPoints": ["fastapi/src/app/checkout.py", "fastapi/src/app/main.py", "fastapi/public/static/checkout-presentations.js", "fastapi/src/worker.py"]
+    },
+    {
+      "id": "rails",
+      "version": "1.6.0",
+      "tag": "rails-v1.6.0",
+      "path": "rails",
+      "entryPoints": ["rails/app/services/checkout_service.rb", "rails/app/controllers/checkouts_controller.rb", "rails/public/checkout-presentations.js"]
+    },
+    {
+      "id": "laravel",
+      "version": "1.6.0",
+      "tag": "laravel-v1.6.0",
+      "path": "laravel",
+      "entryPoints": ["laravel/app/Services/CheckoutService.php", "laravel/app/Http/Controllers/CheckoutController.php", "laravel/public/checkout-presentations.js"]
+    },
+    {
+      "id": "spring-boot",
+      "version": "1.6.0",
+      "tag": "spring-boot-v1.6.0",
+      "path": "spring-boot",
+      "entryPoints": ["spring-boot/src/main/java/com/inttegro/demo/CheckoutService.java", "spring-boot/src/main/java/com/inttegro/demo/CheckoutController.java", "spring-boot/src/main/resources/static/checkout-presentations.js"]
+    },
+    {
+      "id": "ios-swiftui",
+      "version": "1.6.0",
+      "tag": "ios-swiftui-v1.6.0",
+      "path": "ios-swiftui",
+      "entryPoints": ["ios-swiftui/InttegroSwiftUIDemo/DemoBackend.swift", "ios-swiftui/InttegroSwiftUIDemo/CheckoutView.swift"]
+    },
+    {
+      "id": "android-compose",
+      "version": "1.6.0",
+      "tag": "android-compose-v1.6.0",
+      "path": "android-compose",
+      "entryPoints": ["android-compose/app/src/main/java/com/inttegro/demo/compose/DemoBackend.kt", "android-compose/app/src/main/java/com/inttegro/demo/compose/MainActivity.kt"]
+    },
+    {
+      "id": "flutter",
+      "version": "1.6.0",
+      "tag": "flutter-v1.6.0",
+      "path": "flutter",
+      "entryPoints": ["flutter/lib/demo_backend.dart", "flutter/lib/main.dart"]
+    },
+    {
+      "id": "react-native-expo",
+      "version": "1.6.0",
+      "tag": "react-native-expo-v1.6.0",
+      "path": "react-native-expo",
+      "entryPoints": ["react-native-expo/src/demoBackend.ts", "react-native-expo/App.tsx"]
+    },
+    {
+      "id": "nestjs",
+      "version": "1.6.0",
+      "tag": "nestjs-v1.6.0",
+      "path": "nestjs",
+      "entryPoints": ["nestjs/src/checkout.service.ts", "nestjs/src/campaign.controller.ts", "nestjs/public/checkout-presentations.js"]
+    },
+    {
+      "id": "redwoodsdk",
+      "version": "1.6.0",
+      "tag": "redwoodsdk-v1.6.0",
+      "path": "redwoodsdk",
+      "entryPoints": ["redwoodsdk/src/checkout.ts", "redwoodsdk/src/worker.tsx", "redwoodsdk/public/checkout-presentations.js"]
+    }
+  ]
+}
