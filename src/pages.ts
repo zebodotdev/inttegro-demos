@@ -5,7 +5,7 @@ const escapeHtml = (value: string) => value.replace(/[&<>'"]/g, (character) => (
 const document = (body: string, title = 'Openfield — Riverbend Learning Garden') => `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#173b2f"><meta name="description" content="Help turn Riverbend's unused courtyard into a garden for learning, growing, and gathering.">
-<title>${title}</title><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/styles.css"><script src="/campaign.js" defer></script></head><body>${body}</body></html>`;
+<title>${title}</title><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="/checkout-presentations.css"><script src="/checkout-presentations.js" defer></script><script src="/campaign.js" defer></script></head><body>${body}</body></html>`;
 
 function setupMessage(error?: { code: string; message: string }) {
   if (error?.code === 'configuration_error') {
