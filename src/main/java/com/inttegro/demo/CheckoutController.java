@@ -25,8 +25,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Controller
 public class CheckoutController {
     /*
-     * INTTEGRO:FLOW [hosted-checkout] POST /checkout hands the browser to the
-     * hosted URL described at
+     * INTTEGRO:FLOW [checkout-presentation] POST /checkout builds one finalized
+     * Order for hosted-page, embedded, and modal Checkout described at
      * https://studio.inttegro.com/accept-payment-with-inttegro-checkout.
      * INTTEGRO:VERIFY [server-side-verification] /complete is a UX return, not
      * payment proof. Resolve and look up the owner-scoped order before
@@ -50,8 +50,9 @@ public class CheckoutController {
     }
 
     @PostMapping("/checkout")
-    ResponseEntity<Void> checkout(@Valid @ModelAttribute CheckoutForm form, BindingResult validation, HttpServletRequest request) {
-        if (validation.hasErrors()) return errorRedirect("validation_error", "Enter a name, valid email, and phone number.");
+    ResponseEntity<?> checkout(@Valid @ModelAttribute CheckoutForm form, BindingResult validation, HttpServletRequest request) {
+        boolean wantsJson = acceptsJson(request);
+        if (validation.hasErrors()) return errorResponse(wantsJson, "validation_error", "Enter a name, valid email, and phone number.");
         try {
             String origin = configuredOrigin.isEmpty() ? requestOrigin(request) : configuredOrigin;
             var result = checkoutService.create(form, origin);
@@ -60,13 +61,19 @@ public class CheckoutController {
             // persist merchant invoice, owner, Inttegro order ID, and
             // idempotency key in a durable mapping.
             var cookie = ResponseCookie.from("inttegro_demo_order", result.orderId()).httpOnly(true).secure(request.isSecure()).sameSite("Lax").path("/").maxAge(1800).build();
+            if (wantsJson) {
+                return ResponseEntity.status(HttpStatus.CREATED)
+                        .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                        .header(HttpHeaders.CACHE_CONTROL, "no-store")
+                        .body(Map.of("orderId", result.orderId()));
+            }
             // INTTEGRO:DECISION [see-other-redirect] HTTP 303 follows with GET;
             // unlike 307/308, it cannot replay this merchant POST body.
             return ResponseEntity.status(HttpStatus.SEE_OTHER).location(URI.create(result.checkoutUrl())).header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
         } catch (DemoException error) {
             // INTTEGRO:SECURITY [safe-error-boundary] Only bounded public errors
             // reach the redirect. Detailed SDK diagnostics remain server-side.
-            return errorRedirect(error.code(), error.getMessage());
+            return errorResponse(wantsJson, error.code(), error.getMessage());
         }
     }
 
@@ -83,6 +90,19 @@ public class CheckoutController {
     private static ResponseEntity<Void> errorRedirect(String code, String message) {
         String location = UriComponentsBuilder.fromPath("/").queryParam("code", code).queryParam("message", message).build().encode().toUriString();
         return ResponseEntity.status(HttpStatus.SEE_OTHER).location(URI.create(location)).build();
+    }
+
+    private static ResponseEntity<?> errorResponse(boolean wantsJson, String code, String message) {
+        if (!wantsJson) return errorRedirect(code, message);
+        HttpStatus status = "validation_error".equals(code) ? HttpStatus.BAD_REQUEST : HttpStatus.SERVICE_UNAVAILABLE;
+        return ResponseEntity.status(status)
+                .header(HttpHeaders.CACHE_CONTROL, "no-store")
+                .body(Map.of("code", code, "message", message));
+    }
+
+    private static boolean acceptsJson(HttpServletRequest request) {
+        String accept = request.getHeader(HttpHeaders.ACCEPT);
+        return accept != null && accept.contains("application/json");
     }
 
     private static String requestOrigin(HttpServletRequest request) {
