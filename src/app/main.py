@@ -23,7 +23,7 @@ from .checkout import DemoError, create_hosted_checkout, parse_checkout_input
 # non-terminal states as described at https://studio.inttegro.com/webhooks.
 
 ROOT = Path(__file__).resolve().parent
-STATIC_ROOT = ROOT.parent / "public" / "static"
+STATIC_ROOT = ROOT.parents[1] / "public" / "static"
 
 
 @asynccontextmanager

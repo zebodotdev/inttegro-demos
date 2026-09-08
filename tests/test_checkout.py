@@ -1,4 +1,5 @@
 import asyncio
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -18,6 +19,13 @@ from app.checkout import (
 def test_rejects_invalid_email():
     with pytest.raises(DemoError):
         parse_checkout_input("Akua", "bad", "+233", "attempt_123")
+
+
+def test_static_assets_resolve_from_the_application_root():
+    from app.main import STATIC_ROOT
+
+    assert STATIC_ROOT == Path(__file__).resolve().parents[1] / "public" / "static"
+    assert (STATIC_ROOT / "checkout-presentations.js").is_file()
 
 
 def test_builds_shared_order_request():
