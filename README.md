@@ -3,7 +3,7 @@
 Openfield is a production-shaped community fundraiser built with NestJS and the
 Inttegro TypeScript SDK. Its Riverbend campaign lets a supporter choose one of
 three server-owned contribution tiers before continuing to Inttegro-hosted
-checkout.
+Checkout inline, in a modal, or on its hosted page.
 
 This is immediate flexible funding, not a delayed Kickstarter-style pledge.
 The example neither promises tax deductibility nor treats the browser return as
@@ -18,12 +18,21 @@ evidence of payment.
 - a bounded tier translated to a trusted quantity rather than a public amount
 - a retry-stable idempotency key and readable merchant order number
 - explicit completion and cancellation URLs
-- a 303 redirect to the checkout URL returned by Inttegro
+- a minimal JSON Order reference for embedded/modal Checkout and a resilient
+  `303` hosted-page fallback
 
 The extensive `INTTEGRO:*` comments in
 [`src/checkout.service.ts`](./src/checkout.service.ts) document the selected
 integration, security boundaries, and production alternatives. The controller
 keeps framework concerns in [`src/campaign.controller.ts`](./src/campaign.controller.ts).
+
+## Try the Checkout presentations
+
+Choose a contribution tier, then choose **Embedded**, **Modal**, or **Hosted page**.
+Embedded is the default. The first two receive only a no-store finalized
+Order ID; hosted and no-JavaScript submissions receive a `303`. The shared
+client boundary is
+[`public/checkout-presentations.js`](./public/checkout-presentations.js).
 
 ## Configure the campaign Product
 
