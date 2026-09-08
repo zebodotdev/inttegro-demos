@@ -4,7 +4,7 @@ Openfield is a server-first React fundraiser running on Cloudflare with
 RedwoodSDK and the Inttegro TypeScript SDK. The Riverbend campaign is rendered
 as a React Server Component; a Worker route validates each contribution,
 resolves its catalogue price, creates an Order, and redirects to
-Inttegro-hosted checkout.
+the selected Inttegro-hosted Checkout presentation.
 
 This demo targets current **RedwoodSDK**, not the legacy RedwoodGraphQL stack.
 RedwoodSDK intentionally runs on Cloudflare's workerd runtime, so unsupported
@@ -18,12 +18,21 @@ general-purpose hosts are not presented as equivalent deployment options.
 - trusted Product and Price lookup inside the Worker
 - bounded supporter tiers mapped to server-owned quantities
 - retry-safe idempotency and a readable `OPENFIELD-…` order number
-- a 303 handoff to the checkout URL returned by Inttegro
+- a minimal JSON Order reference for embedded/modal Checkout and a resilient
+  `303` hosted-page fallback
 - safe completion, cancellation, configuration, and validation states
 
 Start with [`src/checkout.ts`](./src/checkout.ts), then follow the route boundary
 in [`src/worker.tsx`](./src/worker.tsx). `INTTEGRO:*` comments link integration
 choices to the relevant Inttegro documentation and explain alternatives.
+
+## Try the Checkout presentations
+
+Choose a contribution tier, then choose **Embedded**, **Modal**, or **Hosted page**.
+Embedded is the default. The Worker returns only a no-store finalized
+Order ID for the first two and a `303` hosted-page redirect for the third or a
+browser without JavaScript. The shared client boundary is
+[`public/checkout-presentations.js`](./public/checkout-presentations.js).
 
 ## Configure the campaign Product
 
