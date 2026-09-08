@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "demo": "laravel",
+  "version": "1.6.0",
+  "sourceSuiteTag": "v1.6.0",
+  "sourceDemoTag": "laravel-v1.6.0",
+  "sourceCommit": "063f8551aaa52e4371564983dddce2581ee9c288",
+  "sourceSubtreeCommit": "e91c597fd9f7e6d40d7a7f33e6efef8d6d6d883d"
+}
