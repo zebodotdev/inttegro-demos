@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "demo": "django",
+  "version": "1.6.1",
+  "sourceSuiteTag": "v1.6.1",
+  "sourceDemoTag": "django-v1.6.1",
+  "sourceCommit": "3d05c80c1837e44c9b0a5839e758975151c51c45",
+  "sourceSubtreeCommit": "c6c2cfa32ae51915b0bf5549500c345e8e3107c0"
+}
