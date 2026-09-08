@@ -1,8 +1,8 @@
 # Inttegro + Next.js demo
 
 **Kora Market** is a responsive App Router storefront for the Dawn Brew Set. It
-combines product discovery, finish selection, an accessible bag dialog, and a
-server-only Inttegro order handoff to hosted checkout.
+combines product discovery, finish selection, an accessible bag dialog, and
+three presentations of a server-owned Inttegro Checkout.
 
 ```bash
 cp .env.example .env.local
@@ -20,6 +20,14 @@ The server also exposes `POST /mobile/orders` for the four mobile demos; set the
 server-owned `INTTEGRO_DEMO_CUSTOMER_ID` before using that route. The mobile
 request receives the same catalog-backed product and returns only the finalized
 Order ID needed by the Inttegro SDK.
+
+## Try the Checkout presentations
+
+Open the bag and choose **Embedded**, **Modal**, or **Hosted page**. Embedded is
+the demo default. Embedded and Modal request a no-store JSON representation
+containing only the finalized Order ID; Hosted page—and browsers without
+JavaScript—receive the same endpoint's `303` redirect. The presentation module
+is [`public/checkout-presentations.js`](./public/checkout-presentations.js).
 
 Run the checks with:
 
@@ -58,7 +66,7 @@ status.
 
 Start with [`lib/checkout.ts`](./lib/checkout.ts) for the hosted and native Order
 requests, then read [`app/checkout/route.ts`](./app/checkout/route.ts) for the
-303 browser handoff and
+JSON/303 response boundary and
 [`app/mobile/orders/route.ts`](./app/mobile/orders/route.ts) for the mobile trust
 boundary. Source comments link each consequential choice to the shared
 [integration guide](../INTEGRATION_GUIDE.md) and
