@@ -15,8 +15,8 @@ from inttegro import AsyncInttegroClient
 from .checkout import DemoError, create_hosted_checkout, parse_checkout_input
 
 
-# INTTEGRO:FLOW [hosted-checkout] POST /checkout is the transition from the
-# Afterglow app to hosted Checkout documented at
+# INTTEGRO:FLOW [checkout-presentation] POST /checkout creates one finalized
+# Order for Afterglow's hosted-page, embedded, and modal Checkout documented at
 # https://studio.inttegro.com/accept-payment-with-inttegro-checkout.
 # INTTEGRO:VERIFY [server-side-verification] A return to /complete is a browser
 # signal, not payment evidence. Verify the order server-side and reconcile
@@ -85,6 +85,7 @@ async def home(request: Request):
 
 @app.post("/checkout")
 async def checkout(request: Request, name: str = Form(), email: str = Form(), phone: str = Form(), attempt_id: str = Form()):
+    wants_json = "application/json" in request.headers.get("accept", "")
     try:
         value = parse_checkout_input(name, email, phone, attempt_id)
         origin = os.environ.get("INTTEGRO_DEMO_PUBLIC_URL", "").strip() or str(request.base_url).rstrip("/")
@@ -98,7 +99,11 @@ async def checkout(request: Request, name: str = Form(), email: str = Form(), ph
         )
         # INTTEGRO:DECISION [see-other-redirect] 303 follows the hosted URL with
         # GET. A 307/308 would preserve POST and could replay the merchant form.
-        response = RedirectResponse(checkout_url, status_code=303)
+        response = (
+            JSONResponse({"orderId": order_id}, status_code=201, headers={"Cache-Control": "no-store"})
+            if wants_json
+            else RedirectResponse(checkout_url, status_code=303)
+        )
         # INTTEGRO:DECISION [durable-order-correlation] This cookie is only a
         # server-readable demo correlation aid. It is neither authorization nor
         # proof of payment; persist an owner-scoped order mapping in production.
@@ -107,6 +112,9 @@ async def checkout(request: Request, name: str = Form(), email: str = Form(), ph
     except DemoError as error:
         # INTTEGRO:SECURITY [safe-error-boundary] Only bounded public messages go
         # to the browser; detailed SDK diagnostics remain in protected telemetry.
+        if wants_json:
+            status = 400 if error.code == "validation_error" else 503
+            return JSONResponse({"code": error.code, "message": error.message}, status_code=status, headers={"Cache-Control": "no-store"})
         return RedirectResponse(f"/?{urlencode({'code': error.code, 'message': error.message})}", status_code=303)
 
 
