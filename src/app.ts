@@ -4,8 +4,8 @@ import { createHostedCheckout, DemoError, parseCheckoutInput } from './checkout.
 import { homePage, resultPage } from './pages.js';
 
 /**
- * INTTEGRO:FLOW [hosted-checkout] POST /checkout is the browser-to-hosted-
- * checkout handoff documented at
+ * INTTEGRO:FLOW [checkout-presentation] POST /checkout creates the same
+ * finalized Order for hosted-page, embedded, and modal Checkout, documented at
  * https://studio.inttegro.com/accept-payment-with-inttegro-checkout.
  * INTTEGRO:VERIFY [server-side-verification] /complete is not authoritative
  * payment evidence. Verify with a server-side order lookup and reconciliation:
@@ -28,6 +28,8 @@ export function createApp() {
   });
 
   app.post('/checkout', async (request, response) => {
+    const wantsJson = request.headers.accept?.includes('application/json') ?? false;
+    if (wantsJson) response.set('Cache-Control', 'no-store');
     try {
       const input = parseCheckoutInput(request.body as Record<string, unknown>);
       const result = await createHostedCheckout(input, `${request.protocol}://${request.get('host')}`);
@@ -40,15 +42,29 @@ export function createApp() {
         secure: request.secure,
         maxAge: 30 * 60 * 1000,
       });
-      // INTTEGRO:DECISION [see-other-redirect] 303 follows the hosted URL with GET;
-      // 307/308 would preserve POST and risk forwarding the merchant form body.
-      response.redirect(303, result.checkoutUrl);
+      if (wantsJson) {
+        // INTTEGRO:SECURITY [client-order-reference] The browser receives only the
+        // finalized Order ID. Secret credentials and authoritative inputs stay
+        // behind this route for both inline and modal Checkout.
+        response.status(201).json({ orderId: result.orderId });
+      } else {
+        // INTTEGRO:DECISION [see-other-redirect] 303 follows the hosted URL with GET;
+        // 307/308 would preserve POST and risk forwarding the merchant form body.
+        response.redirect(303, result.checkoutUrl);
+      }
     } catch (error) {
       // INTTEGRO:SECURITY [safe-error-boundary] Only bounded public messages reach
       // the query string. Detailed SDK errors remain in protected server telemetry.
       const safe = error instanceof DemoError
         ? error
         : new DemoError('api_error', 'Checkout is temporarily unavailable.');
+      if (wantsJson) {
+        response.status(safe.code === 'validation_error' ? 400 : 503).json({
+          code: safe.code,
+          message: safe.message,
+        });
+        return;
+      }
       const query = new URLSearchParams({ code: safe.code, message: safe.message });
       response.redirect(303, `/?${query}`);
     }
