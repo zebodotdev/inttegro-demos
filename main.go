@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"html/template"
@@ -21,9 +22,9 @@ import (
 
 // Inttegro integration map
 //
-// INTTEGRO:FLOW [hosted-checkout] This trusted server validates an invoice
-// payment, creates and finalizes an Order, and redirects to its hosted invoice
-// URL.
+// INTTEGRO:FLOW [checkout-presentation] This trusted server validates an
+// invoice payment and creates the same finalized Order for hosted-page,
+// embedded, and modal Checkout.
 // INTTEGRO:SECURITY [server-api-key] INTTEGRO_API_KEY stays in this server
 // process. Never emit it into HTML, client JavaScript, logs, or error responses.
 // INTTEGRO:ALTERNATIVE [hosted-checkout] Direct API payment is available to
@@ -255,6 +256,10 @@ func checkout(response http.ResponseWriter, request *http.Request) {
 		return
 	}
 	input, err := parseCheckoutInput(request)
+	wantsJSON := strings.Contains(request.Header.Get("Accept"), "application/json")
+	if wantsJSON {
+		response.Header().Set("Cache-Control", "no-store")
+	}
 	if err == nil {
 		var origin string
 		origin, err = publicOrigin(request)
@@ -268,6 +273,14 @@ func checkout(response http.ResponseWriter, request *http.Request) {
 				http.SetCookie(response, &http.Cookie{Name: "inttegro_demo_order", Value: orderID, Path: "/", MaxAge: 1800, HttpOnly: true, SameSite: http.SameSiteLaxMode, Secure: request.TLS != nil})
 				// INTTEGRO:DECISION [see-other-redirect] 303 follows the hosted
 				// URL with GET. A 307/308 would preserve and replay this POST.
+				if wantsJSON {
+					// INTTEGRO:SECURITY [client-order-reference] Return only the
+					// finalized Order ID needed by browser Checkout.
+					response.Header().Set("Content-Type", "application/json")
+					response.WriteHeader(http.StatusCreated)
+					_ = json.NewEncoder(response).Encode(map[string]string{"orderId": orderID})
+					return
+				}
 				http.Redirect(response, request, checkoutURL, http.StatusSeeOther)
 				return
 			}
@@ -280,6 +293,16 @@ func checkout(response http.ResponseWriter, request *http.Request) {
 	}
 	// INTTEGRO:SECURITY [safe-error-boundary] Only our bounded error vocabulary
 	// enters the query string; detailed API diagnostics remain server-side.
+	if wantsJSON {
+		status := http.StatusServiceUnavailable
+		if safe.Code == "validation_error" {
+			status = http.StatusBadRequest
+		}
+		response.Header().Set("Content-Type", "application/json")
+		response.WriteHeader(status)
+		_ = json.NewEncoder(response).Encode(map[string]string{"code": safe.Code, "message": safe.Message})
+		return
+	}
 	query := url.Values{"code": {safe.Code}, "message": {safe.Message}}
 	http.Redirect(response, request, "/?"+query.Encode(), http.StatusSeeOther)
 }
