@@ -2,7 +2,7 @@
 
 **Ledgerline** is a polished client invoice portal built on idiomatic
 `net/http`. Customers review service lines and settle INV-2048 through an
-Inttegro-hosted checkout created entirely on the server.
+Inttegro Checkout whose Order is created entirely on the server.
 
 ```bash
 cp .env.example .env
@@ -16,6 +16,14 @@ Open <http://localhost:3003>. Configure `INTTEGRO_DEMO_PRODUCT_ID` and
 The service resolves and validates both before constructing the Order; the
 invoice form cannot choose its own service or amount. Run `go test ./...` for
 the focused checks.
+
+## Try the Checkout presentations
+
+The payment form offers **Embedded**, **Modal**, and **Hosted page**. Embedded
+is the default. The first two negotiate a no-store JSON response containing
+only the finalized Order ID; hosted and no-JavaScript submissions receive a
+`303`. See [`static/checkout-presentations.js`](./static/checkout-presentations.js)
+for the framework-neutral browser boundary.
 
 ## Run with Docker
 
@@ -39,6 +47,6 @@ multi-stage Dockerfile. The deployment links target immutable release refs. See
 
 [`main.go`](./main.go) keeps the complete integration deliberately visible:
 input validation, Order construction, hosted URL selection, safe errors,
-correlation, and the 303 handoff. Its `INTTEGRO:*` comments map choices and
+correlation, and the JSON/303 handoff. Its `INTTEGRO:*` comments map choices and
 alternatives to the shared [integration guide](../INTEGRATION_GUIDE.md) and
 [machine-readable decision registry](../integration-decisions.json).
