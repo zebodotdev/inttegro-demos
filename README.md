@@ -16,6 +16,14 @@ Open <http://localhost:3006>. Configure `INTTEGRO_DEMO_PRODUCT_ID` and
 resolves and validates both server-side; the storefront cannot submit its own
 product or amount. Run `bin/rails test` for the focused checks.
 
+## Try the Checkout presentations
+
+Open the bag and choose **Embedded**, **Modal**, or **Hosted page**. Embedded is
+the default. Rails returns a no-store finalized Order ID for embedded/modal
+Checkout and a `303` to the Inttegro URL for hosted or no-JavaScript checkout.
+The shared browser behavior is in
+[`public/checkout-presentations.js`](./public/checkout-presentations.js).
+
 ## Run with Docker
 
 After configuring `.env`, run `docker compose up --build --wait`. Compose
@@ -45,7 +53,7 @@ Start with
 [`app/services/checkout_service.rb`](./app/services/checkout_service.rb) for
 Order creation and safe error mapping, then read
 [`app/controllers/checkouts_controller.rb`](./app/controllers/checkouts_controller.rb)
-for the 303 handoff and correlation boundary. The `INTTEGRO:*` comments map
+for the JSON/303 handoff and correlation boundary. The `INTTEGRO:*` comments map
 choices and alternatives to the shared
 [integration guide](../INTEGRATION_GUIDE.md) and
 [machine-readable decision registry](../integration-decisions.json).
