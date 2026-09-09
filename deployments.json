@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "https://github.com/zebodotdev/inttegro-demos",
-  "releaseVersion": "1.6.1",
-  "suiteTag": "v1.6.1",
+  "releaseVersion": "1.6.2",
+  "suiteTag": "v1.6.2",
   "domain": {
     "status": "active",
     "provider": "cloudflare",
@@ -221,6 +221,7 @@
     },
     {
       "id": "nestjs",
+      "live": { "status": "verified", "provider": "railway", "url": "https://nestjs-demo.inttegro.dev" },
       "providers": [
         { "id": "docker", "recommendation": "alternative", "status": "prepared", "config": "nestjs/compose.yaml" },
         { "id": "render", "recommendation": "recommended", "status": "prepared", "config": "nestjs/render.yaml" },
@@ -233,8 +234,9 @@
     },
     {
       "id": "redwoodsdk",
+      "live": { "status": "verified", "provider": "cloudflare", "url": "https://redwoodsdk-demo.inttegro.dev" },
       "providers": [
-        { "id": "cloudflare", "recommendation": "recommended", "status": "prepared", "config": "redwoodsdk/wrangler.jsonc" },
+        { "id": "cloudflare", "recommendation": "recommended", "status": "verified", "config": "redwoodsdk/wrangler.jsonc" },
         { "id": "docker", "recommendation": "alternative", "status": "blocked", "reason": "RedwoodSDK targets the Cloudflare Workers runtime directly; a generic Node container would not preserve that contract." },
         { "id": "vercel", "recommendation": "alternative", "status": "blocked", "reason": "RedwoodSDK is Cloudflare-native and is not packaged for Vercel in this release." },
         { "id": "render", "recommendation": "alternative", "status": "blocked", "reason": "RedwoodSDK is Cloudflare-native and does not include a Render container service." },

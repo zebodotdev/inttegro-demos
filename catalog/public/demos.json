@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "https://github.com/zebodotdev/inttegro-demos",
-  "releaseVersion": "1.6.1",
-  "suiteTag": "v1.6.1",
+  "releaseVersion": "1.6.2",
+  "suiteTag": "v1.6.2",
   "domainStatus": "active",
   "demos": [
     {
@@ -19,8 +19,8 @@
         "url": "https://nextjs-demo.inttegro.dev"
       },
       "hostname": "nextjs-demo.inttegro.dev",
-      "tag": "nextjs-v1.6.1",
-      "deployRef": "deploy-nextjs-v1.6.1",
+      "tag": "nextjs-v1.6.2",
+      "deployRef": "deploy-nextjs-v1.6.2",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -128,8 +128,8 @@
         "url": "https://express-demo.inttegro.dev"
       },
       "hostname": "express-demo.inttegro.dev",
-      "tag": "express-v1.6.1",
-      "deployRef": "deploy-express-v1.6.1",
+      "tag": "express-v1.6.2",
+      "deployRef": "deploy-express-v1.6.2",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -233,8 +233,8 @@
         "url": "https://nuxt-demo.inttegro.dev"
       },
       "hostname": "nuxt-demo.inttegro.dev",
-      "tag": "nuxt-v1.6.1",
-      "deployRef": "deploy-nuxt-v1.6.1",
+      "tag": "nuxt-v1.6.2",
+      "deployRef": "deploy-nuxt-v1.6.2",
       "environment": [
         {
           "name": "NUXT_INTTEGRO_API_KEY",
@@ -337,8 +337,8 @@
         "url": "https://go-demo.inttegro.dev"
       },
       "hostname": "go-demo.inttegro.dev",
-      "tag": "go-v1.6.1",
-      "deployRef": "deploy-go-v1.6.1",
+      "tag": "go-v1.6.2",
+      "deployRef": "deploy-go-v1.6.2",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -442,8 +442,8 @@
         "url": "https://django-demo.inttegro.dev"
       },
       "hostname": "django-demo.inttegro.dev",
-      "tag": "django-v1.6.1",
-      "deployRef": "deploy-django-v1.6.1",
+      "tag": "django-v1.6.2",
+      "deployRef": "deploy-django-v1.6.2",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -562,8 +562,8 @@
         "url": "https://fastapi-demo.inttegro.dev"
       },
       "hostname": "fastapi-demo.inttegro.dev",
-      "tag": "fastapi-v1.6.1",
-      "deployRef": "deploy-fastapi-v1.6.1",
+      "tag": "fastapi-v1.6.2",
+      "deployRef": "deploy-fastapi-v1.6.2",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -667,8 +667,8 @@
         "url": "https://rails-demo.inttegro.dev"
       },
       "hostname": "rails-demo.inttegro.dev",
-      "tag": "rails-v1.6.1",
-      "deployRef": "deploy-rails-v1.6.1",
+      "tag": "rails-v1.6.2",
+      "deployRef": "deploy-rails-v1.6.2",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -777,8 +777,8 @@
         "url": "https://laravel-demo.inttegro.dev"
       },
       "hostname": "laravel-demo.inttegro.dev",
-      "tag": "laravel-v1.6.1",
-      "deployRef": "deploy-laravel-v1.6.1",
+      "tag": "laravel-v1.6.2",
+      "deployRef": "deploy-laravel-v1.6.2",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -882,8 +882,8 @@
       "releaseStatus": "publication-gated",
       "mode": "server",
       "hostname": "spring-boot-demo.inttegro.dev",
-      "tag": "spring-boot-v1.6.1",
-      "deployRef": "deploy-spring-boot-v1.6.1",
+      "tag": "spring-boot-v1.6.2",
+      "deployRef": "deploy-spring-boot-v1.6.2",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -984,8 +984,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "ios-swiftui-demo.inttegro.dev",
-      "tag": "ios-swiftui-v1.6.1",
-      "deployRef": "deploy-ios-swiftui-v1.6.1",
+      "tag": "ios-swiftui-v1.6.2",
+      "deployRef": "deploy-ios-swiftui-v1.6.2",
       "environment": [],
       "providers": []
     },
@@ -999,8 +999,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "android-compose-demo.inttegro.dev",
-      "tag": "android-compose-v1.6.1",
-      "deployRef": "deploy-android-compose-v1.6.1",
+      "tag": "android-compose-v1.6.2",
+      "deployRef": "deploy-android-compose-v1.6.2",
       "environment": [],
       "providers": []
     },
@@ -1014,8 +1014,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "flutter-demo.inttegro.dev",
-      "tag": "flutter-v1.6.1",
-      "deployRef": "deploy-flutter-v1.6.1",
+      "tag": "flutter-v1.6.2",
+      "deployRef": "deploy-flutter-v1.6.2",
       "environment": [],
       "providers": []
     },
@@ -1029,8 +1029,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "react-native-expo-demo.inttegro.dev",
-      "tag": "react-native-expo-v1.6.1",
-      "deployRef": "deploy-react-native-expo-v1.6.1",
+      "tag": "react-native-expo-v1.6.2",
+      "deployRef": "deploy-react-native-expo-v1.6.2",
       "environment": [],
       "providers": []
     },
@@ -1042,9 +1042,14 @@
       "storyLabel": "Openfield",
       "releaseStatus": "verified",
       "mode": "server",
+      "live": {
+        "status": "verified",
+        "provider": "railway",
+        "url": "https://nestjs-demo.inttegro.dev"
+      },
       "hostname": "nestjs-demo.inttegro.dev",
-      "tag": "nestjs-v1.6.1",
-      "deployRef": "deploy-nestjs-v1.6.1",
+      "tag": "nestjs-v1.6.2",
+      "deployRef": "deploy-nestjs-v1.6.2",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -1142,9 +1147,14 @@
       "storyLabel": "Openfield",
       "releaseStatus": "verified",
       "mode": "server",
+      "live": {
+        "status": "verified",
+        "provider": "cloudflare",
+        "url": "https://redwoodsdk-demo.inttegro.dev"
+      },
       "hostname": "redwoodsdk-demo.inttegro.dev",
-      "tag": "redwoodsdk-v1.6.1",
-      "deployRef": "deploy-redwoodsdk-v1.6.1",
+      "tag": "redwoodsdk-v1.6.2",
+      "deployRef": "deploy-redwoodsdk-v1.6.2",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -1171,7 +1181,7 @@
         {
           "id": "cloudflare",
           "recommendation": "recommended",
-          "status": "prepared",
+          "status": "verified",
           "config": "redwoodsdk/wrangler.jsonc",
           "name": "Cloudflare",
           "icon": "/assets/providers/cloudflare.svg",
