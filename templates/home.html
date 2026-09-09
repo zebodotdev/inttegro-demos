@@ -1,5 +1,142 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#172822"><title>Ledgerline — Inttegro × Go</title><link rel="icon" href="/static/favicon.svg"><link rel="stylesheet" href="/static/styles.css"><link rel="stylesheet" href="/static/checkout-presentations.css"><script src="/static/checkout-presentations.js" defer></script><script src="/static/demo-ui.js" defer></script></head><body><div class="story-ledger ledger-shell">
-<aside class="ledger-sidebar"><a class="brand" href="/" aria-label="Ledgerline home"><span class="brand-mark">L</span>Ledgerline</a><nav class="ledger-nav" aria-label="Invoice navigation"><a href="#invoice-details" aria-current="page">Invoice details</a><a href="#payment">Payment</a></nav><div class="ledger-account"><strong>Osei Studio</strong><span>Client account · OS-104</span></div></aside>
-<main class="ledger-main"><header class="ledger-topbar"><div><h1>Invoice INV-2048</h1><p>Issued by Northstar Design Co. for August studio services.</p></div><button class="secondary-action" type="button" data-copy-invoice>Copy invoice ID</button></header>
-<div class="invoice-layout"><article id="invoice-details" class="invoice-card"><div class="invoice-visual"><img src="/static/ledgerline-studio.jpg" alt="A calm design studio desk with material samples"><div class="invoice-visual-copy"><span>Northstar Design Co.</span><strong>August studio retainer</strong></div></div><div class="invoice-content"><div class="invoice-meta"><div><span>Invoice</span><strong>INV-2048</strong></div><div><span>Issued</span><strong>28 Aug 2026</strong></div><div><span>Due</span><strong>11 Sep 2026</strong></div></div><table class="invoice-table"><thead><tr><th>Service</th><th>Period</th><th>Amount</th></tr></thead><tbody><tr><td><strong>Visual identity refinement</strong><br><span class="microcopy">Direction and production files</span></td><td>August</td><td>GHS 32</td></tr><tr><td><strong>Production support</strong><br><span class="microcopy">Handoff and quality review</span></td><td>August</td><td>GHS 18</td></tr></tbody></table><div class="invoice-total"><span>Total due</span><strong>GHS 50.00</strong></div></div></article>
-<aside id="payment" class="payment-panel"><div class="status"><span class="status-dot"></span> Due in 7 days</div><h2>Pay this invoice</h2><p class="microcopy">Your receipt will be emailed after the payment is verified.</p><div class="summary-row"><span>Amount due</span><strong>GHS 50.00</strong></div>{{if eq .ErrorCode "configuration_error"}}<section class="setup-card has-config-error" role="status"><span class="setup-kicker">Setup required</span><h3>Connect this copy to Inttegro</h3><p>Add <code>INTTEGRO_API_KEY</code> as a server-side secret, set the active Product and Price IDs plus this deployment’s public URL, then redeploy. The key never enters a template or browser script.</p><div class="setup-actions"><a href="https://studio.inttegro.com/keys">Create an API key</a><a href="https://github.com/zebodotdev/inttegro-demos/blob/go-v1.6.2/go/README.md#deploy-your-own">Deployment guide</a></div></section>{{else if .ErrorCode}}<p class="inline-error" role="alert"><strong>{{.ErrorCode}}:</strong> {{.ErrorMessage}}</p>{{end}}<form class="checkout-form" action="/checkout" method="post" data-checkout-form><input type="hidden" name="attempt_id" value="{{.AttemptID}}"><div class="field-grid"><label>Payer name<input name="name" value="Akua Mensah" autocomplete="name" required></label><label>Email address<input name="email" type="email" value="akua@example.com" autocomplete="email" required></label><label>Phone number<input name="phone" type="tel" value="+233544998605" autocomplete="tel" required></label></div><button class="checkout-button" type="submit">Pay securely <span>→</span></button><p class="secure-note">Powered by Inttegro · Your API key stays on the server</p></form></aside></div></main></div></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#172822">
+  <title>Ledgerline — Inttegro × Go</title>
+  <link rel="icon" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/checkout-presentations.css">
+  <script type="module" src="/static/checkout-presentations.js"></script>
+  <script src="/static/demo-ui.js" defer></script>
+</head>
+<body>
+  <div class="story-ledger ledger-shell">
+    <aside class="ledger-sidebar">
+      <a class="brand" href="/" aria-label="Ledgerline home"><span class="brand-mark">L</span>Ledgerline</a>
+      <nav class="ledger-nav" aria-label="Invoice navigation">
+	<a href="#invoice-overview" aria-current="page">Overview</a>
+	<a href="#invoice-details">Charges</a>
+	<a href="#invoice-activity">Activity</a>
+	<a href="#payment">Payment</a>
+      </nav>
+      <div class="ledger-account">
+	<span class="ledger-account-avatar" aria-hidden="true">OS</span>
+	<p><strong>Osei Studio</strong><span>Client account · OS-104</span></p>
+      </div>
+    </aside>
+
+    <main class="ledger-main" id="invoice-overview">
+      <header class="ledger-topbar">
+	<div class="ledger-heading">
+	  <nav class="ledger-breadcrumbs" aria-label="Breadcrumb">
+	    <a href="/">Invoices</a><span aria-hidden="true">/</span><span>INV-2048</span>
+	  </nav>
+	  <div class="ledger-title-row">
+	    <div><p class="ledger-kicker">Northstar Design Co.</p><h1>August studio retainer</h1></div>
+	    <span class="invoice-state">Payment due</span>
+	  </div>
+	  <p>Invoice <strong>INV-2048</strong> for Osei Studio · Due 11 September 2026</p>
+	</div>
+	<button class="secondary-action" type="button" data-copy-invoice>Copy invoice ID</button>
+      </header>
+
+      <div class="invoice-layout">
+	<article id="invoice-details" class="invoice-card invoice-document" aria-labelledby="invoice-title">
+	  <header class="invoice-document-header">
+	    <div class="invoice-sender">
+	      <span class="invoice-sender-mark" aria-hidden="true">ND</span>
+	      <p><strong>Northstar Design Co.</strong><span>Brand systems for ambitious teams</span></p>
+	    </div>
+	    <div class="invoice-identity">
+	      <p>Invoice</p>
+	      <h2 id="invoice-title">INV-2048</h2>
+	      <span>Open · GHS 50.00 due</span>
+	    </div>
+	  </header>
+
+	  <section class="invoice-parties" aria-label="Invoice addresses">
+	    <div><p class="invoice-label">Bill to</p><address><strong>Osei Studio</strong><br>Attn: Akua Mensah<br>Accra, Ghana<br>akua@example.com</address></div>
+	    <div><p class="invoice-label">From</p><address><strong>Northstar Design Co.</strong><br>14 Independence Avenue<br>Accra, Ghana<br>billing@northstar.example</address></div>
+	  </section>
+
+	  <figure class="invoice-project-visual">
+	    <img src="/static/ledgerline-materials.jpg" alt="Northstar identity materials arranged on a sunlit studio table">
+	    <figcaption><span>Project 24—08</span><strong>Osei Studio identity refinement</strong><small>Final palette, type system, and production handoff</small></figcaption>
+	  </figure>
+
+	  <dl class="invoice-meta" aria-label="Invoice terms">
+	    <div><dt>Issued</dt><dd>28 Aug 2026</dd></div>
+	    <div><dt>Due</dt><dd>11 Sep 2026</dd></div>
+	    <div><dt>Terms</dt><dd>Net 14</dd></div>
+	    <div><dt>Currency</dt><dd>GHS</dd></div>
+	  </dl>
+
+	  <div class="invoice-table-wrap">
+	    <table class="invoice-table">
+	      <thead><tr><th scope="col">Service</th><th scope="col">Period</th><th scope="col">Amount</th></tr></thead>
+	      <tbody>
+		<tr><td><strong>Visual identity refinement</strong><br><span class="microcopy">Creative direction, typography system, and production files</span></td><td>August</td><td>GHS 32.00</td></tr>
+		<tr><td><strong>Production support</strong><br><span class="microcopy">Handoff support and final quality review</span></td><td>August</td><td>GHS 18.00</td></tr>
+	      </tbody>
+	    </table>
+	  </div>
+
+	  <section class="invoice-settlement" aria-label="Invoice totals">
+	    <p class="invoice-note"><span class="invoice-label">Project note</span>Thank you for trusting Northstar with the next chapter of the Osei Studio identity.</p>
+	    <dl class="invoice-totals">
+	      <div><dt>Subtotal</dt><dd>GHS 50.00</dd></div>
+	      <div><dt>Tax</dt><dd>GHS 0.00</dd></div>
+	      <div class="invoice-total"><dt>Total due</dt><dd>GHS 50.00</dd></div>
+	    </dl>
+	  </section>
+
+	  <footer class="invoice-document-footer">
+	    <p>Questions about this invoice?</p>
+	    <a href="mailto:billing@northstar.example">billing@northstar.example</a>
+	  </footer>
+	</article>
+
+	<aside id="payment" class="payment-panel" aria-labelledby="payment-title">
+	  <div class="payment-panel-heading">
+	    <span class="status"><span class="status-dot"></span> Due in 7 days</span>
+	    <p class="payment-reference">INV-2048</p>
+	    <h2 id="payment-title">GHS 50.00</h2>
+	    <p class="microcopy">Your receipt will be emailed after the payment is verified.</p>
+	  </div>
+
+	  <ol class="invoice-activity" id="invoice-activity" aria-label="Invoice activity">
+	    <li class="is-complete"><span aria-hidden="true">✓</span><p><strong>Invoice issued</strong><time datetime="2026-08-28">28 Aug · 09:42</time></p></li>
+	    <li class="is-complete"><span aria-hidden="true">✓</span><p><strong>Delivered to client</strong><time datetime="2026-08-28">28 Aug · 09:43</time></p></li>
+	    <li class="is-current"><span aria-hidden="true">3</span><p><strong>Payment due</strong><time datetime="2026-09-11">11 Sep 2026</time></p></li>
+	    <li><span aria-hidden="true">4</span><p><strong>Receipt</strong><small>Sent after verified payment</small></p></li>
+	  </ol>
+
+	  {{if eq .ErrorCode "configuration_error"}}
+	  <section class="setup-card has-config-error" role="status">
+	    <span class="setup-kicker">Setup required</span>
+	    <h3>Connect this copy to Inttegro</h3>
+	    <p>Add <code>INTTEGRO_API_KEY</code> as a server-side secret, set the active Product and Price IDs plus this deployment’s public URL, then redeploy. The key never enters a template or browser script.</p>
+	    <div class="setup-actions"><a href="https://studio.inttegro.com/keys">Create an API key</a><a href="https://github.com/zebodotdev/inttegro-demos/blob/go-v1.6.2/go/README.md#deploy-your-own">Deployment guide</a></div>
+	  </section>
+	  {{else if .ErrorCode}}
+	  <p class="inline-error" role="alert"><strong>{{.ErrorCode}}:</strong> {{.ErrorMessage}}</p>
+	  {{end}}
+
+	  <form class="checkout-form" action="/checkout" method="post" data-checkout-form>
+	    <input type="hidden" name="attempt_id" value="{{.AttemptID}}">
+	    <div class="field-grid">
+	      <label>Payer name<input name="name" value="Akua Mensah" autocomplete="name" required></label>
+	      <label>Email address<input name="email" type="email" value="akua@example.com" autocomplete="email" required></label>
+	      <label>Phone number<input name="phone" type="tel" value="+233544998605" autocomplete="tel" required></label>
+	    </div>
+	    <button class="checkout-button" type="submit">Pay securely <span>→</span></button>
+	    <p class="secure-note">Powered by Inttegro · Your API key stays on the server</p>
+	  </form>
+	</aside>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
