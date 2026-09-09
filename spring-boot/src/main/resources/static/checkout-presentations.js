@@ -1,3 +1,5 @@
+import { loadInttegro } from "./inttegro-loader.js";
+
 /**
  * Inttegro Checkout presentation demo
  *
@@ -14,23 +16,17 @@
  * INTTEGRO:DECISION [checkout-presentation] The payer chooses the presentation,
  * while every option pays the same server-finalized Order.
  *
- * INTTEGRO:ALTERNATIVE [hosted-runtime-loader] After the preview packages are
- * published, a production JavaScript application should install `@inttegro/js`
- * (or its React/Vue/Svelte/Angular adapter). These standalone
- * server-framework demos load the same versioned Inttegro-hosted runtime
- * directly so Rails, Django, Go, and similar projects do not need a Node build
- * solely for this interactive comparison. Never download or self-host the
- * executable runtime.
+ * INTTEGRO:DECISION [hosted-runtime-loader] This module imports the
+ * reproducible browser bundle built from `@inttegro/js`. The public loader
+ * downloads the executable runtime only from Inttegro's fixed origin. Never
+ * download, bundle, mirror, proxy, or self-host that private runtime.
  *
  * INTTEGRO:DOCS https://studio.inttegro.com/web/javascript
  * INTTEGRO:DOCS https://studio.inttegro.com/accept-payment-with-inttegro-checkout
  */
 (function enhanceCheckoutPresentations() {
-  const RUNTIME_URL = "https://js.inttegro.com/inttegro.js@0.2.0";
-  const LOAD_TIMEOUT_MS = 15_000;
   const formSelector = "[data-checkout-form], [data-contribution-form]";
   const sessions = new WeakMap();
-  let runtimePromise;
 
   const presentations = {
     embedded: {
@@ -122,75 +118,6 @@
     if (description && typeof mode === "string" && presentations[mode]) {
       description.textContent = presentations[mode].description;
     }
-  }
-
-  function readRuntime() {
-    const runtime = window.Inttegro;
-    if (
-      !runtime ||
-      runtime.protocolVersion !== 1 ||
-      typeof runtime.version !== "string" ||
-      typeof runtime.createCheckout !== "function"
-    ) {
-      return null;
-    }
-    return runtime;
-  }
-
-  function loadInttegro() {
-    if (runtimePromise) return runtimePromise;
-    runtimePromise = new Promise((resolve, reject) => {
-      const existing = [...document.scripts].find(
-        (script) => script.src === RUNTIME_URL,
-      );
-      const ready = readRuntime();
-      if (existing && ready) {
-        resolve(ready);
-        return;
-      }
-
-      const script = existing || document.createElement("script");
-      const ownsScript = !existing;
-      let timeout;
-      const cleanup = () => {
-        window.clearTimeout(timeout);
-        script.removeEventListener("load", onLoad);
-        script.removeEventListener("error", onError);
-      };
-      const fail = (message) => {
-        cleanup();
-        if (ownsScript) script.remove();
-        runtimePromise = undefined;
-        reject(new Error(message));
-      };
-      const onLoad = () => {
-        const runtime = readRuntime();
-        if (!runtime) {
-          fail("Inttegro Checkout loaded without a compatible runtime.");
-          return;
-        }
-        cleanup();
-        resolve(runtime);
-      };
-      const onError = () => fail("Inttegro Checkout could not be loaded.");
-
-      script.addEventListener("load", onLoad, { once: true });
-      script.addEventListener("error", onError, { once: true });
-      timeout = window.setTimeout(
-        () => fail("Inttegro Checkout took too long to load."),
-        LOAD_TIMEOUT_MS,
-      );
-
-      if (!existing) {
-        script.async = true;
-        script.crossOrigin = "anonymous";
-        script.referrerPolicy = "origin";
-        script.src = RUNTIME_URL;
-        script.dataset.inttegroJs = "0.2.0";
-        document.head.append(script);
-      }
-    });
-    return runtimePromise;
   }
 
   function inlineSurface(form) {
@@ -292,9 +219,13 @@
       // Load the client before creating an Order so a missing or blocked
       // runtime does not leave behind a finalized Order the payer cannot open.
       const inttegro = await loadInttegro();
+      const formBody = new URLSearchParams();
+      for (const [name, value] of new FormData(form)) {
+        if (typeof value === "string") formBody.append(name, value);
+      }
       const response = await fetch(form.action, {
         method: "POST",
-        body: new FormData(form),
+        body: formBody,
         credentials: "same-origin",
         headers: { Accept: "application/json" },
       });
@@ -329,7 +260,9 @@
         orderId,
         appearance: { theme: "system" },
         features: {
-          showLineItems: mode === "modal",
+          showLineItems:
+            mode === "modal" &&
+            form.dataset.checkoutShowLineItems !== "false",
           showInvoiceDownload: true,
           showReceiptDownload: true,
           allowPaymentMethodChange: true,

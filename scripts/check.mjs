@@ -114,6 +114,10 @@ const checkoutPresentationAssets = {
 };
 const presentationScript = readFileSync(join(demosRoot, 'assets/checkout-presentations.js'), 'utf8');
 const presentationStyles = readFileSync(join(demosRoot, 'assets/checkout-presentations.css'), 'utf8');
+const loaderEntry = readFileSync(join(demosRoot, 'assets/inttegro-loader.entry.js'), 'utf8');
+const loaderBundlePath = join(demosRoot, 'assets/inttegro-loader.js');
+assert(existsSync(loaderBundlePath), 'the public Inttegro loader bundle must be built');
+const loaderBundle = readFileSync(loaderBundlePath, 'utf8');
 for (const value of ['embedded', 'modal', 'hosted']) {
   assert(
     presentationScript.includes(`    ${value}: {`),
@@ -121,8 +125,16 @@ for (const value of ['embedded', 'modal', 'hosted']) {
   );
 }
 assert(
-  presentationScript.includes('https://js.inttegro.com/inttegro.js@0.2.0'),
-  'presentation client must pin the reviewed Inttegro runtime',
+  loaderEntry.includes('from "@inttegro/js"'),
+  'browser asset entry point must import the public @inttegro/js loader',
+);
+assert(
+  presentationScript.startsWith('import { loadInttegro } from "./inttegro-loader.js";'),
+  'presentation client must consume the generated public loader bundle',
+);
+assert(
+  loaderBundle.includes('https://js.inttegro.com/inttegro.js@0.2.0'),
+  'public loader bundle must pin the reviewed Inttegro-hosted runtime',
 );
 assert(
   presentationScript.includes('headers: { Accept: "application/json" }'),
@@ -131,10 +143,13 @@ assert(
 for (const [id, directory] of Object.entries(checkoutPresentationAssets)) {
   const scriptPath = join(demosRoot, directory, 'checkout-presentations.js');
   const stylesPath = join(demosRoot, directory, 'checkout-presentations.css');
+  const loaderPath = join(demosRoot, directory, 'inttegro-loader.js');
   assert(existsSync(scriptPath), `${id} must ship the shared Checkout presentation client`);
   assert(existsSync(stylesPath), `${id} must ship the shared Checkout presentation styles`);
+  assert(existsSync(loaderPath), `${id} must ship the public Inttegro loader bundle`);
   assert.equal(readFileSync(scriptPath, 'utf8'), presentationScript, `${id} presentation client must match the reviewed shared asset`);
   assert.equal(readFileSync(stylesPath, 'utf8'), presentationStyles, `${id} presentation styles must match the reviewed shared asset`);
+  assert.equal(readFileSync(loaderPath, 'utf8'), loaderBundle, `${id} loader bundle must match the reviewed shared asset`);
 }
 
 const checkoutHandlers = {
@@ -171,11 +186,59 @@ for (const id of serverDemoIds) {
   assert(handler.toLowerCase().includes('no-store'), `${id} JSON Checkout responses must not be cached`);
   const document = readFileSync(join(demosRoot, checkoutDocuments[id]), 'utf8');
   assert(document.includes('checkout-presentations.css'), `${id} must load the shared presentation styles`);
-  assert(document.includes('checkout-presentations.js'), `${id} must load the shared presentation client`);
+  const presentationOwner = id === 'redwoodsdk'
+    ? readFileSync(join(demosRoot, 'redwoodsdk/src/client.tsx'), 'utf8')
+    : document;
+  assert(presentationOwner.includes('checkout-presentations.js'), `${id} must load the shared presentation client`);
+  assert(
+    document.includes('type="module"') || document.includes("type: 'module'"),
+    `${id} must load the presentation client as a JavaScript module`,
+  );
   const readme = readFileSync(join(demosRoot, id, 'README.md'), 'utf8');
   for (const label of ['Embedded', 'Modal', 'Hosted page']) {
     assert(readme.includes(label), `${id} README must document the ${label} presentation`);
   }
+}
+
+const browserAssetsPackage = JSON.parse(
+  readFileSync(join(demosRoot, 'package.json'), 'utf8'),
+);
+assert.equal(
+  browserAssetsPackage.dependencies['@inttegro/js'],
+  '0.2.0',
+  'shared server-demo assets must build from @inttegro/js 0.2.0',
+);
+const frameworkAdapters = {
+  nextjs: {
+    packageName: '@inttegro/react',
+    manifest: 'nextjs/package.json',
+    source: 'nextjs/app/inttegro-demo-checkout.tsx',
+  },
+  nuxt: {
+    packageName: '@inttegro/vue',
+    manifest: 'nuxt/package.json',
+    source: 'nuxt/plugins/inttegro-checkout.client.ts',
+  },
+  redwoodsdk: {
+    packageName: '@inttegro/react',
+    manifest: 'redwoodsdk/package.json',
+    source: 'redwoodsdk/src/inttegro-demo-checkout.tsx',
+  },
+};
+for (const [id, adapter] of Object.entries(frameworkAdapters)) {
+  const packageManifest = JSON.parse(
+    readFileSync(join(demosRoot, adapter.manifest), 'utf8'),
+  );
+  assert.equal(
+    packageManifest.dependencies[adapter.packageName],
+    '0.2.0',
+    `${id} must pin ${adapter.packageName} 0.2.0`,
+  );
+  const source = readFileSync(join(demosRoot, adapter.source), 'utf8');
+  assert(
+    source.includes(`from '${adapter.packageName}'`),
+    `${id} must mount Checkout through ${adapter.packageName}`,
+  );
 }
 
 assert.equal(deployments.schemaVersion, 1, 'deployment manifest schema must be version 1');

@@ -6,7 +6,7 @@ export default defineNuxtConfig({
     head: {
       link: [{ rel: 'stylesheet', href: '/checkout-presentations.css' }],
       script: [
-        { src: '/checkout-presentations.js', defer: true },
+        { type: 'module', src: '/checkout-presentations.js' },
         { src: '/demo-ui.js', defer: true },
       ],
     },

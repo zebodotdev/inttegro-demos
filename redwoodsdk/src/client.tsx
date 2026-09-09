@@ -1,7 +1,22 @@
 import { initClient, initClientNavigation } from 'rwsdk/client';
+import { installInttegroDemoCheckoutAdapter } from './inttegro-demo-checkout';
 
+installInttegroDemoCheckoutAdapter();
 const { handleResponse, onHydrated } = initClientNavigation();
-initClient({ handleResponse, onHydrated });
+let presentationLoaded = false;
+initClient({
+  handleResponse,
+  onHydrated(meta) {
+    onHydrated(meta);
+    if (!presentationLoaded) {
+      presentationLoaded = true;
+      const presentationScript = document.createElement('script');
+      presentationScript.type = 'module';
+      presentationScript.src = '/checkout-presentations.js';
+      document.head.appendChild(presentationScript);
+    }
+  },
+});
 
 const form = document.querySelector('[data-contribution-form]');
 if (form instanceof HTMLFormElement) {

@@ -16,9 +16,7 @@ export function Document({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
-        <script
-          data-source="/checkout-presentations.js"
-        >{`import(document.currentScript.dataset.source).then(() => import('/src/client.tsx'))`}</script>
+        <script type="module">{`import('/src/client.tsx')`}</script>
       </body>
     </html>
   );
