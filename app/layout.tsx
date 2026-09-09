@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Script from 'next/script';
 import type { ReactNode } from 'react';
+import { InttegroDemoCheckoutAdapter } from './inttegro-demo-checkout';
 import './styles.css';
 
 export const metadata: Metadata = {
@@ -15,7 +16,8 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       <head><link rel="stylesheet" href="/checkout-presentations.css" /></head>
       <body>
         {children}
-        <Script src="/checkout-presentations.js" strategy="afterInteractive" />
+        <InttegroDemoCheckoutAdapter />
+        <Script type="module" src="/checkout-presentations.js" strategy="afterInteractive" />
         <Script src="/demo-ui.js" strategy="afterInteractive" />
       </body>
     </html>
