@@ -337,6 +337,12 @@ private fun KoraMarketScreen() {
                 // it is not evidence that payment succeeded.
                 orderId = activeOrderId,
                 returnUrl = "inttegro-demo://payment-return",
+                features = PaymentSheetConfiguration.Features(
+                    showLineItems = BuildConfig.INTTEGRO_SCREENSHOT_FEATURES,
+                    showInvoiceDownload = BuildConfig.INTTEGRO_SCREENSHOT_FEATURES,
+                    showReceiptDownload = BuildConfig.INTTEGRO_SCREENSHOT_FEATURES,
+                    allowPaymentMethodChange = !BuildConfig.INTTEGRO_SCREENSHOT_FEATURES,
+                ),
             ),
             telemetry = telemetry,
             adapter = if (BuildConfig.INTTEGRO_SCREENSHOT_MODE) {

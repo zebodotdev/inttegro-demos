@@ -33,6 +33,18 @@ object DemoPaymentSheetAdapter : PaymentSheetAdapter {
             ),
         ),
         expiresAt = Instant.now().plusSeconds(60 * 60),
+        lineItems = listOf(
+            PaymentSheetSession.LineItem(
+                id = "line_dawn_brew_set",
+                name = "Dawn Brew Set",
+                quantity = 1,
+                total = PaymentSheetSession.Money(value = 5_000, currency = "GHS"),
+            ),
+        ),
+        documents = PaymentSheetSession.Documents(
+            invoiceUrl = "https://example.com/invoice.pdf",
+            receiptUrl = "https://example.com/receipt.pdf",
+        ),
     )
 
     override suspend fun pay(

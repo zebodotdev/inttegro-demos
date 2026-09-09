@@ -62,6 +62,13 @@ Choose **Pay** to reach the one-time-code screen, enter any six digits and
 choose **Continue** to reach the approval screen, then choose **Check again** to
 reach the completed state.
 
+Add `-PinttegroScreenshotFeatures=true` to capture the optional-feature story.
+The opening sheet offers a collapsed Order summary and keeps the attached
+payment method fixed. Opening the summary expands the sheet as the
+Checkout-provided line items are revealed. Its completed state offers both
+invoice and receipt downloads. These actions use inert documentation URLs and
+should not be opened during capture.
+
 A production app receives only a finalized `orderId` created by its backend.
 Fulfillment still relies on authoritative server-side payment status.
 

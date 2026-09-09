@@ -66,6 +66,13 @@ capture the one-time-code screen, enter any six digits and choose **Continue**
 to capture the approval screen, then choose **Check again** to capture
 `Payment complete`. No payment is created.
 
+Use `INTTEGRO_STUDIO_SCREENSHOTS=features` to capture the optional-feature
+story. The opening sheet offers a collapsed Order summary and keeps the attached
+payment method fixed. Opening the summary expands the sheet to the large detent
+as the Checkout-provided line items are revealed. Its completed state offers
+both invoice and receipt downloads. These links use inert documentation URLs
+and should not be opened during capture.
+
 ## Deploy the companion backend
 
 [![Deploy to Cloudflare](../assets/providers/cloudflare-button.svg)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-nextjs-v1.6.2)

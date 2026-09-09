@@ -16,6 +16,12 @@ val screenshotMode = providers.gradleProperty("inttegroScreenshotMode")
     .get()
     .toBoolean()
 
+val screenshotFeatures = providers.gradleProperty("inttegroScreenshotFeatures")
+    .orElse(providers.environmentVariable("INTTEGRO_SCREENSHOT_FEATURES"))
+    .orElse("false")
+    .get()
+    .toBoolean()
+
 android {
     namespace = "com.inttegro.demo.compose"
     compileSdk = 37
@@ -28,6 +34,7 @@ android {
         versionName = "0.1.0"
         buildConfigField("String", "INTTEGRO_DEMO_BACKEND_URL", "\"$demoBackendUrl\"")
         buildConfigField("boolean", "INTTEGRO_SCREENSHOT_MODE", screenshotMode.toString())
+        buildConfigField("boolean", "INTTEGRO_SCREENSHOT_FEATURES", screenshotFeatures.toString())
     }
 
     buildFeatures {

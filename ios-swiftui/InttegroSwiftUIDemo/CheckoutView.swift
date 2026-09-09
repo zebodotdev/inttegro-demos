@@ -37,12 +37,19 @@ struct CheckoutView: View {
 
     init() {
 #if DEBUG
-        if ProcessInfo.processInfo.environment["INTTEGRO_STUDIO_SCREENSHOTS"] == "1" {
+        let screenshotMode = ProcessInfo.processInfo.environment["INTTEGRO_STUDIO_SCREENSHOTS"]
+        if screenshotMode == "1" || screenshotMode == "features" {
             _configuration = State(
                 initialValue: try? PaymentSheetConfiguration(
                     orderID: "or_studio_screenshot",
                     returnURL: URL(string: "inttegro-demo://inttegro-return"),
-                    appearance: .init(primaryColor: "#173D33", cornerRadius: 30)
+                    appearance: .init(primaryColor: "#173D33", cornerRadius: 30),
+                    features: .init(
+                        showLineItems: screenshotMode == "features",
+                        showInvoiceDownload: screenshotMode == "features",
+                        showReceiptDownload: screenshotMode == "features",
+                        allowPaymentMethodChange: screenshotMode != "features"
+                    )
                 )
             )
             _isPaymentSheetPresented = State(initialValue: true)
@@ -286,7 +293,8 @@ struct CheckoutView: View {
 
     private var isStudioScreenshotMode: Bool {
 #if DEBUG
-        ProcessInfo.processInfo.environment["INTTEGRO_STUDIO_SCREENSHOTS"] == "1"
+        let mode = ProcessInfo.processInfo.environment["INTTEGRO_STUDIO_SCREENSHOTS"]
+        return mode == "1" || mode == "features"
 #else
         false
 #endif
@@ -383,7 +391,19 @@ private struct StudioScreenshotPaymentSheetAdapter: PaymentSheetAdapter {
                     detail: "MTN MoMo, Telecel Cash, or AirtelTigo Money"
                 ),
             ],
-            expiresAt: Date().addingTimeInterval(15 * 60)
+            expiresAt: Date().addingTimeInterval(15 * 60),
+            lineItems: [
+                .init(
+                    id: "line_dawn_brew_set",
+                    name: "Dawn Brew Set",
+                    quantity: 1,
+                    total: .init(value: 5_000, currency: "GHS")
+                ),
+            ],
+            documents: .init(
+                invoiceURL: URL(string: "https://example.com/invoice.pdf"),
+                receiptURL: URL(string: "https://example.com/receipt.pdf")
+            )
         )
     }
 
