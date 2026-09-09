@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
+  Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -43,7 +44,6 @@ const finishes = [
 
 export default function App() {
   const [busy, setBusy] = useState(false);
-  const [category, setCategory] = useState("New in");
   const [favorite, setFavorite] = useState(false);
   const [finish, setFinish] = useState(finishes[0]!.name);
   const [status, setStatus] = useState<string | null>(null);
@@ -129,34 +129,13 @@ export default function App() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categories}
-        >
-          {["New in", "Table", "Textiles", "Objects"].map((item) => (
-            <Pressable
-              key={item}
-              accessibilityRole="button"
-              accessibilityState={{ selected: category === item }}
-              onPress={() => setCategory(item)}
-              style={({ pressed }) => [
-                styles.category,
-                category === item && styles.categorySelected,
-                pressed && styles.pressed,
-              ]}
-            >
-              <Text
-                style={[
-                  styles.categoryText,
-                  category === item && styles.categoryTextSelected,
-                ]}
-              >
-                {item}
-              </Text>
-            </Pressable>
-          ))}
-        </ScrollView>
+        <View style={styles.editorialIntro}>
+          <View style={styles.overline}>
+            <Text style={styles.overlineText}>VOLTA STUDIO</Text>
+            <Text style={styles.overlineText}>OBJECT 01—03</Text>
+          </View>
+          <Text style={styles.editorialTitle}>A slower,{"\n"}<Text style={styles.editorialTitleAccent}>warmer morning.</Text></Text>
+        </View>
 
         <View style={styles.hero}>
           <Image
@@ -188,6 +167,7 @@ export default function App() {
         </View>
 
         <View style={styles.details}>
+          <Text style={styles.objectLabel}>HAND-THROWN STONEWARE · HO, GHANA</Text>
           <View style={styles.titleRow}>
             <Text style={styles.title}>Dawn Brew Set</Text>
             <Text style={styles.amount}>GHS 50</Text>
@@ -295,13 +275,15 @@ function describe(result: PaymentSheetResult): string {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: "#f8f3e9" },
+  screen: { flex: 1, backgroundColor: "#eee9df" },
   header: {
     alignItems: "center",
     flexDirection: "row",
-    height: 58,
+    height: 68,
     justifyContent: "space-between",
-    paddingHorizontal: 16,
+    borderBottomColor: "rgba(27,32,28,.13)",
+    borderBottomWidth: 1,
+    paddingHorizontal: 18,
   },
   iconButton: {
     alignItems: "center",
@@ -314,17 +296,18 @@ const styles = StyleSheet.create({
   brandMark: {
     alignItems: "center",
     backgroundColor: "#183c32",
-    borderRadius: 15,
-    height: 30,
+    borderRadius: 0,
+    height: 36,
     justifyContent: "center",
-    width: 30,
+    width: 36,
   },
   brandLetter: { color: "#fffaf1", fontSize: 13, fontWeight: "800" },
   brand: {
     color: "#183c32",
-    fontSize: 17,
-    fontWeight: "800",
-    letterSpacing: -0.4,
+    fontSize: 14,
+    fontWeight: "700",
+    letterSpacing: 0.8,
+    textTransform: "uppercase",
   },
   bagBadge: {
     alignItems: "center",
@@ -339,19 +322,13 @@ const styles = StyleSheet.create({
   },
   bagBadgeText: { color: "#fff", fontSize: 9, fontWeight: "800" },
   content: { paddingBottom: 118 },
-  categories: { gap: 8, paddingHorizontal: 18, paddingVertical: 12 },
-  category: {
-    backgroundColor: "#eee7dc",
-    borderRadius: 22,
-    justifyContent: "center",
-    minHeight: 40,
-    paddingHorizontal: 16,
-  },
-  categorySelected: { backgroundColor: "#183c32" },
-  categoryText: { color: "#46534e", fontSize: 13, fontWeight: "700" },
-  categoryTextSelected: { color: "#fffaf1" },
+  editorialIntro: { paddingHorizontal: 20, paddingBottom: 34, paddingTop: 36 },
+  overline: { borderTopColor: "rgba(27,32,28,.18)", borderTopWidth: 1, flexDirection: "row", justifyContent: "space-between", paddingTop: 10 },
+  overlineText: { color: "#686a63", fontSize: 9, fontWeight: "700", letterSpacing: 1.4 },
+  editorialTitle: { color: "#1b201c", fontFamily: Platform.select({ ios: "Georgia", android: "serif" }), fontSize: 54, letterSpacing: -2.8, lineHeight: 50, marginTop: 54 },
+  editorialTitleAccent: { color: "#a84d32", fontStyle: "italic" },
   hero: {
-    aspectRatio: 1.02,
+    aspectRatio: 0.82,
     backgroundColor: "#d98c68",
     overflow: "hidden",
     position: "relative",
@@ -359,7 +336,7 @@ const styles = StyleSheet.create({
   heroImage: { height: "100%", width: "100%" },
   smallBatch: {
     backgroundColor: "rgba(255,250,241,.88)",
-    borderRadius: 18,
+    borderRadius: 0,
     left: 16,
     paddingHorizontal: 13,
     paddingVertical: 9,
@@ -381,21 +358,24 @@ const styles = StyleSheet.create({
   favoriteText: { color: "#183c32", fontSize: 27 },
   favoriteActive: { color: "#b84831" },
   pressed: { opacity: 0.72, transform: [{ scale: 0.97 }] },
-  details: { gap: 0, padding: 20 },
+  details: { gap: 0, padding: 20, paddingTop: 28 },
+  objectLabel: { color: "#a84d32", fontSize: 9, fontWeight: "800", letterSpacing: 1.3, marginBottom: 14 },
   titleRow: { alignItems: "flex-start", flexDirection: "row", gap: 14 },
   title: {
     color: "#183c32",
     flex: 1,
-    fontSize: 32,
-    fontWeight: "800",
-    letterSpacing: -1.2,
-    lineHeight: 34,
+    fontFamily: Platform.select({ ios: "Georgia", android: "serif" }),
+    fontSize: 34,
+    fontWeight: "500",
+    letterSpacing: -1.4,
+    lineHeight: 37,
   },
   amount: {
     color: "#183c32",
-    fontSize: 21,
-    fontWeight: "800",
-    letterSpacing: -0.6,
+    fontFamily: Platform.select({ ios: "Georgia", android: "serif" }),
+    fontSize: 22,
+    fontWeight: "500",
+    letterSpacing: -0.7,
   },
   ratingRow: {
     alignItems: "center",
@@ -438,19 +418,19 @@ const styles = StyleSheet.create({
     width: 36,
   },
   makerCard: {
-    backgroundColor: "#efe7da",
-    borderRadius: 22,
+    backgroundColor: "#394b3e",
+    borderRadius: 0,
     marginTop: 30,
     padding: 20,
   },
-  makerTitle: { color: "#183c32", fontSize: 17, fontWeight: "800" },
-  makerCopy: { color: "#59665f", fontSize: 15, lineHeight: 22, marginTop: 9 },
+  makerTitle: { color: "#fffaf1", fontFamily: Platform.select({ ios: "Georgia", android: "serif" }), fontSize: 22, fontWeight: "500" },
+  makerCopy: { color: "#d5d8d2", fontSize: 15, lineHeight: 23, marginTop: 10 },
   divider: {
-    backgroundColor: "rgba(24,60,50,.12)",
+    backgroundColor: "rgba(255,255,255,.15)",
     height: 1,
     marginVertical: 16,
   },
-  delivery: { color: "#183c32", fontSize: 14, fontWeight: "700" },
+  delivery: { color: "#fffaf1", fontSize: 13, fontWeight: "700" },
   status: {
     backgroundColor: "#dcece6",
     borderRadius: 18,
@@ -483,7 +463,7 @@ const styles = StyleSheet.create({
   payButton: {
     alignItems: "center",
     backgroundColor: "#183c32",
-    borderRadius: 28,
+    borderRadius: 0,
     flex: 1,
     justifyContent: "center",
     minHeight: 54,

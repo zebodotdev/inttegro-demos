@@ -40,7 +40,7 @@ class KoraMarketApp extends StatelessWidget {
           secondary: const Color(0xffb84831),
           surface: const Color(0xfffffbf3),
         ),
-        scaffoldBackgroundColor: const Color(0xfff8f3e9),
+        scaffoldBackgroundColor: const Color(0xffeee9df),
         useMaterial3: true,
       ),
       darkTheme: ThemeData(
@@ -199,10 +199,10 @@ class _KoraProductScreenState extends State<KoraProductScreen> {
         slivers: [
           SliverAppBar(
             pinned: true,
-            expandedHeight: 470,
+            expandedHeight: 560,
             backgroundColor: colors.surface,
             surfaceTintColor: colors.surface,
-            title: const Text('Kora Market', style: TextStyle(fontWeight: FontWeight.w800)),
+            title: const Text('KORA MARKET', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, letterSpacing: 1)),
             leading: Builder(
               builder: (context) => IconButton(icon: const Icon(Icons.menu_rounded), tooltip: 'Open menu', onPressed: Scaffold.of(context).openDrawer),
             ),
@@ -222,8 +222,9 @@ class _KoraProductScreenState extends State<KoraProductScreen> {
                     child: Chip(
                       avatar: const Icon(Icons.handshake_outlined, size: 17),
                       label: const Text('Small batch'),
-                      backgroundColor: colors.surface.withOpacity(.88),
+                      backgroundColor: colors.surface.withOpacity(.92),
                       side: BorderSide.none,
+                      shape: const RoundedRectangleBorder(),
                     ),
                   ),
                   Positioned(
@@ -239,23 +240,17 @@ class _KoraProductScreenState extends State<KoraProductScreen> {
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.fromLTRB(20, 14, 20, 4),
-              child: Row(
-                children: ['New in', 'Table', 'Textiles', 'Objects'].map((category) => Padding(
-                  padding: const EdgeInsets.only(right: 9),
-                  child: FilterChip(label: Text(category), selected: _category == category, onSelected: (_) => setState(() => _category = category)),
-                )).toList(),
-              ),
-            ),
-          ),
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 18, 20, 36),
+            padding: const EdgeInsets.fromLTRB(20, 34, 20, 36),
             sliver: SliverList.list(children: [
+              const Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [Text('VOLTA STUDIO', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 1.4, color: Color(0xff686a63))), Text('OBJECT 01—03', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w700, letterSpacing: 1.4, color: Color(0xff686a63)))]),
+              const SizedBox(height: 42),
+              const Text('A slower,\nwarmer morning.', style: TextStyle(fontFamily: 'serif', fontSize: 54, height: .92, fontWeight: FontWeight.w400, letterSpacing: -2.6, color: Color(0xff1b201c))),
+              const SizedBox(height: 48),
+              const Text('HAND-THROWN STONEWARE · HO, GHANA', style: TextStyle(fontSize: 9, fontWeight: FontWeight.w800, letterSpacing: 1.2, color: Color(0xffa84d32))),
+              const SizedBox(height: 14),
               Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Expanded(child: Text('Dawn Brew Set', style: TextStyle(fontSize: 32, height: 1, fontWeight: FontWeight.w800, letterSpacing: -1.2))),
+                const Expanded(child: Text('Dawn Brew Set', style: TextStyle(fontFamily: 'serif', fontSize: 34, height: 1, fontWeight: FontWeight.w500, letterSpacing: -1.2))),
                 const SizedBox(width: 16),
                 Text('GHS 50', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
               ]),
@@ -285,15 +280,16 @@ class _KoraProductScreenState extends State<KoraProductScreen> {
               const SizedBox(height: 30),
               Card(
                 elevation: 0,
-                color: colors.surfaceContainer,
+                shape: const RoundedRectangleBorder(),
+                color: const Color(0xff394b3e),
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    const Text('Made by Ama Ofori', style: TextStyle(fontSize: 17, fontWeight: FontWeight.w800)),
+                    const Text('Made by Ama Ofori', style: TextStyle(fontFamily: 'serif', color: Colors.white, fontSize: 22, fontWeight: FontWeight.w500)),
                     const SizedBox(height: 10),
-                    Text('Every piece keeps the subtle marks of its making. Local clay is fired to a food-safe finish and packed without plastic.', style: TextStyle(height: 1.45, color: colors.onSurfaceVariant)),
-                    const Divider(height: 30),
-                    const Row(children: [Icon(Icons.local_shipping_outlined), SizedBox(width: 10), Text('Delivery across Ghana in 2–4 days', style: TextStyle(fontWeight: FontWeight.w600))]),
+                    const Text('Every piece keeps the subtle marks of its making. Local clay is fired to a food-safe finish and packed without plastic.', style: TextStyle(height: 1.45, color: Color(0xffd5d8d2))),
+                    const Divider(height: 30, color: Color(0x33ffffff)),
+                    const Row(children: [Icon(Icons.local_shipping_outlined, color: Colors.white), SizedBox(width: 10), Expanded(child: Text('Delivery across Ghana in 2–4 days', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)))]),
                   ]),
                 ),
               ),

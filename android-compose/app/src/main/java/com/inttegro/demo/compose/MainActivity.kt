@@ -22,8 +22,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -40,7 +38,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -68,9 +65,11 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.inttegro.payments.InttegroPaymentSheet
 import com.inttegro.payments.PaymentSheetConfiguration
 import com.inttegro.payments.PaymentSheetResult
@@ -229,17 +228,28 @@ private fun KoraMarketScreen() {
             verticalArrangement = Arrangement.spacedBy(0.dp),
         ) {
             item {
-                LazyRow(
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 20.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    items(listOf("New in", "Table", "Textiles", "Objects")) { category ->
-                        FilterChip(selected = category == selectedCategory, onClick = { selectedCategory = category }, label = { Text(category) })
+                Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 34.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                    ) {
+                        Text("VOLTA STUDIO", style = MaterialTheme.typography.labelSmall, letterSpacing = 1.4.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text("OBJECT 01—03", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
+                    Spacer(Modifier.height(46.dp))
+                    Text(
+                        "A slower,\nwarmer morning.",
+                        style = MaterialTheme.typography.displayMedium.copy(
+                            fontFamily = FontFamily.Serif,
+                            fontWeight = FontWeight.Normal,
+                            lineHeight = 52.sp,
+                        ),
+                        color = Color(0xFF1B201C),
+                    )
                 }
             }
             item {
-                Box(modifier = Modifier.fillMaxWidth().aspectRatio(1.04f)) {
+                Box(modifier = Modifier.fillMaxWidth().aspectRatio(.8f)) {
                     Image(
                         painter = painterResource(R.drawable.kora_dawn_brew),
                         contentDescription = "Terracotta Dawn Brew Set with a pour-over and cup",
@@ -248,7 +258,7 @@ private fun KoraMarketScreen() {
                     )
                     Surface(
                         modifier = Modifier.align(Alignment.TopStart).padding(18.dp),
-                        shape = RoundedCornerShape(50),
+                        shape = RoundedCornerShape(0.dp),
                         color = MaterialTheme.colorScheme.surface.copy(alpha = .86f),
                         tonalElevation = 4.dp,
                     ) { Text("Small batch", modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp), style = MaterialTheme.typography.labelMedium) }
@@ -261,9 +271,10 @@ private fun KoraMarketScreen() {
             item {
                 Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(22.dp)) {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text("HAND-THROWN STONEWARE · HO, GHANA", color = Color(0xFFA84D32), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("Dawn Brew Set", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
-                            Text("GHS 50", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                            Text("Dawn Brew Set", style = MaterialTheme.typography.headlineLarge.copy(fontFamily = FontFamily.Serif), fontWeight = FontWeight.Medium, modifier = Modifier.weight(1f), maxLines = 2, overflow = TextOverflow.Ellipsis)
+                            Text("GHS 50", style = MaterialTheme.typography.titleLarge.copy(fontFamily = FontFamily.Serif), fontWeight = FontWeight.Medium)
                         }
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text("★ 4.9", color = Color(0xFFA65D16), fontWeight = FontWeight.SemiBold)
@@ -287,11 +298,11 @@ private fun KoraMarketScreen() {
                             }
                         }
                     }
-                    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)) {
+                    Card(shape = RoundedCornerShape(0.dp), colors = CardDefaults.cardColors(containerColor = Color(0xFF394B3E))) {
                         Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                            Text("Made by Ama Ofori", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                            Text("Every piece keeps the subtle marks of its making. Local clay is fired to a food-safe finish and packed without plastic.", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) { Icon(Icons.Outlined.LocalShipping, null); Text("Delivery across Ghana in 2–4 days", fontWeight = FontWeight.SemiBold) }
+                            Text("Made by Ama Ofori", style = MaterialTheme.typography.titleLarge.copy(fontFamily = FontFamily.Serif), color = Color.White, fontWeight = FontWeight.Medium)
+                            Text("Every piece keeps the subtle marks of its making. Local clay is fired to a food-safe finish and packed without plastic.", color = Color.White.copy(alpha = .7f))
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) { Icon(Icons.Outlined.LocalShipping, null, tint = Color.White); Text("Delivery across Ghana in 2–4 days", color = Color.White, fontWeight = FontWeight.SemiBold) }
                         }
                     }
                     outcome?.let {

@@ -61,7 +61,7 @@ struct CheckoutView: View {
         NavigationStack {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 0) {
-                    discoveryStrip
+                    editorialIntro
                     productArtwork
                     productDetails
                 }
@@ -77,33 +77,28 @@ struct CheckoutView: View {
         .tint(.koraForest)
     }
 
-    private var discoveryStrip: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 10) {
-                category("New in", systemImage: "sparkles")
-                category("Table", systemImage: "cup.and.saucer")
-                category("Textiles", systemImage: "square.grid.3x3.fill")
-                category("Objects", systemImage: "shippingbox")
+    private var editorialIntro: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Text("VOLTA STUDIO")
+                Spacer()
+                Text("OBJECT 01—03")
             }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 12)
-        }
-        .accessibilityLabel("Product categories")
-    }
+            .font(.caption2.weight(.bold))
+            .tracking(1.5)
+            .foregroundStyle(.secondary)
+            .padding(.top, 10)
+            .overlay(alignment: .top) { Divider() }
 
-    private func category(_ title: String, systemImage: String) -> some View {
-        Button {
-            withAnimation(.easeOut(duration: 0.18)) { selectedCategory = title }
-        } label: {
-            Label(title, systemImage: systemImage)
-                .font(.subheadline.weight(.semibold))
-                .padding(.horizontal, 14)
-                .frame(height: 40)
-                .foregroundStyle(selectedCategory == title ? Color.white : Color.primary)
-                .background(selectedCategory == title ? Color.koraForest : Color(.secondarySystemGroupedBackground), in: Capsule())
+            Text("A slower,\nwarmer morning.")
+                .font(.system(size: 58, weight: .regular, design: .serif))
+                .tracking(-3)
+                .lineSpacing(-7)
+                .foregroundStyle(Color.koraInk)
+                .padding(.top, 46)
         }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(selectedCategory == title ? .isSelected : [])
+        .padding(.horizontal, 20)
+        .padding(.vertical, 32)
     }
 
     private var productArtwork: some View {
@@ -112,7 +107,7 @@ struct CheckoutView: View {
                 .resizable()
                 .scaledToFill()
                 .frame(maxWidth: .infinity)
-                .frame(height: 430)
+                .aspectRatio(4 / 5, contentMode: .fill)
                 .clipped()
                 .accessibilityLabel("Terracotta Dawn Brew Set with a pour-over and cup")
 
@@ -121,7 +116,7 @@ struct CheckoutView: View {
                     .font(.caption.weight(.semibold))
                     .padding(.horizontal, 12)
                     .frame(height: 34)
-                    .background(.regularMaterial, in: Capsule())
+                    .background(.regularMaterial, in: Rectangle())
                 Spacer()
                 Button {
                     withAnimation(.spring(response: 0.28, dampingFraction: 1)) { isFavorite.toggle() }
@@ -139,13 +134,17 @@ struct CheckoutView: View {
     private var productDetails: some View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 9) {
+                Text("HAND-THROWN STONEWARE · HO, GHANA")
+                    .font(.caption2.weight(.bold))
+                    .tracking(1.35)
+                    .foregroundStyle(Color.koraClay)
                 HStack(alignment: .firstTextBaseline) {
                     Text("Dawn Brew Set")
-                        .font(.largeTitle.bold())
-                        .tracking(-1.1)
+                        .font(.system(.largeTitle, design: .serif, weight: .medium))
+                        .tracking(-1.4)
                     Spacer()
                     Text("GHS 50")
-                        .font(.title2.bold())
+                        .font(.system(.title2, design: .serif, weight: .medium))
                 }
                 HStack(spacing: 7) {
                     Label("4.9", systemImage: "star.fill").foregroundStyle(.orange)
@@ -180,9 +179,9 @@ struct CheckoutView: View {
 
             VStack(alignment: .leading, spacing: 16) {
                 Label("Made by Ama Ofori", systemImage: "person.crop.circle")
-                    .font(.headline)
+                    .font(.system(.title3, design: .serif, weight: .medium))
                 Text("Every piece keeps the subtle marks of its making. Local clay is fired to a food-safe finish, then packed without plastic for delivery across Ghana.")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Color.white.opacity(0.72))
                     .lineSpacing(4)
                 Divider()
                 HStack {
@@ -190,9 +189,10 @@ struct CheckoutView: View {
                     Spacer()
                 }
                 .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.white)
             }
             .padding(20)
-            .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+            .background(Color.koraMoss)
 
             if let outcome {
                 Label(outcome, systemImage: "checkmark.shield.fill")
@@ -363,6 +363,9 @@ private func logPaymentSheetEvent(_ event: PaymentSheetTelemetryEvent) {
 
 private extension Color {
     static let koraForest = Color(red: 0.09, green: 0.24, blue: 0.20)
+    static let koraInk = Color(red: 0.11, green: 0.13, blue: 0.11)
+    static let koraClay = Color(red: 0.66, green: 0.30, blue: 0.20)
+    static let koraMoss = Color(red: 0.22, green: 0.29, blue: 0.24)
 }
 
 #if DEBUG
