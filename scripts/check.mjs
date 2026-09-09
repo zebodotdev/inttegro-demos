@@ -786,9 +786,13 @@ for (const id of [
 
 for (const asset of [
   'assets/kora-dawn-brew.jpg',
+  'assets/kora-maker-story.jpg',
   'assets/accra-afterglow.jpg',
+  'assets/afterglow-crowd.jpg',
   'assets/ledgerline-studio.jpg',
+  'assets/ledgerline-materials.jpg',
   'assets/openfield-garden.jpg',
+  'assets/openfield-impact.jpg',
   'assets/favicon.svg',
   'assets/providers/docker.svg',
   'assets/providers/cloud-run-button.svg',
@@ -803,9 +807,13 @@ for (const asset of [
 
 for (const [asset, directories] of Object.entries({
   'kora-dawn-brew.jpg': ['nextjs/public', 'nuxt/public', 'rails/public', 'laravel/public'],
+  'kora-maker-story.jpg': ['nextjs/public', 'nuxt/public', 'rails/public', 'laravel/public'],
   'accra-afterglow.jpg': ['express/public', 'django/src/checkout/static/checkout', 'fastapi/public/static'],
+  'afterglow-crowd.jpg': ['express/public', 'django/src/checkout/static/checkout', 'fastapi/public/static'],
   'ledgerline-studio.jpg': ['go/static', 'spring-boot/src/main/resources/static'],
+  'ledgerline-materials.jpg': ['go/static', 'spring-boot/src/main/resources/static'],
   'openfield-garden.jpg': ['nestjs/public', 'redwoodsdk/public'],
+  'openfield-impact.jpg': ['nestjs/public', 'redwoodsdk/public'],
   'favicon.svg': [
     'nextjs/public', 'nuxt/public', 'rails/public', 'laravel/public', 'express/public',
     'django/src/checkout/static/checkout', 'fastapi/public/static', 'go/static',
