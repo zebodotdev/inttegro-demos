@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@inttegro/inttegro-sdk": "7.0.0",
+    "@inttegro/vue": "0.2.0",
     "nuxt": "4.5.2",
     "vue": "3.5.42"
   },
