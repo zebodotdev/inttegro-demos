@@ -35,17 +35,17 @@ secure by default. Use `docker compose down` to stop it.
 
 ## Deploy your own
 
-[![Deploy to Cloud Run](../assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-rails-v1.7.0)
-[![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
-[![Deploy on Railway](../assets/providers/railway-button.svg)](https://railway.com/new/template/CssQzr?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=rails)
-[![Deploy to Render](../assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-rails-v1.7.0)
+[![Deploy to Cloud Run](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.7.0/assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-rails-v1.7.0)
+[![Run with Docker](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.7.0/assets/providers/docker-button.svg)](#run-with-docker)
+[![Deploy on Railway](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.7.0/assets/providers/railway-button.svg)](https://railway.com/new/template/CssQzr?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=rails)
+[![Deploy to Render](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.7.0/assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-rails-v1.7.0)
 
 Cloud Run, Railway, and Render build the released Dockerfile with Puma. The Railway
 template pins the release commit and generates the framework signing secret
 separately from `INTTEGRO_API_KEY`. Railway uses process readiness for this
 demo because Rails redirects the platform's internal HTTP health probe to
 HTTPS; the public `GET /health` endpoint remains available over HTTPS. See
-[`DEPLOYING.md`](../DEPLOYING.md).
+[`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.7.0/DEPLOYING.md).
 
 ## Understand the integration
 
@@ -55,5 +55,5 @@ Order creation and safe error mapping, then read
 [`app/controllers/checkouts_controller.rb`](./app/controllers/checkouts_controller.rb)
 for the JSON/303 handoff and correlation boundary. The `INTTEGRO:*` comments map
 choices and alternatives to the shared
-[integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+[integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.7.0/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.7.0/integration-decisions.json).
