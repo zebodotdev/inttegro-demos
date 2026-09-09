@@ -35,15 +35,15 @@ container publicly.
 
 ## Deploy your own
 
-[![Deploy to Cloud Run](../assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-laravel-v1.7.0)
-[![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
-[![Deploy on Railway](../assets/providers/railway-button.svg)](https://railway.com/new/template/p5qiP5?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=laravel)
-[![Deploy to Render](../assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-laravel-v1.7.0)
+[![Deploy to Cloud Run](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.7.0/assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-laravel-v1.7.0)
+[![Run with Docker](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.7.0/assets/providers/docker-button.svg)](#run-with-docker)
+[![Deploy on Railway](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.7.0/assets/providers/railway-button.svg)](https://railway.com/new/template/p5qiP5?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=laravel)
+[![Deploy to Render](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.7.0/assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-laravel-v1.7.0)
 
 Cloud Run, Railway, and Render build the released Dockerfile. The Railway template pins the
 release commit and generates `APP_KEY` in the deployment, separate from the
 Inttegro test API key. See
-[`DEPLOYING.md`](../DEPLOYING.md).
+[`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.7.0/DEPLOYING.md).
 
 ## Understand the integration
 
@@ -52,5 +52,5 @@ for the Order payload and SDK boundary, then read
 [`app/Http/Controllers/CheckoutController.php`](./app/Http/Controllers/CheckoutController.php)
 for validation, correlation, and the JSON/303 handoff. The `INTTEGRO:*` comments map
 choices and alternatives to the shared
-[integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+[integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.7.0/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.7.0/integration-decisions.json).
