@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "https://github.com/zebodotdev/inttegro-demos",
-  "releaseVersion": "1.6.2",
-  "suiteTag": "v1.6.2",
+  "releaseVersion": "1.7.0",
+  "suiteTag": "v1.7.0",
   "domain": {
     "status": "active",
     "provider": "cloudflare",

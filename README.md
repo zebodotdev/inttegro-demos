@@ -28,8 +28,8 @@ hosts or runtime font services.
 
 ## Current release
 
-The current release is **1.6.2**. Use
-[`releases/v1.6.2.json`](./releases/v1.6.2.json) to resolve each demo to its
+The current release is **1.7.0**. Use
+[`releases/v1.7.0.json`](./releases/v1.7.0.json) to resolve each demo to its
 immutable Git tag and integration entry points. Studio and external
 documentation must link through those tags rather than `main`; see
 [RELEASING.md](./RELEASING.md) for the versioning, permalink, signature, and
@@ -55,7 +55,7 @@ correction policy.
 
 ### V2
 
-NestJS and RedwoodSDK are included in **1.6.2**. They share the Openfield
+NestJS and RedwoodSDK are included in **1.7.0**. They share the Openfield
 fundraiser story while preserving each framework's native runtime model:
 NestJS is a portable Node service; RedwoodSDK is a Cloudflare-native Worker
 application. ASP.NET Core, React + Vite, Angular, and SvelteKit remain planned.
