@@ -18,6 +18,10 @@ to Logcat under `InttegroPaymentSheet` without installing an exporter.
   </tr>
   <tr>
     <td><img src="./docs/images/payment-sheet-saved-method.png" alt="Filled personal and contact details in the native Android payment sheet" width="320"></td>
+    <td><img src="./docs/images/payment-sheet-confirmation.png" alt="Native Android payment sheet requesting a six-digit confirmation code" width="320"></td>
+  </tr>
+  <tr>
+    <td><img src="./docs/images/payment-sheet-authorization.png" alt="Native Android payment sheet waiting for Mobile Money provider authorization" width="320"></td>
     <td><img src="./docs/images/payment-sheet-completed.png" alt="Completed native Android payment sheet for Kora Market" width="320"></td>
   </tr>
 </table>
@@ -53,6 +57,10 @@ Android SDK UI for documentation:
 This mode opens the production `InttegroPaymentSheet` automatically and injects
 only a local adapter. It does not call the Checkout API or require merchant
 credentials. Builds without the property keep the normal backend flow.
+
+Choose **Pay** to reach the one-time-code screen, enter any six digits and
+choose **Continue** to reach the approval screen, then choose **Check again** to
+reach the completed state.
 
 A production app receives only a finalized `orderId` created by its backend.
 Fulfillment still relies on authoritative server-side payment status.

@@ -3,6 +3,7 @@ package com.inttegro.demo.compose
 import com.inttegro.payments.PaymentSheetAdapter
 import com.inttegro.payments.PaymentSheetConfiguration
 import com.inttegro.payments.PaymentSheetConfirmationChallenge
+import com.inttegro.payments.PaymentSheetExternalAction
 import com.inttegro.payments.PaymentSheetPaymentOutcome
 import com.inttegro.payments.PaymentSheetPaymentSelection
 import com.inttegro.payments.PaymentSheetSession
@@ -39,14 +40,14 @@ object DemoPaymentSheetAdapter : PaymentSheetAdapter {
         session: PaymentSheetSession,
         selection: PaymentSheetPaymentSelection,
     ): PaymentSheetPaymentOutcome =
-        PaymentSheetPaymentOutcome.Completed("pay_android_documentation")
+        PaymentSheetPaymentOutcome.RequiresConfirmation(confirmationChallenge())
 
     override suspend fun requestConfirmation(
         configuration: PaymentSheetConfiguration,
         session: PaymentSheetSession,
         challenge: PaymentSheetConfirmationChallenge,
     ): PaymentSheetPaymentOutcome =
-        PaymentSheetPaymentOutcome.Completed("pay_android_documentation")
+        PaymentSheetPaymentOutcome.RequiresConfirmation(confirmationChallenge())
 
     override suspend fun confirmPayment(
         configuration: PaymentSheetConfiguration,
@@ -54,11 +55,26 @@ object DemoPaymentSheetAdapter : PaymentSheetAdapter {
         challenge: PaymentSheetConfirmationChallenge,
         token: String,
     ): PaymentSheetPaymentOutcome =
-        PaymentSheetPaymentOutcome.Completed("pay_android_documentation")
+        PaymentSheetPaymentOutcome.Pending(
+            PaymentSheetExternalAction.Authorize(
+                scheme = "mtn",
+                expiresAt = Instant.now().plusSeconds(5 * 60),
+            ),
+        )
 
     override suspend fun refreshPayment(
         configuration: PaymentSheetConfiguration,
         session: PaymentSheetSession,
     ): PaymentSheetPaymentOutcome =
         PaymentSheetPaymentOutcome.Completed("pay_android_documentation")
+
+    private fun confirmationChallenge() = PaymentSheetConfirmationChallenge(
+        paymentId = "pay_android_documentation",
+        confirmationId = "cnf_android_documentation",
+        recipient = "••• ••• 0042",
+        sentVia = "SMS",
+        tokenSize = 6,
+        expiresAt = Instant.now().plusSeconds(5 * 60),
+        requestAfter = Instant.now().plusSeconds(30),
+    )
 }

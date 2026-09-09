@@ -61,8 +61,10 @@ Enable **Save for next time** to capture the full personal/contact form. The
 fields are native controls and the values entered for a screenshot remain
 local to that simulator run.
 
-The screenshot fixture completes immediately after **Pay**. Capture the SDK's
-`Payment complete` state before choosing **Done**; no payment is created.
+The screenshot fixture follows the complete native flow. Choose **Pay** to
+capture the one-time-code screen, enter any six digits and choose **Continue**
+to capture the approval screen, then choose **Check again** to capture
+`Payment complete`. No payment is created.
 
 ## Deploy the companion backend
 

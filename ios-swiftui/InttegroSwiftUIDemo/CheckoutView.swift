@@ -392,14 +392,14 @@ private struct StudioScreenshotPaymentSheetAdapter: PaymentSheetAdapter {
         selection _: PaymentSheetPaymentSelection
     ) async throws -> PaymentSheetPaymentOutcome {
         try await Task.sleep(for: .milliseconds(500))
-        return .completed(paymentID: "py_studio_screenshot")
+        return .requiresConfirmation(Self.confirmationChallenge())
     }
 
     func requestConfirmation(
         session _: PaymentSheetSession,
-        challenge: PaymentSheetConfirmationChallenge
+        challenge _: PaymentSheetConfirmationChallenge
     ) async throws -> PaymentSheetPaymentOutcome {
-        .requiresConfirmation(challenge)
+        .requiresConfirmation(Self.confirmationChallenge())
     }
 
     func confirmPayment(
@@ -407,7 +407,12 @@ private struct StudioScreenshotPaymentSheetAdapter: PaymentSheetAdapter {
         challenge _: PaymentSheetConfirmationChallenge,
         token _: String
     ) async throws -> PaymentSheetPaymentOutcome {
-        .pending(nil)
+        .pending(
+            .authorize(
+                scheme: "mtn",
+                expiresAt: Date().addingTimeInterval(5 * 60)
+            )
+        )
     }
 
     func refreshPayment(
@@ -415,6 +420,18 @@ private struct StudioScreenshotPaymentSheetAdapter: PaymentSheetAdapter {
     ) async throws -> PaymentSheetPaymentOutcome {
         try await Task.sleep(for: .seconds(30))
         return .completed(paymentID: "py_studio_screenshot")
+    }
+
+    private static func confirmationChallenge() -> PaymentSheetConfirmationChallenge {
+        PaymentSheetConfirmationChallenge(
+            paymentID: "py_studio_screenshot",
+            confirmationID: "cnf_studio_screenshot",
+            recipient: "••• ••• 0042",
+            sentVia: "SMS",
+            tokenSize: 6,
+            expiresAt: Date().addingTimeInterval(5 * 60),
+            requestAfter: Date().addingTimeInterval(30)
+        )
     }
 }
 #endif
