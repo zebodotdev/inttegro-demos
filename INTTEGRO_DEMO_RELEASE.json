@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "demo": "nuxt",
+  "version": "1.8.1",
+  "sourceSuiteTag": "v1.8.1",
+  "sourceDemoTag": "nuxt-v1.8.1",
+  "sourceCommit": "da2f9b6d0bb406330d3fa8824903b56de10c0386",
+  "sourceSubtreeCommit": "a0d8ab6f863df7e38d25d7c6eb89d4a874847d8f"
+}
