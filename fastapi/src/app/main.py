@@ -35,6 +35,22 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title="Inttegro FastAPI demo", docs_url="/api/docs", lifespan=lifespan)
+
+
+@app.middleware("http")
+async def revalidate_angular_bundle(request: Request, call_next):
+    """Prevent a deployment from leaving an older Checkout client in cache."""
+
+    response = await call_next(request)
+    if request.url.path == "/static/angular/main.js":
+        # INTTEGRO:DECISION [versioned-client-asset] The HTML also changes the
+        # bundle URL when this integration changes. Revalidation protects later
+        # Railway deployments whose CDN may otherwise retain the old JavaScript
+        # while the FastAPI server has already advanced to the new release.
+        response.headers["Cache-Control"] = "public, max-age=0, must-revalidate"
+    return response
+
+
 if STATIC_ROOT.is_dir():
     # Containers serve this directory through Starlette. Cloudflare Static
     # Assets are intentionally absent from the Worker filesystem and intercept

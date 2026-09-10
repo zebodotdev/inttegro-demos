@@ -125,6 +125,20 @@
       "docs": ["javascript", "web"]
     },
     {
+      "id": "versioned-client-asset",
+      "appliesTo": ["hosted-web"],
+      "selected": "Version a changed browser entry point and require CDN revalidation after deployment.",
+      "rationale": "A server and its browser integration must advance together; a long-lived cache can otherwise pair current Order creation with stale Checkout presentation code.",
+      "alternatives": [
+        {
+          "id": "content-hashed-client-assets",
+          "whenToUse": "The framework build emits a manifest or injects asset names into server-rendered HTML.",
+          "consequences": "Prefer content-hashed filenames with long immutable caching. The FastAPI demo keeps its Jinja template readable, so it uses an explicit version token and revalidation instead."
+        }
+      ],
+      "docs": ["javascript", "web"]
+    },
+    {
       "id": "stable-idempotency-key",
       "appliesTo": ["hosted-web", "native-payment-sheet"],
       "selected": "Derive request_meta.idempotency_key from one logical checkout attempt and reuse it on retry.",
