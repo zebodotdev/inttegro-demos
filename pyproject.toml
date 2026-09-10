@@ -1,6 +1,6 @@
 [project]
 name = "inttegro-django-demo"
-version = "1.8.2"
+version = "1.8.3"
 description = "An async Inttegro hosted-checkout demo for Django"
 requires-python = ">=3.13"
 dependencies = [
