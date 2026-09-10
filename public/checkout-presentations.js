@@ -31,17 +31,14 @@ import { loadInttegro } from "./inttegro-loader.js";
   const presentations = {
     embedded: {
       label: "Embedded",
-      description: "Pay here while the order stays in view.",
       icon: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><path d="M6 7h8M6 10h5M6 13h3"/></svg>',
     },
     modal: {
       label: "Modal",
-      description: "Open a focused payment window above this page.",
       icon: '<svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3.5" width="15" height="13" rx="2"/><rect x="5.5" y="6.5" width="9" height="7" rx="1.5"/></svg>',
     },
     hosted: {
       label: "Hosted page",
-      description: "Continue to the full Inttegro Pages experience.",
       icon: '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8 4H4.5a2 2 0 0 0-2 2v9.5a2 2 0 0 0 2 2H14a2 2 0 0 0 2-2V12"/><path d="M11 2.5h6.5V9M17 3l-8 8"/></svg>',
     },
   };
@@ -61,10 +58,7 @@ import { loadInttegro } from "./inttegro-loader.js";
               </label>`,
           )
           .join("")}
-      </div>
-      <p class="checkout-presentation-description" data-checkout-presentation-description>
-        ${presentations.embedded.description}
-      </p>`;
+      </div>`;
     return fieldset;
   }
 
@@ -110,16 +104,6 @@ import { loadInttegro } from "./inttegro-loader.js";
     }
   }
 
-  function updatePresentationDescription(form) {
-    const mode = new FormData(form).get("checkout_mode");
-    const description = form.querySelector(
-      "[data-checkout-presentation-description]",
-    );
-    if (description && typeof mode === "string" && presentations[mode]) {
-      description.textContent = presentations[mode].description;
-    }
-  }
-
   function inlineSurface(form) {
     let surface = form.parentElement?.querySelector(
       ":scope > [data-inttegro-inline-surface]",
@@ -130,42 +114,10 @@ import { loadInttegro } from "./inttegro-loader.js";
     surface.dataset.inttegroInlineSurface = "";
     surface.hidden = true;
     surface.innerHTML = `
-      <header class="inttegro-checkout-surface-header">
-        <span class="inttegro-checkout-kicker">Secure payment</span>
-        <h3>Complete your payment here</h3>
-        <p>Your order remains with this app. Payment details stay inside Inttegro Checkout.</p>
-      </header>
       <div data-inttegro-checkout-target></div>
-      <p class="checkout-presentation-feedback" data-checkout-surface-feedback aria-live="polite"></p>`;
+      <p class="checkout-presentation-feedback" data-checkout-surface-feedback aria-live="polite" hidden></p>`;
     form.insertAdjacentElement("afterend", surface);
     return surface;
-  }
-
-  function modalSurface() {
-    let dialog = document.querySelector("[data-inttegro-checkout-dialog]");
-    if (dialog) return dialog;
-    dialog = document.createElement("dialog");
-    dialog.className = "inttegro-checkout-dialog";
-    dialog.dataset.inttegroCheckoutDialog = "";
-    dialog.setAttribute("aria-labelledby", "inttegro-checkout-dialog-title");
-    dialog.innerHTML = `
-      <div class="inttegro-checkout-dialog-frame">
-        <header class="inttegro-checkout-dialog-header">
-          <div><span class="inttegro-checkout-kicker">Secure payment</span><h2 id="inttegro-checkout-dialog-title">Complete your order</h2></div>
-          <button type="button" aria-label="Close payment window" data-inttegro-dialog-close>
-            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15"/></svg>
-          </button>
-        </header>
-        <div class="inttegro-checkout-dialog-scroll">
-          <div data-inttegro-checkout-target></div>
-          <p class="checkout-presentation-feedback" data-checkout-surface-feedback aria-live="polite"></p>
-        </div>
-      </div>`;
-    document.body.append(dialog);
-    dialog
-      .querySelector("[data-inttegro-dialog-close]")
-      ?.addEventListener("click", () => dialog.close());
-    return dialog;
   }
 
   function closeOwningDialog(form) {
@@ -212,9 +164,9 @@ import { loadInttegro } from "./inttegro-loader.js";
     setFeedback(form, "Creating a finalized order securely on the server…");
 
     let surface;
-    let dialog;
     let owningDialog;
     let controller;
+    let canceled = false;
     try {
       // Load the client before creating an Order so a missing or blocked
       // runtime does not leave behind a finalized Order the payer cannot open.
@@ -233,9 +185,6 @@ import { loadInttegro } from "./inttegro-loader.js";
 
       if (mode === "modal") {
         owningDialog = closeOwningDialog(form);
-        dialog = modalSurface();
-        surface = dialog;
-        dialog.showModal();
       } else {
         surface = inlineSurface(form);
         form.hidden = true;
@@ -248,17 +197,17 @@ import { loadInttegro } from "./inttegro-loader.js";
         });
       }
 
-      const target = surface.querySelector("[data-inttegro-checkout-target]");
-      const surfaceFeedback = surface.querySelector(
+      const target = surface?.querySelector("[data-inttegro-checkout-target]");
+      const surfaceFeedback = surface?.querySelector(
         "[data-checkout-surface-feedback]",
       );
-      if (!(target instanceof HTMLElement)) {
+      if (mode === "embedded" && !(target instanceof HTMLElement)) {
         throw new Error("The demo could not prepare its Checkout container.");
       }
 
       controller = inttegro.createCheckout({
         orderId,
-        appearance: { theme: "system" },
+		appearance: { theme: "light" },
         features: {
           showLineItems:
             mode === "modal" &&
@@ -270,54 +219,45 @@ import { loadInttegro } from "./inttegro-loader.js";
         locale: document.documentElement.lang || "en-GH",
         title: mode === "modal" ? "Complete payment in a secure window" : "Complete payment securely",
       });
-      sessions.set(form, { controller, dialog, surface });
+      sessions.set(form, { controller, surface });
 
       controller.on("completed", () => {
         if (surfaceFeedback) {
           surfaceFeedback.textContent = "Payment completed. Verifying the order…";
+			surfaceFeedback.hidden = false;
         }
         window.location.assign("/complete");
       });
       controller.on("canceled", () => {
+		canceled = true;
         if (surfaceFeedback) {
           surfaceFeedback.textContent = "Payment was canceled. You can safely try again.";
           surfaceFeedback.dataset.kind = "error";
+			surfaceFeedback.hidden = false;
+		}
+		controller.destroy();
+		sessions.delete(form);
+		setFormBusy(form, false, "");
+		setFeedback(form, "");
+		if (owningDialog?.isConnected && !owningDialog.open) {
+			owningDialog.showModal();
         }
       });
       controller.on("error", ({ error }) => {
         if (surfaceFeedback) {
           surfaceFeedback.textContent = error.message;
           surfaceFeedback.dataset.kind = "error";
+			surfaceFeedback.hidden = false;
         }
       });
 
-      if (dialog) {
-        dialog.addEventListener(
-          "close",
-          () => {
-            controller.destroy();
-            sessions.delete(form);
-            setFormBusy(form, false, "");
-            setFeedback(form, "Payment window closed. Your finalized order is ready if you want to try again.");
-            if (owningDialog?.isConnected && !owningDialog.open) {
-              owningDialog.showModal();
-            }
-          },
-          { once: true },
-        );
-      }
-
-      await controller.mount(target);
+      if (mode === "modal") await controller.present();
+      else await controller.mount(target);
       setFeedback(form, "");
-      if (surfaceFeedback) {
-        surfaceFeedback.textContent = "Checkout is ready.";
-        surfaceFeedback.dataset.kind = "status";
-      }
-      if (mode === "modal") controller.focus();
     } catch (error) {
+		if (canceled) return;
       controller?.destroy();
       sessions.delete(form);
-      if (dialog?.open) dialog.close();
       if (surface && mode === "embedded") surface.hidden = true;
       form.hidden = false;
       setFormBusy(form, false, "");
@@ -326,6 +266,9 @@ import { loadInttegro } from "./inttegro-loader.js";
         error instanceof Error ? error.message : "Checkout could not be started.",
         "error",
       );
+      if (owningDialog?.isConnected && !owningDialog.open) {
+		owningDialog.showModal();
+      }
     }
   }
 
@@ -343,13 +286,6 @@ import { loadInttegro } from "./inttegro-loader.js";
       if (button) form.insertBefore(picker, button);
       else form.append(picker);
       feedbackRegion(form);
-
-      form.addEventListener("change", (event) => {
-        const input = event.target;
-        if (input instanceof HTMLInputElement && input.name === "checkout_mode") {
-          updatePresentationDescription(form);
-        }
-      });
 
       form.addEventListener("submit", (event) => {
         const mode = String(new FormData(form).get("checkout_mode") || "hosted");
