@@ -20,7 +20,7 @@ Commerce checkout.
 | **Afterglow Sessions** | Express, Django, FastAPI | Explore an intimate live lineup, review venue details, and reserve a courtyard ticket. |
 | **Ledgerline** | Go, Spring Boot | Review a client invoice, inspect its service lines, and settle the balance securely. |
 | **Kora Market mobile** | SwiftUI, Compose, Flutter, React Native | Browse a native product detail experience and present the Inttegro payment sheet. |
-| **Openfield** | NestJS, RedwoodSDK | Choose a trusted contribution tier, support a community learning garden, and compare all three web Checkout presentations. |
+| **Openfield** | NestJS, RedwoodSDK, Astro | Choose a trusted contribution tier, support a community learning garden, and compare all three web Checkout presentations. |
 
 Original product and event artwork is generated for this repository and stored
 locally under [`assets/`](./assets); demos do not depend on third-party image
@@ -28,8 +28,8 @@ hosts or runtime font services.
 
 ## Current release
 
-The current release is **1.7.0**. Use
-[`releases/v1.7.0.json`](./releases/v1.7.0.json) to resolve each demo to its
+The current release is **1.8.0**. Use
+[`releases/v1.8.0.json`](./releases/v1.8.0.json) to resolve each demo to its
 immutable Git tag and integration entry points. Studio and external
 documentation must link through those tags rather than `main`; see
 [RELEASING.md](./RELEASING.md) for the versioning, permalink, signature, and
@@ -55,10 +55,11 @@ correction policy.
 
 ### V2
 
-NestJS and RedwoodSDK are included in **1.7.0**. They share the Openfield
+NestJS, RedwoodSDK, and Astro are included in **1.8.0**. They share the Openfield
 fundraiser story while preserving each framework's native runtime model:
 NestJS is a portable Node service; RedwoodSDK is a Cloudflare-native Worker
-application. ASP.NET Core, React + Vite, Angular, and SvelteKit remain planned.
+application; and Astro uses components, server endpoints, and the standalone
+Node adapter. ASP.NET Core, React + Vite, Angular, and SvelteKit remain planned.
 
 ## Shared journey
 

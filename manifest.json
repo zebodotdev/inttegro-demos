@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "currentRelease": {
-    "version": "1.7.0",
-    "suiteTag": "v1.7.0",
-    "manifest": "releases/v1.7.0.json"
+    "version": "1.8.0",
+    "suiteTag": "v1.8.0",
+    "manifest": "releases/v1.8.0.json"
   },
   "demos": [
     { "id": "nextjs", "release": "v1", "status": "verified", "story": "kora-market", "technology": "Next.js", "language": "TypeScript" },
@@ -21,6 +21,7 @@
     { "id": "react-native-expo", "release": "v1", "status": "native-gated", "story": "kora-market-mobile", "technology": "React Native + Expo", "language": "TypeScript" },
     { "id": "nestjs", "release": "v2", "status": "verified", "story": "openfield", "technology": "NestJS", "language": "TypeScript" },
     { "id": "redwoodsdk", "release": "v2", "status": "verified", "story": "openfield", "technology": "RedwoodSDK", "language": "TypeScript" },
+    { "id": "astro", "release": "v2", "status": "verified", "story": "openfield", "technology": "Astro", "language": "TypeScript" },
     { "id": "aspnet-core", "release": "v2", "status": "planned", "technology": "ASP.NET Core", "language": "C#" },
     { "id": "react-vite", "release": "v2", "status": "planned", "technology": "React + Vite", "language": "TypeScript" },
     { "id": "angular", "release": "v2", "status": "planned", "technology": "Angular", "language": "TypeScript" },

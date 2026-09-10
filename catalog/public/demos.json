@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "repository": "https://github.com/zebodotdev/inttegro-demos",
-  "releaseVersion": "1.7.0",
-  "suiteTag": "v1.7.0",
+  "releaseVersion": "1.8.0",
+  "suiteTag": "v1.8.0",
   "domainStatus": "active",
   "demos": [
     {
@@ -19,8 +19,8 @@
         "url": "https://nextjs-demo.inttegro.dev"
       },
       "hostname": "nextjs-demo.inttegro.dev",
-      "tag": "nextjs-v1.7.0",
-      "deployRef": "deploy-nextjs-v1.7.0",
+      "tag": "nextjs-v1.8.0",
+      "deployRef": "deploy-nextjs-v1.8.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -128,8 +128,8 @@
         "url": "https://express-demo.inttegro.dev"
       },
       "hostname": "express-demo.inttegro.dev",
-      "tag": "express-v1.7.0",
-      "deployRef": "deploy-express-v1.7.0",
+      "tag": "express-v1.8.0",
+      "deployRef": "deploy-express-v1.8.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -233,8 +233,8 @@
         "url": "https://nuxt-demo.inttegro.dev"
       },
       "hostname": "nuxt-demo.inttegro.dev",
-      "tag": "nuxt-v1.7.0",
-      "deployRef": "deploy-nuxt-v1.7.0",
+      "tag": "nuxt-v1.8.0",
+      "deployRef": "deploy-nuxt-v1.8.0",
       "environment": [
         {
           "name": "NUXT_INTTEGRO_API_KEY",
@@ -337,8 +337,8 @@
         "url": "https://go-demo.inttegro.dev"
       },
       "hostname": "go-demo.inttegro.dev",
-      "tag": "go-v1.7.0",
-      "deployRef": "deploy-go-v1.7.0",
+      "tag": "go-v1.8.0",
+      "deployRef": "deploy-go-v1.8.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -442,8 +442,8 @@
         "url": "https://django-demo.inttegro.dev"
       },
       "hostname": "django-demo.inttegro.dev",
-      "tag": "django-v1.7.0",
-      "deployRef": "deploy-django-v1.7.0",
+      "tag": "django-v1.8.0",
+      "deployRef": "deploy-django-v1.8.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -562,8 +562,8 @@
         "url": "https://fastapi-demo.inttegro.dev"
       },
       "hostname": "fastapi-demo.inttegro.dev",
-      "tag": "fastapi-v1.7.0",
-      "deployRef": "deploy-fastapi-v1.7.0",
+      "tag": "fastapi-v1.8.0",
+      "deployRef": "deploy-fastapi-v1.8.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -667,8 +667,8 @@
         "url": "https://rails-demo.inttegro.dev"
       },
       "hostname": "rails-demo.inttegro.dev",
-      "tag": "rails-v1.7.0",
-      "deployRef": "deploy-rails-v1.7.0",
+      "tag": "rails-v1.8.0",
+      "deployRef": "deploy-rails-v1.8.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -777,8 +777,8 @@
         "url": "https://laravel-demo.inttegro.dev"
       },
       "hostname": "laravel-demo.inttegro.dev",
-      "tag": "laravel-v1.7.0",
-      "deployRef": "deploy-laravel-v1.7.0",
+      "tag": "laravel-v1.8.0",
+      "deployRef": "deploy-laravel-v1.8.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -882,8 +882,8 @@
       "releaseStatus": "publication-gated",
       "mode": "server",
       "hostname": "spring-boot-demo.inttegro.dev",
-      "tag": "spring-boot-v1.7.0",
-      "deployRef": "deploy-spring-boot-v1.7.0",
+      "tag": "spring-boot-v1.8.0",
+      "deployRef": "deploy-spring-boot-v1.8.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -984,8 +984,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "ios-swiftui-demo.inttegro.dev",
-      "tag": "ios-swiftui-v1.7.0",
-      "deployRef": "deploy-ios-swiftui-v1.7.0",
+      "tag": "ios-swiftui-v1.8.0",
+      "deployRef": "deploy-ios-swiftui-v1.8.0",
       "environment": [],
       "providers": []
     },
@@ -999,8 +999,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "android-compose-demo.inttegro.dev",
-      "tag": "android-compose-v1.7.0",
-      "deployRef": "deploy-android-compose-v1.7.0",
+      "tag": "android-compose-v1.8.0",
+      "deployRef": "deploy-android-compose-v1.8.0",
       "environment": [],
       "providers": []
     },
@@ -1014,8 +1014,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "flutter-demo.inttegro.dev",
-      "tag": "flutter-v1.7.0",
-      "deployRef": "deploy-flutter-v1.7.0",
+      "tag": "flutter-v1.8.0",
+      "deployRef": "deploy-flutter-v1.8.0",
       "environment": [],
       "providers": []
     },
@@ -1029,8 +1029,8 @@
       "mode": "native",
       "companionBackend": "nextjs",
       "hostname": "react-native-expo-demo.inttegro.dev",
-      "tag": "react-native-expo-v1.7.0",
-      "deployRef": "deploy-react-native-expo-v1.7.0",
+      "tag": "react-native-expo-v1.8.0",
+      "deployRef": "deploy-react-native-expo-v1.8.0",
       "environment": [],
       "providers": []
     },
@@ -1048,8 +1048,8 @@
         "url": "https://nestjs-demo.inttegro.dev"
       },
       "hostname": "nestjs-demo.inttegro.dev",
-      "tag": "nestjs-v1.7.0",
-      "deployRef": "deploy-nestjs-v1.7.0",
+      "tag": "nestjs-v1.8.0",
+      "deployRef": "deploy-nestjs-v1.8.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -1153,8 +1153,8 @@
         "url": "https://redwoodsdk-demo.inttegro.dev"
       },
       "hostname": "redwoodsdk-demo.inttegro.dev",
-      "tag": "redwoodsdk-v1.7.0",
-      "deployRef": "deploy-redwoodsdk-v1.7.0",
+      "tag": "redwoodsdk-v1.8.0",
+      "deployRef": "deploy-redwoodsdk-v1.8.0",
       "environment": [
         {
           "name": "INTTEGRO_API_KEY",
@@ -1237,6 +1237,111 @@
           "recommendation": "alternative",
           "status": "blocked",
           "reason": "RedwoodSDK is Cloudflare-native and is not packaged for Vercel in this release.",
+          "name": "Vercel",
+          "icon": "/assets/providers/vercel.svg",
+          "documentation": "https://vercel.com/docs/deploy-button"
+        }
+      ]
+    },
+    {
+      "id": "astro",
+      "technology": "Astro",
+      "language": "TypeScript",
+      "story": "openfield",
+      "storyLabel": "Openfield",
+      "releaseStatus": "verified",
+      "mode": "server",
+      "live": {
+        "status": "verified",
+        "provider": "railway",
+        "url": "https://astro-demo.inttegro.dev"
+      },
+      "hostname": "astro-demo.inttegro.dev",
+      "tag": "astro-v1.8.0",
+      "deployRef": "deploy-astro-v1.8.0",
+      "environment": [
+        {
+          "name": "INTTEGRO_API_KEY",
+          "description": "A dedicated server-side Inttegro API key. Never expose it to browser or mobile code.",
+          "secret": true
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRODUCT_ID",
+          "description": "The active Inttegro Product selected by this demo. The trusted server looks it up at checkout.",
+          "secret": false
+        },
+        {
+          "name": "INTTEGRO_DEMO_PRICE_ID",
+          "description": "An active Inttegro Price belonging to the configured demo Product.",
+          "secret": false
+        },
+        {
+          "name": "INTTEGRO_DEMO_PUBLIC_URL",
+          "description": "The deployed origin used for checkout completion and cancellation URLs, without a trailing slash.",
+          "secret": false
+        }
+      ],
+      "providers": [
+        {
+          "id": "cloud-run",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "astro/app.json",
+          "name": "Cloud Run",
+          "icon": "/assets/providers/cloud-run.svg",
+          "documentation": "https://cloud.google.com/run/docs/deploying-source-code"
+        },
+        {
+          "id": "docker",
+          "recommendation": "alternative",
+          "status": "prepared",
+          "config": "astro/compose.yaml",
+          "name": "Docker",
+          "icon": "/assets/providers/docker.svg",
+          "documentation": "https://docs.docker.com/compose/gettingstarted/"
+        },
+        {
+          "id": "render",
+          "recommendation": "recommended",
+          "status": "prepared",
+          "config": "astro/render.yaml",
+          "name": "Render",
+          "icon": "/assets/providers/render.svg",
+          "documentation": "https://render.com/docs/deploy-to-render"
+        },
+        {
+          "id": "app-runner",
+          "recommendation": "experimental",
+          "status": "blocked",
+          "reason": "AWS App Runner is no longer available to new AWS customers, and this release has no public ECR image.",
+          "name": "AWS App Runner",
+          "icon": "/assets/providers/app-runner.svg",
+          "documentation": "https://docs.aws.amazon.com/apprunner/latest/dg/what-is-apprunner.html"
+        },
+        {
+          "id": "cloudflare",
+          "recommendation": "alternative",
+          "status": "blocked",
+          "reason": "This Astro application uses the standalone Node adapter and does not include a Cloudflare Worker adapter.",
+          "name": "Cloudflare",
+          "icon": "/assets/providers/cloudflare.svg",
+          "documentation": "https://developers.cloudflare.com/workers/platform/deploy-buttons/"
+        },
+        {
+          "id": "railway",
+          "recommendation": "alternative",
+          "status": "blocked",
+          "config": "astro/railway.json",
+          "reason": "The checked-in Railway configuration is ready, but a public one-click template has not been published yet.",
+          "name": "Railway",
+          "icon": "/assets/providers/railway.svg",
+          "documentation": "https://docs.railway.com/templates/publish-and-share"
+        },
+        {
+          "id": "vercel",
+          "recommendation": "alternative",
+          "status": "blocked",
+          "reason": "This release preserves Astro as a portable Node service instead of a Vercel function.",
           "name": "Vercel",
           "icon": "/assets/providers/vercel.svg",
           "documentation": "https://vercel.com/docs/deploy-button"
