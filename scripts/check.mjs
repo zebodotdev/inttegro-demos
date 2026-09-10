@@ -127,15 +127,15 @@ for (const value of ['embedded', 'modal', 'hosted']) {
   );
 }
 assert(
-  loaderEntry.includes('from "@inttegro/js"'),
-  'browser asset entry point must import the public @inttegro/js loader',
+  loaderEntry.includes('const INTTEGRO_JS_VERSION = "0.3.0"'),
+  'browser asset entry point must pin the reviewed public loader version',
 );
 assert(
   presentationScript.startsWith('import { loadInttegro } from "./inttegro-loader.js";'),
   'presentation client must consume the generated public loader bundle',
 );
 assert(
-  loaderBundle.includes('https://js.inttegro.com/inttegro.js@0.2.0'),
+  loaderBundle.includes('https://js.inttegro.com/inttegro.js@0.3.0'),
   'public loader bundle must pin the reviewed Inttegro-hosted runtime',
 );
 assert(
@@ -252,14 +252,6 @@ for (const id of serverDemoIds) {
   }
 }
 
-const browserAssetsPackage = JSON.parse(
-  readFileSync(join(demosRoot, 'package.json'), 'utf8'),
-);
-assert.equal(
-  browserAssetsPackage.dependencies['@inttegro/js'],
-  '0.2.0',
-  'shared server-demo assets must build from @inttegro/js 0.2.0',
-);
 const frameworkAdapters = {
   fastapi: {
     packageName: '@inttegro/angular',
@@ -504,7 +496,7 @@ assert(astroCompose.includes('"3014:3014"'), 'Astro Compose must publish its doc
 assert(astroCompose.includes('127.0.0.1:3014/health'), 'Astro Compose must check application health');
 assert(astroReadme.includes('docker compose up --build --wait'), 'Astro README must document Compose');
 assert(astroReadme.includes('../assets/providers/docker-button.svg'), 'Astro README must present Docker with its logo');
-assert(astroReadme.includes('immutable 1.8.0 deployment branch'), 'Astro README must identify its immutable deployment ref');
+assert(astroReadme.includes('immutable 1.8.1 deployment branch'), 'Astro README must identify its immutable deployment ref');
 assert(astroReadme.includes('deploy.cloud.run/?'), 'Astro must publish its Cloud Run deployment action');
 for (const name of ['INTTEGRO_API_KEY', 'INTTEGRO_DEMO_PRODUCT_ID', 'INTTEGRO_DEMO_PRICE_ID']) {
   assert(astroCloudRun.env[name], `astro/app.json must prompt for ${name}`);

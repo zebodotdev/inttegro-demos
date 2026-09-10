@@ -7,9 +7,6 @@
     "build:browser": "node scripts/build-browser-assets.mjs",
     "check": "npm run build:browser && node scripts/check.mjs"
   },
-  "dependencies": {
-    "@inttegro/js": "0.2.0"
-  },
   "devDependencies": {
     "esbuild": "0.28.2"
   }

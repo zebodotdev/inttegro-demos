@@ -45,5 +45,5 @@ for (const directory of Object.values(destinations)) {
 }
 
 console.log(
-  `Built @inttegro/js browser loader and synchronized ${Object.keys(destinations).length} server demos.`,
+  `Built the audited Inttegro browser loader and synchronized ${Object.keys(destinations).length} server demos.`,
 );
