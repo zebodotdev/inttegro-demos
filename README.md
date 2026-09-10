@@ -34,19 +34,19 @@ HTTPS origin before exposing the container publicly.
 
 ## Deploy your own
 
-[![Deploy to Cloud Run](../assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-go-v1.8.0)
-[![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
-[![Deploy on Railway](../assets/providers/railway-button.svg)](https://railway.com/new/template/ABT6ae?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=go)
-[![Deploy to Render](../assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-go-v1.8.0)
+[![Deploy to Cloud Run](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.0/assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-go-v1.8.0)
+[![Run with Docker](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.0/assets/providers/docker-button.svg)](#run-with-docker)
+[![Deploy on Railway](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.0/assets/providers/railway-button.svg)](https://railway.com/new/template/ABT6ae?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=go)
+[![Deploy to Render](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.0/assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-go-v1.8.0)
 
 Cloud Run, Railway, and Render build a small distroless image from the released
 multi-stage Dockerfile. The deployment links target immutable release refs. See
-[`DEPLOYING.md`](../DEPLOYING.md).
+[`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.8.0/DEPLOYING.md).
 
 ## Understand the integration
 
 [`main.go`](./main.go) keeps the complete integration deliberately visible:
 input validation, Order construction, hosted URL selection, safe errors,
 correlation, and the JSON/303 handoff. Its `INTTEGRO:*` comments map choices and
-alternatives to the shared [integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+alternatives to the shared [integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.8.0/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.8.0/integration-decisions.json).
