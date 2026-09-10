@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "demo": "astro",
+  "version": "1.8.1",
+  "sourceSuiteTag": "v1.8.1",
+  "sourceDemoTag": "astro-v1.8.1",
+  "sourceCommit": "da2f9b6d0bb406330d3fa8824903b56de10c0386",
+  "sourceSubtreeCommit": "096d599abc1d3469c92ff8954a34d1f68d421524"
+}
