@@ -1,0 +1,28 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "checkout-client": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "client",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "client/main.ts",
+            "index": false,
+            "outputPath": {
+              "base": "public/static/angular",
+              "browser": ""
+            },
+            "outputHashing": "none",
+            "sourceMap": true,
+            "tsConfig": "tsconfig.client.json"
+          }
+        }
+      }
+    }
+  }
+}
