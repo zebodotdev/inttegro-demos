@@ -6,6 +6,12 @@ export default defineConfig({
   adapter: node({ mode: 'standalone', bodySizeLimit: 64 * 1024 }),
   security: {
     checkOrigin: true,
+    allowedDomains: [
+      {
+        protocol: 'https',
+        hostname: 'astro-demo.inttegro.dev',
+      },
+    ],
   },
   server: {
     host: true,
