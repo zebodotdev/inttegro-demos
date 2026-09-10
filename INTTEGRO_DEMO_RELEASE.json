@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "demo": "nestjs",
+  "version": "1.8.0",
+  "sourceSuiteTag": "v1.8.0",
+  "sourceDemoTag": "nestjs-v1.8.0",
+  "sourceCommit": "6b93d6636095ac2e6ed48d7b4f83dbc669c94e74",
+  "sourceSubtreeCommit": "3dd861f87875e712e299b8e6e52b1cd3b05f52c4"
+}
