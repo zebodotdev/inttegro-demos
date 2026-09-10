@@ -99,7 +99,7 @@ Order shape, that embedded and modal responses expose only `orderId`, and that
 closing a merchant-owned modal destroys its Checkout controller and restores
 focus through the platform dialog behavior.
 
-Every V1 integration entry point must also:
+Every implemented integration entry point must also:
 
 - link to applicable canonical documentation at `studio.inttegro.com`;
 - use the stable `INTTEGRO:*` comment vocabulary documented in
@@ -117,8 +117,8 @@ documentation key must resolve.
 
 ## Release and permalink contract
 
-Every implemented V1 demo has a semantic version and immutable annotated tag in
-the current release manifest. A release includes:
+Every demo in a published suite has a semantic version and immutable annotated
+tag in that release manifest. A release includes:
 
 - one signed suite tag named `v{version}`;
 - one signed alias named `{demo-id}-v{version}` for every implemented demo;

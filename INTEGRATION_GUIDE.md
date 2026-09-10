@@ -32,7 +32,7 @@ can index them in every language.
 ## Architecture A: server-owned Checkout for web applications
 
 Next.js, Nuxt, Express, Django, FastAPI, Rails, Laravel, Go, Spring Boot,
-NestJS, and RedwoodSDK use the same server-owned flow:
+NestJS, RedwoodSDK, and Astro use the same server-owned flow:
 
 ```text
 browser form

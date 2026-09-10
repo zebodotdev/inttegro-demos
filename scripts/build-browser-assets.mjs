@@ -16,6 +16,7 @@ const destinations = {
   "spring-boot": "spring-boot/src/main/resources/static",
   nestjs: "nestjs/public",
   redwoodsdk: "redwoodsdk/public",
+  astro: "astro/public",
 };
 
 await build({

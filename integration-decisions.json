@@ -38,7 +38,8 @@
         "go",
         "spring-boot",
         "nestjs",
-        "redwoodsdk"
+        "redwoodsdk",
+        "astro"
       ]
     },
     "native-payment-sheet": {
@@ -457,7 +458,7 @@
     "nuxt": ["nuxt/server/utils/checkout.ts", "nuxt/server/routes/checkout.post.ts", "nuxt/public/checkout-presentations.js"],
     "express": ["express/src/checkout.ts", "express/src/app.ts", "express/public/checkout-presentations.js"],
     "django": ["django/src/checkout/service.py", "django/src/checkout/views.py", "django/src/worker.py", "django/src/checkout/static/checkout/checkout-presentations.js"],
-    "fastapi": ["fastapi/src/app/checkout.py", "fastapi/src/app/main.py", "fastapi/src/worker.py", "fastapi/public/static/checkout-presentations.js"],
+    "fastapi": ["fastapi/src/app/checkout.py", "fastapi/src/app/main.py", "fastapi/src/worker.py", "fastapi/client/checkout-flow.component.ts", "fastapi/client/main.ts"],
     "rails": ["rails/app/services/checkout_service.rb", "rails/app/controllers/checkouts_controller.rb", "rails/public/checkout-presentations.js"],
     "laravel": ["laravel/app/Services/CheckoutService.php", "laravel/app/Http/Controllers/CheckoutController.php", "laravel/public/checkout-presentations.js"],
     "go": ["go/main.go", "go/static/checkout-presentations.js"],
@@ -466,7 +467,8 @@
     "android-compose": ["android-compose/app/src/main/java/com/inttegro/demo/compose/DemoBackend.kt", "android-compose/app/src/main/java/com/inttegro/demo/compose/MainActivity.kt"],
     "flutter": ["flutter/lib/demo_backend.dart", "flutter/lib/main.dart"],
     "react-native-expo": ["react-native-expo/src/demoBackend.ts", "react-native-expo/App.tsx"],
-    "nestjs": ["nestjs/src/checkout.service.ts", "nestjs/src/campaign.controller.ts", "nestjs/public/checkout-presentations.js"],
-    "redwoodsdk": ["redwoodsdk/src/checkout.ts", "redwoodsdk/src/worker.tsx", "redwoodsdk/public/checkout-presentations.js"]
+    "nestjs": ["nestjs/src/checkout.service.ts", "nestjs/src/campaign.controller.ts", "nestjs/client/CheckoutFlow.svelte", "nestjs/client/main.ts"],
+    "redwoodsdk": ["redwoodsdk/src/checkout.ts", "redwoodsdk/src/worker.tsx", "redwoodsdk/public/checkout-presentations.js"],
+    "astro": ["astro/src/lib/checkout.ts", "astro/src/pages/checkout.ts", "astro/public/checkout-presentations.js"]
   }
 }

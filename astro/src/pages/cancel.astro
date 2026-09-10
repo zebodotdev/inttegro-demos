@@ -1,0 +1,10 @@
+---
+import ResultPage from '../components/ResultPage.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+export const prerender = false;
+---
+
+<BaseLayout title="Checkout paused — Openfield">
+  <ResultPage kind="cancel" />
+</BaseLayout>

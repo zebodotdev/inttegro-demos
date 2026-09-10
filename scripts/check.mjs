@@ -12,17 +12,17 @@ const release = JSON.parse(readFileSync(releaseManifestPath, 'utf8'));
 const deployments = JSON.parse(readFileSync(join(demosRoot, 'deployments.json'), 'utf8'));
 
 assert.equal(manifest.schemaVersion, 1);
-assert.equal(manifest.demos.length, 19, 'the roadmap must contain 19 demos');
-assert.equal(new Set(manifest.demos.map((demo) => demo.id)).size, 19, 'demo IDs must be unique');
+assert.equal(manifest.demos.length, 20, 'the roadmap must contain 20 demos');
+assert.equal(new Set(manifest.demos.map((demo) => demo.id)).size, 20, 'demo IDs must be unique');
 
 const v1 = manifest.demos.filter((demo) => demo.release === 'v1');
 const v2 = manifest.demos.filter((demo) => demo.release === 'v2');
 assert.equal(v1.length, 13, 'V1 must contain 13 demos');
-assert.equal(v2.length, 6, 'V2 must contain 6 demos');
+assert.equal(v2.length, 7, 'V2 must contain 7 demos');
 assert.deepEqual(
   v2.filter((demo) => demo.status === 'verified').map((demo) => demo.id).toSorted(),
-  ['nestjs', 'redwoodsdk'],
-  'NestJS and RedwoodSDK must remain the published V2 tranche',
+  ['astro', 'nestjs', 'redwoodsdk'],
+  'Astro, NestJS, and RedwoodSDK must remain the implemented V2 tranche',
 );
 assert.deepEqual(
   v2.filter((demo) => demo.status === 'planned').map((demo) => demo.id).toSorted(),
@@ -30,9 +30,10 @@ assert.deepEqual(
   'the remaining V2 roadmap must stay explicit',
 );
 const implemented = manifest.demos.filter((demo) => demo.status !== 'planned');
+const published = implemented;
 const serverDemoIds = [
   'nextjs', 'express', 'nuxt', 'go', 'django', 'fastapi', 'rails', 'laravel',
-  'spring-boot', 'nestjs', 'redwoodsdk',
+  'spring-boot', 'nestjs', 'redwoodsdk', 'astro',
 ];
 
 assert.equal(release.schemaVersion, 1, 'release manifest schema must be version 1');
@@ -57,13 +58,13 @@ assert.equal(
 );
 assert(existsSync(join(demosRoot, release.releaseNotes)), 'release notes referenced by the manifest must exist');
 assert.equal(release.deploymentManifest, 'deployments.json', 'release must identify its deployment contract');
-assert.equal(release.demos.length, implemented.length, 'current release must include every implemented demo');
+assert.equal(release.demos.length, published.length, 'current release metadata must resolve every published demo');
 assert.deepEqual(
   release.demos.map((demo) => demo.id).toSorted(),
-  implemented.map((demo) => demo.id).toSorted(),
-  'current release demo IDs must match the implemented roadmap',
+  published.map((demo) => demo.id).toSorted(),
+  'current release demo IDs must match the published roadmap subset',
 );
-assert.equal(new Set(release.demos.map((demo) => demo.tag)).size, implemented.length, 'per-demo release tags must be unique');
+assert.equal(new Set(release.demos.map((demo) => demo.tag)).size, published.length, 'per-demo release tags must be unique');
 
 for (const demo of release.demos) {
   assert.equal(demo.version, release.version, `${demo.id} version must match the suite release`);
@@ -85,7 +86,7 @@ const expectedStories = {
   'afterglow-sessions': ['express', 'django', 'fastapi'],
   ledgerline: ['go', 'spring-boot'],
   'kora-market-mobile': ['ios-swiftui', 'android-compose', 'flutter', 'react-native-expo'],
-  openfield: ['nestjs', 'redwoodsdk'],
+  openfield: ['astro', 'nestjs', 'redwoodsdk'],
 };
 
 for (const [story, expectedIds] of Object.entries(expectedStories)) {
@@ -111,6 +112,7 @@ const checkoutPresentationAssets = {
   'spring-boot': 'spring-boot/src/main/resources/static',
   nestjs: 'nestjs/public',
   redwoodsdk: 'redwoodsdk/public',
+  astro: 'astro/public',
 };
 const presentationScript = readFileSync(join(demosRoot, 'assets/checkout-presentations.js'), 'utf8');
 const presentationStyles = readFileSync(join(demosRoot, 'assets/checkout-presentations.css'), 'utf8');
@@ -140,6 +142,34 @@ assert(
   presentationScript.includes('headers: { Accept: "application/json" }'),
   'embedded and modal Checkout must negotiate the minimal JSON representation',
 );
+assert(
+  presentationScript.includes('appearance: { theme: "light" }'),
+  'first-party demos must render Checkout in the same light theme as their payment containers',
+);
+assert(
+  presentationScript.includes('if (mode === "modal") await controller.present();'),
+  'modal Checkout must delegate presentation, focus, dismissal, and cleanup to the Inttegro runtime',
+);
+for (const obsoleteModalImplementation of [
+  'modalSurface(',
+  'data-inttegro-checkout-dialog',
+  'document.createElement("dialog")',
+]) {
+  assert(
+    !presentationScript.includes(obsoleteModalImplementation),
+    `demos must not build merchant-owned modal chrome: ${obsoleteModalImplementation}`,
+  );
+}
+for (const redundantCopy of [
+  'Complete your payment here',
+  'Your order remains with this app.',
+  'Checkout is ready.',
+]) {
+  assert(
+    !presentationScript.includes(redundantCopy),
+    `presentation chrome must not repeat redundant copy: ${redundantCopy}`,
+  );
+}
 for (const [id, directory] of Object.entries(checkoutPresentationAssets)) {
   const scriptPath = join(demosRoot, directory, 'checkout-presentations.js');
   const stylesPath = join(demosRoot, directory, 'checkout-presentations.css');
@@ -164,6 +194,7 @@ const checkoutHandlers = {
   'spring-boot': 'spring-boot/src/main/java/com/inttegro/demo/CheckoutController.java',
   nestjs: 'nestjs/src/campaign.controller.ts',
   redwoodsdk: 'redwoodsdk/src/worker.tsx',
+  astro: 'astro/src/pages/checkout.ts',
 };
 const checkoutDocuments = {
   nextjs: 'nextjs/app/layout.tsx',
@@ -177,6 +208,17 @@ const checkoutDocuments = {
   'spring-boot': 'spring-boot/src/main/resources/templates/checkout.html',
   nestjs: 'nestjs/src/pages.ts',
   redwoodsdk: 'redwoodsdk/src/app/document.tsx',
+  astro: 'astro/src/layouts/BaseLayout.astro',
+};
+const frameworkPresentationClients = {
+  fastapi: {
+    asset: '/static/angular/main.js',
+    source: 'fastapi/client/checkout-flow.component.ts',
+  },
+  nestjs: {
+    asset: '/svelte/checkout.js',
+    source: 'nestjs/client/CheckoutFlow.svelte',
+  },
 };
 assert.deepEqual(Object.keys(checkoutHandlers).toSorted(), serverDemoIds.toSorted());
 assert.deepEqual(Object.keys(checkoutDocuments).toSorted(), serverDemoIds.toSorted());
@@ -186,10 +228,20 @@ for (const id of serverDemoIds) {
   assert(handler.toLowerCase().includes('no-store'), `${id} JSON Checkout responses must not be cached`);
   const document = readFileSync(join(demosRoot, checkoutDocuments[id]), 'utf8');
   assert(document.includes('checkout-presentations.css'), `${id} must load the shared presentation styles`);
-  const presentationOwner = id === 'redwoodsdk'
-    ? readFileSync(join(demosRoot, 'redwoodsdk/src/client.tsx'), 'utf8')
-    : document;
-  assert(presentationOwner.includes('checkout-presentations.js'), `${id} must load the shared presentation client`);
+  const frameworkClient = frameworkPresentationClients[id];
+  if (frameworkClient) {
+    assert(document.includes(frameworkClient.asset), `${id} must load its framework Checkout client`);
+    const clientSource = readFileSync(join(demosRoot, frameworkClient.source), 'utf8');
+    assert(
+      clientSource.includes("headers: { Accept: 'application/json' }"),
+      `${id} framework client must negotiate the minimal JSON representation`,
+    );
+  } else {
+    const presentationOwner = id === 'redwoodsdk'
+      ? readFileSync(join(demosRoot, 'redwoodsdk/src/client.tsx'), 'utf8')
+      : document;
+    assert(presentationOwner.includes('checkout-presentations.js'), `${id} must load the shared presentation client`);
+  }
   assert(
     document.includes('type="module"') || document.includes("type: 'module'"),
     `${id} must load the presentation client as a JavaScript module`,
@@ -209,6 +261,16 @@ assert.equal(
   'shared server-demo assets must build from @inttegro/js 0.2.0',
 );
 const frameworkAdapters = {
+  fastapi: {
+    packageName: '@inttegro/angular',
+    manifest: 'fastapi/package.json',
+    source: 'fastapi/client/checkout-flow.component.ts',
+  },
+  nestjs: {
+    packageName: '@inttegro/svelte',
+    manifest: 'nestjs/package.json',
+    source: 'nestjs/client/CheckoutFlow.svelte',
+  },
   nextjs: {
     packageName: '@inttegro/react',
     manifest: 'nextjs/package.json',
@@ -258,8 +320,8 @@ for (const name of ['INTTEGRO_API_KEY', 'INTTEGRO_DEMO_PRODUCT_ID', 'INTTEGRO_DE
 }
 assert.deepEqual(
   deployments.demos.map((demo) => demo.id).toSorted(),
-  implemented.map((demo) => demo.id).toSorted(),
-  'deployment metadata must cover every implemented demo exactly once',
+  published.map((demo) => demo.id).toSorted(),
+  'deployment metadata must cover every published demo exactly once',
 );
 
 const providerStatuses = new Set(['prepared', 'verified', 'blocked']);
@@ -344,7 +406,7 @@ for (const demo of deployments.demos) {
   }
 }
 
-for (const id of ['nextjs', 'nuxt', 'express', 'django', 'fastapi', 'rails', 'laravel', 'go']) {
+for (const id of ['nextjs', 'nuxt', 'express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'astro']) {
   const demo = deployments.demos.find((candidate) => candidate.id === id);
   assert.equal(demo.live?.status, 'verified', `${id} must record its verified first-party deployment`);
 }
@@ -354,13 +416,13 @@ assert.equal(
   'Spring Boot must not claim a live deployment while its SDK publication is gated',
 );
 
-for (const id of ['nextjs', 'nuxt', 'express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'spring-boot', 'nestjs']) {
+for (const id of ['nextjs', 'nuxt', 'express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'spring-boot', 'nestjs', 'astro']) {
   for (const file of ['Dockerfile', '.dockerignore']) {
     assert(existsSync(join(demosRoot, id, file)), `${id} must include ${file} for portable deployment`);
   }
 }
 
-for (const id of ['express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'spring-boot', 'nestjs']) {
+for (const id of ['express', 'django', 'fastapi', 'rails', 'laravel', 'go', 'spring-boot', 'nestjs', 'astro']) {
   for (const file of ['render.yaml', 'railway.json']) {
     assert(existsSync(join(demosRoot, id, file)), `${id} must include ${file} for portable deployment`);
   }
@@ -425,6 +487,33 @@ assert(
   nestReadme.includes(`immutable ${release.version} deployment branch`),
   'NestJS must explain its immutable release deployment branch',
 );
+
+const astroReadme = readFileSync(join(demosRoot, 'astro/README.md'), 'utf8');
+const astroCompose = readFileSync(join(demosRoot, 'astro/compose.yaml'), 'utf8');
+const astroConfig = readFileSync(join(demosRoot, 'astro/astro.config.mjs'), 'utf8');
+const astroPackage = JSON.parse(readFileSync(join(demosRoot, 'astro/package.json'), 'utf8'));
+const astroCloudRun = JSON.parse(readFileSync(join(demosRoot, 'astro/app.json'), 'utf8'));
+assert(deployments.demos.some((demo) => demo.id === 'astro'), 'Astro deployment metadata must be published');
+assert.equal(astroPackage.dependencies.astro, '7.3.2', 'Astro must pin the verified framework release');
+assert.equal(astroPackage.dependencies['@astrojs/node'], '11.1.5', 'Astro must use the compatible official Node adapter');
+assert.equal(astroPackage.dependencies['@inttegro/inttegro-sdk'], '8.2.0', 'Astro must pin the verified Inttegro TypeScript SDK');
+assert(astroConfig.includes('checkOrigin: true'), 'Astro must keep same-origin form protection enabled');
+assert(astroConfig.includes('bodySizeLimit: 64 * 1024'), 'Astro must bound checkout request bodies');
+assert(astroCompose.includes('path: .env'), 'Astro Compose must load its documented environment file');
+assert(astroCompose.includes('"3014:3014"'), 'Astro Compose must publish its documented port');
+assert(astroCompose.includes('127.0.0.1:3014/health'), 'Astro Compose must check application health');
+assert(astroReadme.includes('docker compose up --build --wait'), 'Astro README must document Compose');
+assert(astroReadme.includes('../assets/providers/docker-button.svg'), 'Astro README must present Docker with its logo');
+assert(astroReadme.includes('immutable 1.8.0 deployment branch'), 'Astro README must identify its immutable deployment ref');
+assert(astroReadme.includes('deploy.cloud.run/?'), 'Astro must publish its Cloud Run deployment action');
+for (const name of ['INTTEGRO_API_KEY', 'INTTEGRO_DEMO_PRODUCT_ID', 'INTTEGRO_DEMO_PRICE_ID']) {
+  assert(astroCloudRun.env[name], `astro/app.json must prompt for ${name}`);
+}
+assert.equal(astroCloudRun.env.INTTEGRO_API_KEY.value, undefined, 'Astro Cloud Run config must not contain an API key');
+assert.equal(astroCloudRun.options['allow-unauthenticated'], true, 'Astro Cloud Run service must be public');
+assert(astroCloudRun.options['max-instances'] <= 3, 'Astro must cap Cloud Run scale for reader cost safety');
+assert(astroCloudRun.hooks.postcreate.commands.join('\n').includes('$SERVICE_URL'), 'Astro must derive its Cloud Run origin');
+assert(astroCloudRun.hooks.postcreate.commands.join('\n').includes('INTTEGRO_DEMO_PUBLIC_URL'), 'Astro must configure its checkout return origin');
 
 for (const id of ['express', 'django', 'fastapi', 'go', 'rails', 'laravel']) {
   const deployment = deployments.demos.find((demo) => demo.id === id);
@@ -779,7 +868,7 @@ for (const marker of decisions.markers) {
 
 for (const id of [
   'nextjs', 'express', 'nuxt', 'go', 'django', 'fastapi', 'rails', 'laravel',
-  'spring-boot', 'flutter', 'react-native-expo', 'nestjs', 'redwoodsdk',
+  'spring-boot', 'flutter', 'react-native-expo', 'nestjs', 'redwoodsdk', 'astro',
 ]) {
   assert(existsSync(join(demosRoot, id, '.env.example')), `missing environment template: ${id}`);
 }
@@ -812,12 +901,12 @@ for (const [asset, directories] of Object.entries({
   'afterglow-crowd.jpg': ['express/public', 'django/src/checkout/static/checkout', 'fastapi/public/static'],
   'ledgerline-studio.jpg': ['go/static', 'spring-boot/src/main/resources/static'],
   'ledgerline-materials.jpg': ['go/static', 'spring-boot/src/main/resources/static'],
-  'openfield-garden.jpg': ['nestjs/public', 'redwoodsdk/public'],
-  'openfield-impact.jpg': ['nestjs/public', 'redwoodsdk/public'],
+  'openfield-garden.jpg': ['nestjs/public', 'redwoodsdk/public', 'astro/public'],
+  'openfield-impact.jpg': ['nestjs/public', 'redwoodsdk/public', 'astro/public'],
   'favicon.svg': [
     'nextjs/public', 'nuxt/public', 'rails/public', 'laravel/public', 'express/public',
     'django/src/checkout/static/checkout', 'fastapi/public/static', 'go/static',
-    'spring-boot/src/main/resources/static',
+    'spring-boot/src/main/resources/static', 'astro/public',
   ],
 })) {
   for (const directory of directories) {
@@ -840,7 +929,7 @@ const skippedDirectories = new Set([
   'target', 'vendor',
 ]);
 const textExtensions = new Set([
-  '.dart', '.go', '.java', '.json', '.kt', '.kts', '.md', '.php', '.py', '.rb',
+  '.astro', '.dart', '.go', '.java', '.json', '.kt', '.kts', '.md', '.php', '.py', '.rb',
   '.swift', '.ts', '.tsx', '.yaml', '.yml',
 ]);
 
@@ -865,4 +954,4 @@ for (const path of textFiles(demosRoot)) {
   assert(!source.includes(staleMobileField), `stale mobile SDK field in ${path}`);
 }
 
-console.log('Demo contract check passed: 15 published demos, five stories, three web Checkout presentations, deployment contracts, catalogue metadata, source commentary, original artwork, and Inttegro SDK naming are consistent.');
+console.log('Demo contract check passed: 16 published demos, five stories, three web Checkout presentations, deployment contracts, catalogue metadata, source commentary, original artwork, and Inttegro SDK naming are consistent.');
