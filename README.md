@@ -28,8 +28,8 @@ hosts or runtime font services.
 
 ## Current release
 
-The current release is **1.8.1**. Use
-[`releases/v1.8.1.json`](./releases/v1.8.1.json) to resolve each demo to its
+The current release is **1.8.2**. Use
+[`releases/v1.8.2.json`](./releases/v1.8.2.json) to resolve each demo to its
 immutable Git tag and integration entry points. Studio and external
 documentation must link through those tags rather than `main`; see
 [RELEASING.md](./RELEASING.md) for the versioning, permalink, signature, and
@@ -55,7 +55,7 @@ correction policy.
 
 ### V2
 
-NestJS, RedwoodSDK, and Astro are included in **1.8.1**. They share the Openfield
+NestJS, RedwoodSDK, and Astro are included in **1.8.2**. They share the Openfield
 fundraiser story while preserving each framework's native runtime model:
 NestJS is a portable Node service; RedwoodSDK is a Cloudflare-native Worker
 application; and Astro uses components, server endpoints, and the standalone

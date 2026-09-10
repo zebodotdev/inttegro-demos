@@ -496,7 +496,7 @@ assert(astroCompose.includes('"3014:3014"'), 'Astro Compose must publish its doc
 assert(astroCompose.includes('127.0.0.1:3014/health'), 'Astro Compose must check application health');
 assert(astroReadme.includes('docker compose up --build --wait'), 'Astro README must document Compose');
 assert(astroReadme.includes('../assets/providers/docker-button.svg'), 'Astro README must present Docker with its logo');
-assert(astroReadme.includes('immutable 1.8.1 deployment branch'), 'Astro README must identify its immutable deployment ref');
+assert(astroReadme.includes('immutable 1.8.2 deployment branch'), 'Astro README must identify its immutable deployment ref');
 assert(astroReadme.includes('deploy.cloud.run/?'), 'Astro must publish its Cloud Run deployment action');
 for (const name of ['INTTEGRO_API_KEY', 'INTTEGRO_DEMO_PRODUCT_ID', 'INTTEGRO_DEMO_PRICE_ID']) {
   assert(astroCloudRun.env[name], `astro/app.json must prompt for ${name}`);
