@@ -47,11 +47,11 @@ HTTPS origin before exposing the container publicly.
 
 ## Deploy your own
 
-[![Deploy to Cloud Run](../assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-fastapi-v1.8.2)
-[![Deploy to Cloudflare](../assets/providers/cloudflare-button.svg)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-fastapi-v1.8.2)
-[![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
-[![Deploy on Railway](../assets/providers/railway-button.svg)](https://railway.com/new/template/wk2B6a?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=fastapi)
-[![Deploy to Render](../assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-fastapi-v1.8.2)
+[![Deploy to Cloud Run](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.2/assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-fastapi-v1.8.2)
+[![Deploy to Cloudflare](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.2/assets/providers/cloudflare-button.svg)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-fastapi-v1.8.2)
+[![Run with Docker](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.2/assets/providers/docker-button.svg)](#run-with-docker)
+[![Deploy on Railway](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.2/assets/providers/railway-button.svg)](https://railway.com/new/template/wk2B6a?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=fastapi)
+[![Deploy to Render](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.2/assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-fastapi-v1.8.2)
 
 Cloud Run, Railway, and Render build the released multi-stage Dockerfile, which
 compiles Angular before assembling the Python runtime. The Railway
@@ -60,7 +60,7 @@ same FastAPI routes through its ASGI adapter and serves `/static/*` from Workers
 Static Assets. It requires Inttegro Python SDK 6.3.0 or newer because the Worker
 must await outbound HTTP. Use `uv run pywrangler dev` to exercise the Worker
 runtime locally. See
-[`DEPLOYING.md`](../DEPLOYING.md) for provider details. The package `predeploy`
+[`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.8.2/DEPLOYING.md) for provider details. The package `predeploy`
 hook also builds Angular before Wrangler uploads Cloudflare Static Assets.
 
 ## Understand the integration
@@ -72,5 +72,5 @@ for the FastAPI JSON/303 handoff and verification boundary. Continue with
 the standalone Angular component and
 [`client/main.ts`](./client/main.ts) for its narrow mounting point. The
 `INTTEGRO:*` comments map choices and alternatives to the shared
-[integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+[integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.8.2/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.8.2/integration-decisions.json).
