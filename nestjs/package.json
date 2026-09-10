@@ -4,27 +4,40 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/main.ts",
-    "build": "tsc -p tsconfig.json",
+    "dev": "npm run build:client && concurrently -k -n server,client \"tsx watch src/main.ts\" \"vite build --watch\"",
+    "build": "npm run build:server && npm run build:client",
+    "build:client": "vite build",
+    "build:server": "tsc -p tsconfig.json",
     "start": "node dist/main.js",
     "test": "tsx --test test/*.test.ts",
-    "check": "npm run build && npm test"
+    "check": "npm run build && npm run typecheck:client && npm test",
+    "typecheck:client": "svelte-check --tsconfig ./tsconfig.client.json"
   },
   "dependencies": {
     "@inttegro/inttegro-sdk": "8.2.0",
+    "@inttegro/js": "0.2.0",
+    "@inttegro/svelte": "0.2.0",
     "@nestjs/common": "12.0.1",
     "@nestjs/core": "12.0.1",
     "@nestjs/platform-express": "12.0.1",
     "class-transformer": "0.5.1",
     "class-validator": "0.15.1",
     "reflect-metadata": "0.2.2",
-    "rxjs": "7.8.2"
+    "rxjs": "7.8.2",
+    "svelte": "5.57.0"
   },
   "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "7.3.0",
     "@types/express": "5.0.6",
     "@types/node": "24.10.1",
+    "concurrently": "9.2.4",
+    "svelte-check": "4.7.6",
     "tsx": "4.23.13",
-    "typescript": "7.0.2"
+    "typescript": "6.0.3",
+    "vite": "8.2.2"
+  },
+  "overrides": {
+    "multer": "2.3.0"
   },
   "engines": {
     "node": ">=20"
