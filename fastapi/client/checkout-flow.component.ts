@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common'
 import {
+  ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
@@ -103,6 +104,8 @@ export class CheckoutFlowComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private form?: HTMLFormElement
 
+  constructor(private readonly changeDetector: ChangeDetectorRef) {}
+
   private readonly submit = (event: SubmitEvent) => {
     if (!this.form) return
     const selected = String(new FormData(this.form).get('checkout_mode') || 'hosted')
@@ -136,6 +139,7 @@ export class CheckoutFlowComponent implements OnInit, AfterViewInit, OnDestroy {
     this.presentation = nextPresentation
     this.orderId = ''
     this.surfaceMessage = ''
+    this.changeDetector.detectChanges()
     this.setFormBusy(
       true,
       nextPresentation === 'modal' ? 'Preparing payment window…' : 'Preparing checkout…',
@@ -155,6 +159,11 @@ export class CheckoutFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         headers: { Accept: 'application/json' },
       })
       this.orderId = await parseOrderResponse(response)
+      // The submit listener belongs to the server-rendered form outside this
+      // Angular component. Trigger a render explicitly after the asynchronous
+      // Order response so zoneless Angular applications create the Checkout
+      // component (and the application-owned dialog) immediately.
+      this.changeDetector.detectChanges()
       if (nextPresentation === 'embedded') {
         this.form.hidden = true
         requestAnimationFrame(() => {
@@ -169,7 +178,7 @@ export class CheckoutFlowComponent implements OnInit, AfterViewInit, OnDestroy {
         // @inttegro/angular 0.2.0 embeds Checkout. Angular owns this accessible
         // dialog until an adapter release with managed-modal presentation is
         // available from the public registry.
-        setTimeout(() => this.modalDialog?.nativeElement.showModal())
+        this.modalDialog?.nativeElement.showModal()
       }
       this.setFormFeedback('')
     } catch (error) {
@@ -213,6 +222,7 @@ export class CheckoutFlowComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private restoreForm(): void {
     this.orderId = ''
+    this.changeDetector.detectChanges()
     if (this.form) this.form.hidden = false
     this.setFormBusy(false, '')
   }
