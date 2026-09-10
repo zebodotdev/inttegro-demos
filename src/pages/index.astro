@@ -1,0 +1,76 @@
+---
+import CampaignMark from '../components/CampaignMark.astro';
+import ContributionForm from '../components/ContributionForm.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+export const prerender = false;
+
+const code = Astro.url.searchParams.get('code');
+const message = Astro.url.searchParams.get('message');
+const error = code && message ? { code, message } : undefined;
+const attemptId = crypto.randomUUID().replaceAll('-', '');
+---
+
+<BaseLayout campaignScript>
+  <div class="campaign-shell">
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Openfield home"><CampaignMark /><span>openfield</span></a>
+      <nav aria-label="Campaign navigation"><a href="#story">Story</a><a href="#impact">Impact</a><a href="#plan">The plan</a><a href="#updates">Field notes</a><a class="nav-action" href="#support">Back this garden</a></nav>
+    </header>
+    <main id="top">
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="hero-dateline"><p class="kicker">Riverbend neighborhood · Accra</p><span>Community verified</span></div>
+          <h1>Give a courtyard back to its children.</h1>
+          <p class="lede">Together, we can turn an overlooked patch of concrete into a living classroom—where 120 young people can grow food, learn outdoors, and gather with the community around them.</p>
+          <div class="organizer"><span class="organizer-mark">RF</span><p><strong>Riverbend Foundation</strong><small>Community-led since 2019 · Identity verified</small></p><span class="verified" aria-label="Verified organizer">✓</span></div>
+        </div>
+        <figure class="hero-image"><img src="/openfield-garden.jpg" alt="Neighbors building timber planters in the future Riverbend learning garden" /><figcaption><span>Field note · Week three</span> Volunteers built the first six growing beds while preserving the courtyard’s three mature shade trees.</figcaption></figure>
+      </section>
+
+      <section class="impact-strip" id="impact" aria-labelledby="impact-title">
+        <header><p class="chapter-number">The difference this garden makes</p><h2 id="impact-title">A small plot. A lasting place to learn.</h2></header>
+        <dl><div><dt>120</dt><dd>young learners welcomed every week</dd></div><div><dt>12</dt><dd>accessible growing beds planned</dd></div><div><dt>8,000 L</dt><dd>of rainwater storage capacity</dd></div><div><dt>40</dt><dd>neighbors already volunteering</dd></div></dl>
+        <figure class="impact-field-image"><img src="/openfield-impact.jpg" alt="A teacher and four children planting vegetables in a thriving community garden" /><figcaption><span>What comes next</span> Weekly garden sessions connect science lessons to soil, food, and patient care.</figcaption></figure>
+        <p class="impact-method"><span aria-hidden="true">↗</span><span><strong>Measured in public.</strong> Build receipts, milestone evidence, and field updates are published throughout the project.</span></p>
+      </section>
+
+      <section class="campaign-grid">
+        <article class="campaign-story" id="story">
+          <div class="chapter story-chapter">
+            <p class="chapter-number">01 / Why this place</p>
+            <h2>An empty courtyard can become something that keeps giving.</h2>
+            <p class="story-lead">Behind Riverbend Library is a sunlit courtyard that has been closed for more than a decade. Families pass it every day. Teachers see a science room without walls. Neighbors see somewhere to grow herbs, share meals, and slow down together.</p>
+            <p>This campaign funds a safe, accessible learning garden with twelve growing beds, a rainwater system, shaded workshop tables, and a small greenhouse maintained by local volunteers.</p>
+            <blockquote class="human-quote"><span aria-hidden="true">“</span><p>Children understand a seed differently when they are the ones who put it in the soil.</p><cite><strong>Ama Nartey</strong><small>Project lead and Riverbend science teacher</small></cite></blockquote>
+          </div>
+
+          <section class="field-evidence" aria-labelledby="evidence-title">
+            <div class="chapter-heading"><div><p class="chapter-number">Proof from the field</p><h2 id="evidence-title">Built with the neighborhood, not just for it.</h2></div><p>Each claim is paired with a practical record that supporters can revisit as the work moves forward.</p></div>
+            <div class="evidence-grid">
+              <article><span class="evidence-mark" aria-hidden="true">01</span><p class="evidence-state">Verified · 12 Aug</p><h3>Courtyard access secured</h3><p>Riverbend Library approved community use of the site through 2031.</p><small>Library stewardship agreement</small></article>
+              <article><span class="evidence-mark" aria-hidden="true">02</span><p class="evidence-state">Published · 20 Aug</p><h3>Accessible plan reviewed</h3><p>Local families and two mobility advocates reviewed the path and bed layout.</p><small>Annotated site plan</small></article>
+              <article><span class="evidence-mark" aria-hidden="true">03</span><p class="evidence-state">Counted · 31 Aug</p><h3>Six beds installed</h3><p>The first half of the growing beds were built by forty neighborhood volunteers.</p><small>Field count and build log</small></article>
+            </div>
+          </section>
+
+          <div class="chapter" id="plan">
+            <p class="chapter-number">02 / The plan</p>
+            <div class="chapter-heading"><div><h2>Every cedi has a job.</h2><p>Contributions are assigned to the build. Updates and receipts are published as each milestone is completed.</p></div><p class="plan-total"><span>Working budget</span><strong>GHS 250,000</strong></p></div>
+            <div class="budget" aria-label="Project budget allocation"><div><span><strong>42%</strong> Site and accessible paths</span><i style="--share:42%"></i></div><div><span><strong>31%</strong> Beds, soil, and planting</span><i style="--share:31%"></i></div><div><span><strong>17%</strong> Rainwater and greenhouse</span><i style="--share:17%"></i></div><div><span><strong>10%</strong> Workshops and maintenance</span><i style="--share:10%"></i></div></div>
+            <ol class="milestone-list" aria-label="Build milestones"><li class="is-complete"><span aria-hidden="true">✓</span><div><p>Site cleared with mature trees protected</p><time datetime="2026-08-18">Completed 18 Aug</time></div><strong>Complete</strong></li><li class="is-current"><span aria-hidden="true">2</span><div><p>Twelve accessible growing beds</p><small>Six built · six in production</small></div><strong>In progress</strong></li><li><span aria-hidden="true">3</span><div><p>Rainwater system and shaded tables</p><small>Materials reserved</small></div><strong>Up next</strong></li><li><span aria-hidden="true">4</span><div><p>First learner planting workshop</p><time datetime="2026-10-12">Planned for 12 Oct</time></div><strong>Planned</strong></li></ol>
+          </div>
+
+          <div class="chapter" id="updates">
+            <p class="chapter-number">03 / Field notes</p>
+            <div class="chapter-heading"><div><h2>See the work as it happens.</h2><p>Short, dated accounts from the people doing the work—successes, changes, and setbacks included.</p></div><span class="update-count">3 published</span></div>
+            <div class="updates"><article><div class="update-meta"><time datetime="2026-08-31">31 Aug</time><span>Build</span></div><p class="update-index" aria-hidden="true">03</p><h3>The first growing beds are in</h3><p>Six locally built timber beds are assembled and the accessible path has been marked out.</p><a href="#support">Help fund the next six <span aria-hidden="true">→</span></a></article><article><div class="update-meta"><time datetime="2026-08-18">18 Aug</time><span>Community</span></div><p class="update-index" aria-hidden="true">02</p><h3>Forty hands, one courtyard</h3><p>Our first volunteer day cleared the site and preserved three mature shade trees.</p><a href="#support">Join the next chapter <span aria-hidden="true">→</span></a></article><article><div class="update-meta"><time datetime="2026-08-12">12 Aug</time><span>Stewardship</span></div><p class="update-index" aria-hidden="true">01</p><h3>The courtyard is ours to care for</h3><p>Riverbend Library signed the long-term agreement that keeps this space in community hands.</p><a href="#plan">See the public plan <span aria-hidden="true">→</span></a></article></div>
+          </div>
+        </article>
+
+        <ContributionForm attemptId={attemptId} error={error} />
+      </section>
+      <p class="demo-disclosure">Openfield and Riverbend Foundation are fictional demonstration entities.</p>
+    </main>
+  </div>
+</BaseLayout>

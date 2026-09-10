@@ -1,0 +1,14 @@
+---
+import ResultPage from '../components/ResultPage.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+export const prerender = false;
+
+// INTTEGRO:VERIFY [server-side-verification] Reaching this browser route is not
+// payment proof. Fulfillment belongs behind authenticated Order lookup and the
+// application's durable, idempotent reconciliation state.
+---
+
+<BaseLayout title="Contribution received — Openfield">
+  <ResultPage kind="complete" />
+</BaseLayout>

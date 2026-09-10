@@ -1,0 +1,50 @@
+---
+import CampaignMark from './CampaignMark.astro';
+
+interface Props {
+  kind: 'complete' | 'cancel';
+}
+
+const { kind } = Astro.props;
+const content = kind === 'complete'
+  ? {
+      eyebrow: 'Contribution received',
+      title: 'You helped something take root.',
+      copy: 'Openfield will count the contribution only after the server verifies authoritative payment status.',
+      action: 'Return to the garden',
+      mark: '✓',
+      status: 'Verification in progress',
+      next: 'After verification, your contribution joins the next published milestone update.',
+    }
+  : {
+      eyebrow: 'Checkout paused',
+      title: 'Nothing was charged.',
+      copy: 'The garden will be here when you are ready. Your contribution was not marked as complete.',
+      action: 'Choose a contribution',
+      mark: '←',
+      status: 'Contribution not completed',
+      next: 'Your selected contribution remains available when you return to the campaign.',
+    };
+---
+
+<main class="result-page openfield-result-page">
+  <section class="openfield-result">
+    <header class="result-header">
+      <a class="brand" href="/"><CampaignMark /><span>openfield</span></a>
+      <span>Riverbend Learning Garden</span>
+    </header>
+    <div class="result-story">
+      <span class="result-mark">{content.mark}</span>
+      <p class="chapter-number">{content.eyebrow}</p>
+      <h1>{content.title}</h1>
+      <p>{content.copy}</p>
+      <a class="result-action" href="/">{content.action}<span>→</span></a>
+    </div>
+    <aside class="result-impact">
+      <p class="chapter-number">What happens next</p>
+      <strong>{content.status}</strong>
+      <p>{content.next}</p>
+      <dl><div><dt>Campaign progress</dt><dd>73%</dd></div><div><dt>Next milestone</dt><dd>Six more growing beds</dd></div></dl>
+    </aside>
+  </section>
+</main>
