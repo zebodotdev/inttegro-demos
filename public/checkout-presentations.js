@@ -17,9 +17,9 @@ import { loadInttegro } from "./inttegro-loader.js";
  * while every option pays the same server-finalized Order.
  *
  * INTTEGRO:DECISION [hosted-runtime-loader] This module imports the
- * reproducible browser bundle built from `@inttegro/js`. The public loader
- * downloads the executable runtime only from Inttegro's fixed origin. Never
- * download, bundle, mirror, proxy, or self-host that private runtime.
+ * audited public loader aligned with `@inttegro/js`. The loader downloads the
+ * executable runtime only from Inttegro's fixed origin. Never download,
+ * bundle, mirror, proxy, or self-host that private runtime.
  *
  * INTTEGRO:DOCS https://studio.inttegro.com/web/javascript
  * INTTEGRO:DOCS https://studio.inttegro.com/accept-payment-with-inttegro-checkout
