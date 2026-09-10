@@ -66,9 +66,9 @@ checkout contract tests, and a production server build.
 
 ## Deploy your own
 
-[![Deploy to Cloud Run](../assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-astro-v1.8.3)
-[![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
-[![Deploy to Render](../assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-astro-v1.8.3)
+[![Deploy to Cloud Run](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.3/assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-astro-v1.8.3)
+[![Run with Docker](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.3/assets/providers/docker-button.svg)](#run-with-docker)
+[![Deploy to Render](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.3/assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-astro-v1.8.3)
 
 Cloud Run and Render start from the immutable 1.8.3 deployment branch. The
 checked-in Railway configuration is used by Inttegro's live deployment, but a
@@ -93,6 +93,6 @@ the surrounding account model requires it, plus rate limits and abuse controls
 before accepting public traffic. Never increment a total because a browser
 visited `/complete`.
 
-See the repository-level [`INTEGRATION_GUIDE.md`](../INTEGRATION_GUIDE.md) and
-[`integration-decisions.json`](../integration-decisions.json) for the shared
+See the repository-level [`INTEGRATION_GUIDE.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.8.3/INTEGRATION_GUIDE.md) and
+[`integration-decisions.json`](https://github.com/zebodotdev/inttegro-demos/blob/v1.8.3/integration-decisions.json) for the shared
 decision model.
