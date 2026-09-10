@@ -65,7 +65,7 @@ contract, and create a production Worker build.
 
 ## Deploy your own
 
-[![Deploy to Cloudflare](../assets/providers/cloudflare-button.svg)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-redwoodsdk-v1.8.2)
+[![Deploy to Cloudflare](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.2/assets/providers/cloudflare-button.svg)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-redwoodsdk-v1.8.2)
 
 RedwoodSDK is Cloudflare-native. The button starts from the immutable 1.8.2
 deployment branch. Cloudflare asks the reader for the required bindings without
@@ -81,6 +81,6 @@ reconcile missed events, and change campaign totals only from verified payment
 state. It must also add CSRF or strict origin protection, rate limits, and abuse
 controls. The `/complete` browser return is intentionally non-authoritative.
 
-See [`INTEGRATION_GUIDE.md`](../INTEGRATION_GUIDE.md) and
-[`integration-decisions.json`](../integration-decisions.json) for the complete
+See [`INTEGRATION_GUIDE.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.8.2/INTEGRATION_GUIDE.md) and
+[`integration-decisions.json`](https://github.com/zebodotdev/inttegro-demos/blob/v1.8.2/integration-decisions.json) for the complete
 portable integration model.

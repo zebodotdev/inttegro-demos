@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "demo": "redwoodsdk",
+  "version": "1.8.2",
+  "sourceSuiteTag": "v1.8.2",
+  "sourceDemoTag": "redwoodsdk-v1.8.2",
+  "sourceCommit": "2f7fcbb3ac345340b12d3280f5f4818df6434bbd",
+  "sourceSubtreeCommit": "a9943b705e36ed52fe2866139d9d98b6af691e48"
+}
