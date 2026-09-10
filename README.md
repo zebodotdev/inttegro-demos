@@ -38,11 +38,11 @@ HTTPS origin before exposing the container publicly.
 
 ## Deploy your own
 
-[![Deploy to Cloud Run](../assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-django-v1.8.0)
-[![Deploy to Cloudflare](../assets/providers/cloudflare-button.svg)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-django-v1.8.0)
-[![Run with Docker](../assets/providers/docker-button.svg)](#run-with-docker)
-[![Deploy on Railway](../assets/providers/railway-button.svg)](https://railway.com/new/template/0h-Ilj?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=django)
-[![Deploy to Render](../assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-django-v1.8.0)
+[![Deploy to Cloud Run](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.0/assets/providers/cloud-run-button.svg)](https://deploy.cloud.run/?git_repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos.git&revision=deploy-django-v1.8.0)
+[![Deploy to Cloudflare](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.0/assets/providers/cloudflare-button.svg)](https://deploy.workers.cloudflare.com/?url=https://github.com/zebodotdev/inttegro-demos/tree/deploy-django-v1.8.0)
+[![Run with Docker](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.0/assets/providers/docker-button.svg)](#run-with-docker)
+[![Deploy on Railway](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.0/assets/providers/railway-button.svg)](https://railway.com/new/template/0h-Ilj?utm_medium=integration&utm_source=inttegro-demos&utm_campaign=django)
+[![Deploy to Render](https://raw.githubusercontent.com/zebodotdev/inttegro-demos/v1.8.0/assets/providers/render-button.svg)](https://render.com/deploy?repo=https%3A%2F%2Fgithub.com%2Fzebodotdev%2Finttegro-demos%2Ftree%2Fdeploy-django-v1.8.0)
 
 Cloud Run, Railway, and Render build the release-pinned Dockerfile. Railway generates the Django signing
 secret, and configures its public and health-check hostnames. On Render, set
@@ -64,7 +64,7 @@ ORM or blocking synchronous I/O, so [`src/worker_compat.py`](./src/worker_compat
 runs only those hooks inline at the Worker boundary. Do not reuse that shim in a
 database-backed application: follow Cloudflare's WSGI and `django-cf` guidance,
 or use the unmodified ASGI application in a container. See
-[`DEPLOYING.md`](../DEPLOYING.md) for the compatibility decision.
+[`DEPLOYING.md`](https://github.com/zebodotdev/inttegro-demos/blob/v1.8.0/DEPLOYING.md) for the compatibility decision.
 
 ## Understand the integration
 
@@ -72,5 +72,5 @@ Start with [`src/checkout/service.py`](./src/checkout/service.py) for the typed 
 request and safe error mapping, then read
 [`src/checkout/views.py`](./src/checkout/views.py) for the 303 handoff and correlation
 boundary, including its JSON representation. The `INTTEGRO:*` comments map choices and alternatives to the shared
-[integration guide](../INTEGRATION_GUIDE.md) and
-[machine-readable decision registry](../integration-decisions.json).
+[integration guide](https://github.com/zebodotdev/inttegro-demos/blob/v1.8.0/INTEGRATION_GUIDE.md) and
+[machine-readable decision registry](https://github.com/zebodotdev/inttegro-demos/blob/v1.8.0/integration-decisions.json).
