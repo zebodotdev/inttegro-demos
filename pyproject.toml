@@ -1,6 +1,6 @@
 [project]
 name = "inttegro-fastapi-demo"
-version = "1.8.0"
+version = "1.8.1"
 description = "An async Inttegro hosted-checkout demo for FastAPI"
 requires-python = ">=3.13"
 dependencies = [
